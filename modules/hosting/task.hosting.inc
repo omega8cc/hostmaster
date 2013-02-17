@@ -114,7 +114,7 @@ function drush_hosting_task() {
       call_user_func($function, $task);
     }
 
-    $output = drush_backend_invoke_args('provision-save', array('@' . $task->ref->hosting_name), $task->context_options, $mode);
+    $output = drush_invoke_process('@none', 'provision-save', array('@' . $task->ref->hosting_name), $task->context_options, array('method' => $mode));
   }
  
   // Run the actual command. Adding alias here to work aorund Drush API.
@@ -127,7 +127,7 @@ function drush_hosting_task() {
 
   // On succesful delete, remove the named context.
   if ($task->task_type === 'delete' && $task->task_status === HOSTING_TASK_SUCCESS) {
-    $output = drush_backend_invoke_args('provision-save', array('@' . $task->ref->hosting_name), array('delete' => TRUE), $mode);
+    $output = drush_invoke_process('@none', 'provision-save', array('@' . $task->ref->hosting_name), array('delete' => TRUE), array('method' => $mode));
   }
 
   // New revision is created at the beginning of function.

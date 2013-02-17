@@ -24,7 +24,7 @@ function hosting_site_node_info() {
 function hosting_site_view(&$node, $teaser = false) {
   hosting_set_breadcrumb($node);
   modalframe_parent_js();
-  $node->content['info']['#prefix'] = '<div id="hosting-site-info">';
+  $node->content['info']['#prefix'] = '<div id="hosting-site-info" class="hosting-info-list">';
   if ($node->site_status == HOSTING_SITE_ENABLED) {
     $node->content['info']['link'] = array(
       '#value' => _hosting_site_goto_link($node),
@@ -83,8 +83,6 @@ function hosting_site_view(&$node, $teaser = false) {
     );
   }
 
-  hosting_ip_view($node);
-
   $node->content['info']['#suffix'] = '</div>';
 
   if ($node->nid) {
@@ -110,7 +108,6 @@ function hosting_site_view(&$node, $teaser = false) {
  * Implementation of hook_nodeapi_delete_revision().
  */
 function hosting_nodeapi_site_delete_revision(&$node) {
-  hosting_ip_delete_revision($node);
   db_query('DELETE FROM {hosting_site} WHERE vid = %d', $node->vid);
 }
 
@@ -118,7 +115,6 @@ function hosting_nodeapi_site_delete_revision(&$node) {
  * Implementation of hook_delete().
  */
 function hosting_site_delete($node) {
-  hosting_ip_delete($node);
   db_query('DELETE FROM {hosting_site} WHERE nid = %d', $node->nid);
   db_query('DELETE FROM {hosting_package_instance} WHERE rid=%d', $node->nid);
   hosting_context_delete($node->nid);
@@ -147,8 +143,6 @@ function hosting_site_insert(&$node) {
   // Ensure that the last_cron value is set.
   $node->last_cron = isset($node->last_cron) ? $node->last_cron : 0;
 
-  hosting_ip_save($node, FALSE);
-
   db_query("INSERT INTO {hosting_site} (vid, nid, client, db_server, platform, profile, language, last_cron, cron_key, status, verified) VALUES (%d, %d, %d, %d, %d, %d, '%s', %d, '%s', %d, %d)",
            $node->vid, $node->nid, $node->client, $node->db_server, $node->platform, $node->profile, $node->site_language, $node->last_cron, $node->cron_key, $node->site_status, $node->verified);
   if ((empty($node->old_vid))) {
@@ -176,7 +170,6 @@ function hosting_site_update(&$node) {
     if ($node->site_status == HOSTING_SITE_DELETED) {
       $node->no_verify = TRUE;
     }
-    hosting_ip_save($node, TRUE);
 
     db_query("UPDATE {hosting_site} SET client = %d, db_server = %d, platform = %d, last_cron = %d, cron_key = '%s', status = %d, profile = %d, language = '%s', verified = %d WHERE vid=%d",
              $node->client, $node->db_server, $node->platform, $node->last_cron, $node->cron_key, $node->site_status, $node->profile, $node->site_language, $node->verified, $node->vid);
@@ -194,6 +187,5 @@ function hosting_site_update(&$node) {
  */
 function hosting_site_load($node) {
   $additions = db_fetch_object(db_query('SELECT  client, db_server, platform, profile, language as site_language, last_cron, cron_key, status AS site_status, verified FROM {hosting_site} WHERE vid = %d', $node->vid));
-  $additions->ip_addresses = hosting_ip_load($node);
   return $additions;
 }
