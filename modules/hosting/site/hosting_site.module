@@ -139,7 +139,7 @@ function _hosting_site_goto_link($node) {
 function hosting_site_goto($node) {
   $cid = "hosting:site:" . $node->nid . ":login_link";
   $cache = cache_get($cid);
-  if (!is_null($cache) && (time() < $cache->data['expire'])) {
+  if ($cache && (time() < $cache->data['expire'])) {
     $theurl = $cache->data['link'];
     cache_clear_all($cid, 'cache');
   }
@@ -405,7 +405,6 @@ function hosting_import_site($site_id, $data, $platform) {
   $site->no_verify = TRUE;
   $site->verified = time();
   $site->client = $client->nid ? $client->nid : HOSTING_DEFAULT_CLIENT;
-  $site->ip_addresses = array_values($data['site_ip_addresses']);
   $site->cron_key = ($data['cron_key']) ? $data['cron_key'] : '';
 
   $site->aliases = ($data['aliases']) ? $data['aliases'] : array();
