@@ -62,7 +62,6 @@ function _hosting_valid_fqdn_ip($fqdn) {
   # We allow IPs here.
   #
   return (preg_match("/^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.?)+[a-z0-9]+$/", $fqdn) &&
-        (!preg_match("/^xn--/", $fqdn) && preg_match("/[-]{2,}/", $fqdn)) &&
          !preg_match("/[.]{2,}/", $fqdn));
 }
 
