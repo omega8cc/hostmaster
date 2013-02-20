@@ -35,6 +35,7 @@ function hosting_alias_menu() {
  * Implementation of hook_help().
  */
 function hosting_alias_help($path, $arg) {
+  $output = FALSE;
   switch($path) {
     case 'admin/hosting/aliases' :
       $output = t('Site aliases allow you to let sites be available through multiple domain addresses.<br /> The most common use of this functionality is to provide automatic aliasing for www.mysite.com and mysite.com variants of the domain name.<br /> ');
