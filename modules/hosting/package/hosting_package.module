@@ -358,7 +358,7 @@ function _hosting_package_list_package_usage($node) {
             LEFT JOIN {hosting_package} AS p ON (p.nid = pi.package_id)
             LEFT JOIN {hosting_site} AS s ON (s.nid = n.nid)
             LEFT JOIN {node} AS n2 ON (n2.nid = s.platform)
-          WHERE pi.status=1 AND pi.package_id=%d";
+          WHERE pi.status=1 AND s.status >= " . HOSTING_SITE_DISABLED . " AND pi.package_id=%d";
 
   $sql .= tablesort_sql($header);
   $result = pager_query(db_rewrite_sql($sql, 'n'), 100, 2, null, array($node->nid));
