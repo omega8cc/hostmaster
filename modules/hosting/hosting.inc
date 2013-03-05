@@ -40,7 +40,7 @@ function _hosting_valid_fqdn($fqdn) {
            !preg_match("/[-.]{2,}/", $fqdn));
   }
   else {
-    if (!preg_match("/^xn--/", $fqdn) && preg_match("/[-]{2,}/", $fqdn)) {
+    if (!preg_match("/^(www\.)?xn--/", $fqdn) && preg_match("/[-]{2,}/", $fqdn)) {
       return FALSE;
     }
     else {
