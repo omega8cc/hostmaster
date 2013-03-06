@@ -380,7 +380,6 @@ function hosting_server_insert($node) {
  */
 function hosting_nodeapi_server_delete_revision(&$node) {
   db_query('DELETE FROM {hosting_server} WHERE vid = %d', $node->vid);
-  hosting_ip_delete_revision($node);
   hosting_server_invoke_services($node, 'delete_revision');
 }
 

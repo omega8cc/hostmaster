@@ -88,13 +88,6 @@ function hosting_ip_delete($node) {
 }
 
 /**
- * IP Utility function for hook_delete_revision.
- */
-function hosting_ip_delete_revision($node) {
-  db_query("DELETE FROM {hosting_ip_addresses} WHERE nid=%d", $node->nid);
-}
-
-/**
  * Allocate an IP for a given site on a given server.
  */
 function hosting_ip_allocate($cert, $site) {
