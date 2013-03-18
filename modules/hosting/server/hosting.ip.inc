@@ -43,14 +43,11 @@ function hosting_ip_save($node, $update = FALSE) {
   $ip_list = _hosting_ip_list($node->ip_addresses);
 
   if ($update) {
-    foreach ($ip_list as $ip) {
-      db_query("REPLACE INTO {hosting_ip_addresses} (nid, ip_address) VALUES (%d, '%s') WHERE nid = %d" , $node->nid, $ip, $node->nid);
-    }
+    hosting_ip_delete($node);
   }
-  else {
-    foreach ($ip_list as $ip) {
-      db_query("INSERT INTO {hosting_ip_addresses} (nid, ip_address) VALUES (%d, '%s')", $node->nid, $ip);
-    }
+
+  foreach ($ip_list as $ip) {
+    db_query("INSERT INTO {hosting_ip_addresses} (nid, ip_address) VALUES (%d, '%s')", $node->nid, $ip);
   }
 }
 
