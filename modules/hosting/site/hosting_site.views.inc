@@ -43,7 +43,7 @@ function hosting_site_views_data() {
   );
 
  $data['hosting_site']['profile'] = array(
-   'title' => t('Installation profile'),
+   'title' => t('Profile'),
    'help' => t('Type of drupal site.'),
    'relationship' => array(
       'handler' => 'views_handler_relationship',
@@ -241,7 +241,7 @@ function hosting_site_views_default_views() {
       'relationship' => 'none',
     ),
     'title_3' => array(
-      'label' => 'Installation profile',
+      'label' => 'Profile',
       'alter' => array(
         'alter_text' => 0,
         'text' => '',

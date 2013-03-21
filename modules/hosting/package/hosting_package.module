@@ -11,7 +11,7 @@ require_once('hosting_package.instance.inc');
 
 function _hosting_package_types() {
   return array(
-    'profile' => t('Installation Profiles'),
+    'profile' => t('Profiles'),
     'module' => t('Modules'),
     'theme' => t('Themes')
   );
