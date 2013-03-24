@@ -227,7 +227,9 @@ function hosting_server_update_6200() {
     ),
     array(
       'primary key' => array('id'),
-      'indexes' => array('nid' => array('nid')),
+      'indexes' => array(
+        'nid' => array('nid'),
+      ),
     ),
   );
   $r = db_query("SELECT nid, ip_address FROM {hosting_ip_addresses}");
