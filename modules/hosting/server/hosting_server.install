@@ -217,8 +217,9 @@ function hosting_server_update_6200() {
   $ret = array();
   db_drop_index($ret, 'hosting_ip_addresses', 'vid');
   db_drop_field($ret, 'hosting_ip_addresses', 'vid');
-  db_add_field($ret, 'hosting_ip_addresses', 'id', array('type' => 'int', 'not null' => TRUE)); // add a dummy field first, then convert it
-  db_change_field($ret, 'hosting_ip_addresses', 'id',
+  db_add_field($ret, 'hosting_ip_addresses', 'id', array('type' => 'int', 'not null' => TRUE));
+  // add a dummy field first above, then convert it below
+  db_change_field($ret, 'hosting_ip_addresses', 'id', 'id',
     array(
       'type' => 'serial',
       'unsigned' => TRUE,
