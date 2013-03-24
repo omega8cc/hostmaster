@@ -229,11 +229,11 @@ function hosting_server_update_6200() {
       'primary key' => array('id'),
     )
   );
+  db_add_index($ret, 'hosting_ip_addresses', 'nid', array('nid'));
   $r = db_query("SELECT nid, ip_address FROM {hosting_ip_addresses}");
   for ($i = 0; $row = db_fetch_object($r); $i++) {
     $ret[] = update_sql("UPDATE {hosting_ip_addresses} SET id=$i WHERE nid={$row->nid} AND ip_address='{$row->ip_address}'");
   }
-  db_add_index($ret, 'hosting_ip_addresses', 'nid', array('nid'));
   return $ret;
 }
 
