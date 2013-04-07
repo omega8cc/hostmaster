@@ -1,7 +1,7 @@
 core = 6.x
 api = 2
 
-; BOA-2.0.8-dev
+; BOA-2.0.8
 
 ; Contrib modules
 projects[admin_menu][version] = "1.8"
