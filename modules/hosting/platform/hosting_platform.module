@@ -544,7 +544,7 @@ function _hosting_platform_list_class($node) {
     HOSTING_PLATFORM_QUEUED => "hosting-queue",
     HOSTING_PLATFORM_ENABLED => "hosting-success",
     HOSTING_PLATFORM_DELETED => "hosting-error",
-    HOSTING_PLATFORM_LOCKED => "hosting-warning",
+    HOSTING_PLATFORM_LOCKED => "hosting-disable",
   );
 
   return $labels[$node->platform_status];
