@@ -36,22 +36,15 @@ function hosting_site_views_default_views() {
   $handler->display->display_options['style_options']['row_class'] = '[status]';
   $handler->display->display_options['style_options']['columns'] = array(
     'status' => 'status',
-    'status_1' => 'status_1',
     'title' => 'title',
     'title_3' => 'title_3',
     'created' => 'created',
     'title_2' => 'title_2',
   );
-  $handler->display->display_options['style_options']['default'] = 'status_1';
+  $handler->display->display_options['style_options']['default'] = '-1';
   $handler->display->display_options['style_options']['info'] = array(
     'status' => array(
       'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-    ),
-    'status_1' => array(
-      'sortable' => 1,
       'default_sort_order' => 'desc',
       'align' => '',
       'separator' => '',
@@ -85,6 +78,11 @@ function hosting_site_views_default_views() {
   $handler->display->display_options['style_options']['sticky'] = 0;
   $handler->display->display_options['style_options']['empty_table'] = 0;
   $handler->display->display_options['style_options']['operations'] = array(
+    'hosting_task_operation-e0d50030fc9bde5ba86be99826a116eb' => array(
+      'selected' => 1,
+      'skip_confirmation' => 0,
+      'label' => '',
+    ),
     'node_assign_owner_action' => array(
       'selected' => 0,
       'skip_confirmation' => 0,
@@ -122,11 +120,6 @@ function hosting_site_views_default_views() {
     ),
     'hosting_task_operation-2b33c2655429ff68933d62ef1c2c5dbf' => array(
       'selected' => 1,
-      'skip_confirmation' => 0,
-      'label' => '',
-    ),
-    'views_bulk_operations_ruleset_action_rules_set_1' => array(
-      'selected' => 0,
       'skip_confirmation' => 0,
       'label' => '',
     ),
@@ -350,6 +343,11 @@ function hosting_site_views_default_views() {
   $handler->display->display_options['fields']['title_2']['alter']['trim'] = 1;
   $handler->display->display_options['fields']['title_2']['alter']['html'] = 0;
   $handler->display->display_options['fields']['title_2']['link_to_node'] = 1;
+  /* Sort criterion: Hosting Site: Status */
+  $handler->display->display_options['sorts']['status']['id'] = 'status';
+  $handler->display->display_options['sorts']['status']['table'] = 'hosting_site';
+  $handler->display->display_options['sorts']['status']['field'] = 'status';
+  $handler->display->display_options['sorts']['status']['order'] = 'DESC';
   /* Sort criterion: Node: Title */
   $handler->display->display_options['sorts']['title']['id'] = 'title';
   $handler->display->display_options['sorts']['title']['table'] = 'node';
@@ -405,6 +403,15 @@ function hosting_site_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->display->display_options['exposed_block'] = TRUE;
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  /* Empty text: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['content'] = 'No sites have been created. <a href="/node/add/site">Click here</a> to add one.';
+  $handler->display->display_options['empty']['area']['format'] = '1';
+  $handler->display->display_options['empty']['area']['tokenize'] = 0;
   $handler->display->display_options['path'] = 'hosting/sites';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Sites';
@@ -414,6 +421,15 @@ function hosting_site_views_default_views() {
 
   /* Display: Block: Platform */
   $handler = $view->new_display('block', 'Block: Platform', 'block_1');
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  /* Empty text: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['content'] = 'No sites have been created on this platform. <a href="/node/!1/platform-add-site">Click here</a> to add one.';
+  $handler->display->display_options['empty']['area']['format'] = '1';
+  $handler->display->display_options['empty']['area']['tokenize'] = 1;
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Argument: Node: Nid */
   $handler->display->display_options['arguments']['nid']['id'] = 'nid';
@@ -457,6 +473,15 @@ function hosting_site_views_default_views() {
 
   /* Display: Block: Profile */
   $handler = $view->new_display('block', 'Block: Profile', 'block_profile');
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  /* Empty text: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['content'] = 'No sites have been created using this profile. <a href="/node/add/site">Click here</a> to add a site.';
+  $handler->display->display_options['empty']['area']['format'] = '1';
+  $handler->display->display_options['empty']['area']['tokenize'] = 0;
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Argument: Node: Nid */
   $handler->display->display_options['arguments']['nid']['id'] = 'nid';
@@ -500,6 +525,15 @@ function hosting_site_views_default_views() {
 
   /* Display: Block: Client */
   $handler = $view->new_display('block', 'Block: Client', 'block_client');
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  /* Empty text: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = FALSE;
+  $handler->display->display_options['empty']['area']['content'] = 'No sites have been created for this client. <a href="/node/!1/site/add">Click here</a> to add one.';
+  $handler->display->display_options['empty']['area']['format'] = '1';
+  $handler->display->display_options['empty']['area']['tokenize'] = 1;
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Argument: Node: Nid */
   $handler->display->display_options['arguments']['nid']['id'] = 'nid';
@@ -545,3 +579,4 @@ function hosting_site_views_default_views() {
 
   return $views;
 }
+
