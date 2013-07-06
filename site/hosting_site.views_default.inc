@@ -78,23 +78,8 @@ function hosting_site_views_default_views() {
   $handler->display->display_options['style_options']['sticky'] = 0;
   $handler->display->display_options['style_options']['empty_table'] = 0;
   $handler->display->display_options['style_options']['operations'] = array(
-    'hosting_task_operation-e0d50030fc9bde5ba86be99826a116eb' => array(
-      'selected' => 1,
-      'skip_confirmation' => 0,
-      'label' => '',
-    ),
     'node_assign_owner_action' => array(
       'selected' => 0,
-      'skip_confirmation' => 0,
-      'label' => '',
-    ),
-    'hosting_task_operation-d5753f4149333e6bb163b78489af62a7' => array(
-      'selected' => 1,
-      'skip_confirmation' => 0,
-      'label' => '',
-    ),
-    'hosting_task_operation-cbcdb2f1b1694e48f1d2a1956d5b34aa' => array(
-      'selected' => 1,
       'skip_confirmation' => 0,
       'label' => '',
     ),
@@ -108,18 +93,8 @@ function hosting_site_views_default_views() {
       'skip_confirmation' => 0,
       'label' => '',
     ),
-    'hosting_task_operation-2e697b94e1c2d6cfa04148e13bbf09ab' => array(
-      'selected' => 1,
-      'skip_confirmation' => 0,
-      'label' => '',
-    ),
     'system_message_action' => array(
       'selected' => 0,
-      'skip_confirmation' => 0,
-      'label' => '',
-    ),
-    'hosting_task_operation-2b33c2655429ff68933d62ef1c2c5dbf' => array(
-      'selected' => 1,
       'skip_confirmation' => 0,
       'label' => '',
     ),
@@ -149,6 +124,26 @@ function hosting_site_views_default_views() {
       'label' => '',
     ),
     'views_bulk_operations_argument_selector_action' => array(
+      'selected' => 0,
+      'skip_confirmation' => 0,
+      'label' => '',
+    ),
+    'hosting_platform_op_delete' => array(
+      'selected' => 0,
+      'skip_confirmation' => 0,
+      'label' => '',
+    ),
+    'hosting_platform_op_lock' => array(
+      'selected' => 0,
+      'skip_confirmation' => 0,
+      'label' => '',
+    ),
+    'hosting_platform_op_unlock' => array(
+      'selected' => 0,
+      'skip_confirmation' => 0,
+      'label' => '',
+    ),
+    'hosting_platform_op_verify' => array(
       'selected' => 0,
       'skip_confirmation' => 0,
       'label' => '',
@@ -188,11 +183,6 @@ function hosting_site_views_default_views() {
       'skip_confirmation' => 0,
       'label' => '',
     ),
-    'hosting_task_operation-62832bfa32dda6f49c47986802958a8d' => array(
-      'selected' => 1,
-      'skip_confirmation' => 0,
-      'label' => '',
-    ),
     'node_save_action' => array(
       'selected' => 0,
       'skip_confirmation' => 0,
@@ -202,6 +192,36 @@ function hosting_site_views_default_views() {
       'selected' => 0,
       'skip_confirmation' => 0,
       'label' => '',
+    ),
+    'hosting_site_op_backup' => array(
+      'selected' => 1,
+      'skip_confirmation' => 1,
+      'label' => 'Backup',
+    ),
+    'hosting_site_op_delete' => array(
+      'selected' => 1,
+      'skip_confirmation' => 0,
+      'label' => 'Delete',
+    ),
+    'hosting_site_op_disable' => array(
+      'selected' => 1,
+      'skip_confirmation' => 0,
+      'label' => 'Disable',
+    ),
+    'hosting_site_op_enable' => array(
+      'selected' => 1,
+      'skip_confirmation' => 1,
+      'label' => 'Enable',
+    ),
+    'hosting_site_op_login_reset' => array(
+      'selected' => 1,
+      'skip_confirmation' => 1,
+      'label' => 'Reset Password',
+    ),
+    'hosting_site_op_verify' => array(
+      'selected' => 1,
+      'skip_confirmation' => 1,
+      'label' => 'Verify',
     ),
     'node_mass_update-0ccad85c1ebe4c9ceada1aa64293b080' => array(
       'selected' => 0,
@@ -218,18 +238,13 @@ function hosting_site_views_default_views() {
       'skip_confirmation' => 0,
       'label' => '',
     ),
-    'hosting_task_operation-1ba8dfdca72110c3d78b76f9b18bf909' => array(
-      'selected' => 1,
-      'skip_confirmation' => 0,
-      'label' => '',
-    ),
   );
   $handler->display->display_options['style_options']['execution_type'] = '1';
   $handler->display->display_options['style_options']['display_type'] = '0';
-  $handler->display->display_options['style_options']['display_result'] = 1;
+  $handler->display->display_options['style_options']['display_result'] = 0;
   $handler->display->display_options['style_options']['merge_single_action'] = 1;
   $handler->display->display_options['style_options']['hide_selector'] = 0;
-  $handler->display->display_options['style_options']['preserve_selection'] = 0;
+  $handler->display->display_options['style_options']['preserve_selection'] = 1;
   $handler->display->display_options['exposed_block'] = TRUE;
   /* Relationship: Hosting Site: Install Profile */
   $handler->display->display_options['relationships']['profile']['id'] = 'profile';
@@ -272,7 +287,7 @@ function hosting_site_views_default_views() {
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = 'SIte';
+  $handler->display->display_options['fields']['title']['label'] = 'Site';
   $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
@@ -421,6 +436,9 @@ function hosting_site_views_default_views() {
 
   /* Display: Block: Platform */
   $handler = $view->new_display('block', 'Block: Platform', 'block_1');
+  $handler->display->display_options['defaults']['access'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'view platform';
   $handler->display->display_options['defaults']['empty'] = FALSE;
   /* Empty text: Global: Text area */
   $handler->display->display_options['empty']['area']['id'] = 'area';
@@ -473,6 +491,9 @@ function hosting_site_views_default_views() {
 
   /* Display: Block: Profile */
   $handler = $view->new_display('block', 'Block: Profile', 'block_profile');
+  $handler->display->display_options['defaults']['access'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'view package';
   $handler->display->display_options['defaults']['empty'] = FALSE;
   /* Empty text: Global: Text area */
   $handler->display->display_options['empty']['area']['id'] = 'area';
@@ -525,6 +546,9 @@ function hosting_site_views_default_views() {
 
   /* Display: Block: Client */
   $handler = $view->new_display('block', 'Block: Client', 'block_client');
+  $handler->display->display_options['defaults']['access'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['access']['perm'] = 'view client';
   $handler->display->display_options['defaults']['empty'] = FALSE;
   /* Empty text: Global: Text area */
   $handler->display->display_options['empty']['area']['id'] = 'area';
