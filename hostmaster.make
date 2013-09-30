@@ -13,8 +13,8 @@ projects[install_profile_api][download][type] = "get"
 projects[install_profile_api][download][url] = "http://files.aegir.cc/dev/HEAD/static/install_profile_api.tar.gz"
 
 projects[jquery_ui][version] = "1.4"
-projects[jquery_ui][download][type] = "get"
-projects[jquery_ui][download][url] = "http://files.aegir.cc/dev/HEAD/static/jquery_ui-1.4.tar.gz"
+;projects[jquery_ui][download][type] = "get"
+;projects[jquery_ui][download][url] = "http://files.aegir.cc/dev/HEAD/static/jquery_ui.tar.gz"
 
 projects[modalframe][version] = "1.6"
 projects[modalframe][download][type] = "get"
