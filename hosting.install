@@ -4,6 +4,9 @@
  *   Install, update and uninstall for the hosting module.
  */
 
+// HOSTING_MAX_ALIAS_LENGTH is defined here:
+require_once(dirname(__FILE__) . '/hosting.module');
+
 /**
  * Implements hook_install().
  */
@@ -25,7 +28,7 @@ function hosting_schema() {
       ),
       'name' => array(
         'type' => 'varchar',
-        'length' => 50,
+        'length' => HOSTING_MAX_ALIAS_LENGTH,
         'not null' => TRUE,
       ),
     ),
@@ -375,7 +378,7 @@ function hosting_update_6015(&$sandbox) {
   if (!isset($sandbox['progress'])) {
     $sandbox['progress'] = 0;
     $sandbox['current_pid'] = 0;
-    $sandbox['max'] = db_result(db_query('SELECT COUNT(pid) FROM {url_alias}'));
+    $sandbox['max'] = db_result(db_query('SELECT COUNT(pid) FROM {url_alias} WHERE dst LIKE "hosting/c/%" AND pid > 0'));
   }
 
   $aliases = db_query_range("SELECT pid, src, dst FROM {url_alias} WHERE dst LIKE 'hosting/c/%' AND pid > %d ORDER BY pid ASC", $sandbox['current_pid'], 0, 50);
@@ -474,7 +477,7 @@ function hosting_update_6204() {
   install_add_role('aegir platform manager');
   install_add_permissions(install_get_rid('aegir platform manager'), array('create clone task', 'create migrate task', 'create platform', 'delete platform', 'edit platform', 'view locked platforms', 'view platform', 'create site', 'delete site', 'edit site', 'view site', 'access task logs', 'create lock task', 'create unlock task', 'view revisions', 'search content', 'use advanced search'));
   install_add_role('aegir administrator');
-  install_add_permissions(install_get_rid('aegir administrator'), array('access disabled sites', 'access hosting wizard', 'administer hosting', 'administer hosting features', 'administer hosting queues', 'administer hosting settings', 'administer hosting aliases', 'create site aliases', 'administer clients', 'create client', 'delete own client', 'edit client uname', 'edit client users', 'edit own client', 'view client', 'create clone task', 'create migrate task', 'create package', 'delete package', 'edit package', 'view package', 'create platform', 'delete platform', 'edit platform', 'view locked platforms', 'view platform', 'edit all quotas', 'view all quotas', 'view own quota', 'create server', 'delete server', 'edit server', 'view server', 'access hosting signup form', 'administer sites', 'create site', 'delete site', 'edit site', 'view site', 'administer ssl', 'access task logs', 'administer tasks', 'cancel own tasks', 'create backup task', 'create backup-delete task', 'create delete task', 'create disable task', 'create enable task', 'create lock task', 'create login-reset task', 'create restore task', 'create unlock task', 'create verify task', 'retry failed tasks', 'view own tasks', 'view task'));
+  install_add_permissions(install_get_rid('aegir administrator'), array('access disabled sites', 'access hosting wizard', 'administer hosting', 'administer hosting features', 'administer hosting queues', 'administer hosting settings', 'administer hosting aliases', 'create site aliases', 'administer clients', 'create client', 'delete own client', 'edit client uname', 'edit client users', 'edit own client', 'view client', 'create clone task', 'create migrate task', 'create package', 'delete package', 'edit package', 'view package', 'create platform', 'delete platform', 'edit platform', 'view locked platforms', 'view platform', 'edit all quotas', 'view all quotas', 'view own quota', 'create server', 'delete server', 'edit server', 'view server', 'access hosting signup form', 'administer sites', 'create site', 'delete site', 'edit site', 'view site', 'create ssl certificate', 'access task logs', 'administer tasks', 'cancel own tasks', 'create backup task', 'create backup-delete task', 'create delete task', 'create disable task', 'create enable task', 'create lock task', 'create login-reset task', 'create restore task', 'create unlock task', 'create verify task', 'retry failed tasks', 'view own tasks', 'view task'));
 
   module_disable(array('install_profile_api'));
 
@@ -491,13 +494,38 @@ function hosting_update_6205() {
   module_enable(array('install_profile_api'));
   module_load_include('inc', 'install_profile_api', 'core/user');
 
-  install_add_permissions(install_get_rid('aegir client'), array('view own quota', 'create site aliases', 'create verify task', 'create clone task', 'create migrate task', 'administer ssl', 'access task logs', 'view package'));
-  install_add_permissions(install_get_rid('aegir account manager'), array('administer clients', 'access content', 'access user profiles', 'edit all quotas', 'view all quotas', 'view own quota', 'edit client uname'));
-  install_add_permissions(install_get_rid('aegir platform manager'), array('view package', 'administer platforms', 'cancel own tasks', 'view own tasks', 'access content', 'view own tasks', 'view task', 'administer sites', 'create verify task', 'retry failed tasks', 'administer clients'));
-  install_add_permissions(install_get_rid('aegir administrator'), array('access administration menu', 'administer platforms', 'administer servers', 'access content', 'view revisions', 'administer hosting aliases', 'create site aliases', 'edit all quotas', 'view all quotas', 'view own quota', 'access hosting signup form', 'administer ssl', 'access user profiles'));
+  install_add_permissions(install_get_rid('aegir client'), array('view own quota', 'create site aliases', 'create verify task', 'create clone task', 'create migrate task', 'create ssl certificate', 'access task logs', 'view package', 'view platform', 'view revisions', 'edit site'));
+  install_add_permissions(install_get_rid('aegir account manager'), array('administer clients', 'access content', 'access user profiles', 'edit all quotas', 'view all quotas', 'view own quota', 'edit client uname', 'view_site'));
+  install_add_permissions(install_get_rid('aegir platform manager'), array('view package', 'administer platforms', 'cancel own tasks', 'view own tasks', 'access content', 'view task', 'administer sites', 'create verify task', 'retry failed tasks', 'administer clients', 'administer tasks'));
+  install_add_permissions(install_get_rid('aegir administrator'), array('access administration menu', 'administer platforms', 'administer servers', 'access content', 'view revisions', 'administer hosting aliases', 'create site aliases', 'edit all quotas', 'view all quotas', 'view own quota', 'access hosting signup form', 'create ssl certificate', 'access user profiles', 'update status of tasks'));
 
   module_disable(array('install_profile_api'));
 
   return $ret;
 }
 
+/**
+ * Enable the jquery_update module.
+ */
+function hosting_update_6206() {
+  $ret = array();
+  module_enable(array('jquery_update'));
+  return $ret;
+}
+
+/**
+ * Alter the length available for a site alias to 235.
+ *
+ * https://drupal.org/node/1971348
+ */
+function hosting_update_6207() {
+  $ret = array();
+  $spec = array(
+        'type' => 'varchar',
+        // @see HOSTING_MAX_ALIAS_LENGTH
+        'length' => 235,
+        'not null' => TRUE,
+  );
+  db_change_field($ret, 'hosting_context', 'name', 'name', $spec);
+  return $ret;
+}

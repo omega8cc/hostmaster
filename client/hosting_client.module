@@ -52,6 +52,10 @@ function hosting_client_theme($existing, $type, $theme, $path) {
       'file' => 'hosting_client.module',
       'arguments' => array('form' => NULL),
     ),
+    'hosting_client_platform_access_form' => array(
+      'file' => 'hosting_client.module',
+      'arguments' => array('form' => NULL),
+    ),
   );
 }
 
@@ -233,20 +237,26 @@ function theme_hosting_client_form($form) {
  * Implementation of hook_validate() .
  */
 function hosting_client_validate(&$node) {
+  // We don't allow duplicate client names
+  $title = $node->form_id == 'hosting_signup_form' ? 'client_name' : 'title';
+  $node_nid = db_result(db_query("SELECT nid FROM {node} WHERE type = 'client' AND title = '%s'", $node->title));
+  if ($node_nid && $node->nid != $node_nid) {
+    form_set_error($title, t("Client name already in use, try %suggestion.",
+                              array('%suggestion' => hosting_client_validate_suggest($node->title))));
+  }
+
+  // We don't allow duplicate internal client names
   if ($node->uname) {
     $node->uname = hosting_client_sanitize($node->uname);
   } else {
     $node->uname = hosting_client_sanitize($node->title);
   }
-  $nid = db_result(db_query("SELECT nid FROM {hosting_client} WHERE uname LIKE '%s'", addcslashes($node->uname, '\%_')));
+  $nid = db_result(db_query("SELECT nid FROM {hosting_client} WHERE uname = '%s'", $node->uname));
   if ($nid && $node->nid != $nid) {
-    $suggestion = hosting_client_validate_suggest($node);
-    if ($suggestion) {
-      form_set_error('title', t("Client name already in use, try %suggestion.", array('%suggestion' => $suggestion)));
-    } else {
-      form_set_error('title', t("Client name already in use."));
-    }
+    form_set_error('uname', t("Client internal name already in use, try %suggestion.",
+                              array('%suggestion' => hosting_client_validate_suggest($node->uname, TRUE))));
   }
+
   if (!$node->nid && $node->email) {
     $user = user_load(array('mail' => $node->email));
     if ($user) {
@@ -262,22 +272,26 @@ function hosting_client_validate(&$node) {
 }
 
 /**
- * Helper for hosting_client_validate to suggest a new client title.
+ * Helper for hosting_client_validate to suggest a new client name.
  *
  * @see hosting_client_validate()
- * @param $node
- *   The node being validated
+ * @param $name
+ *   The client name being validated.
+ * @param $internal
+ *   Whether this is an internal client name.
  */
-function hosting_client_validate_suggest($node) {
+function hosting_client_validate_suggest($name, $internal = FALSE) {
   $suggestion = FALSE;
-  for ($i = 0; $i < 10; $i++) {
-    $nid = db_result(db_query("SELECT nid FROM {hosting_client} WHERE uname LIKE '%s%%'", addcslashes(hosting_client_sanitize($node->title) . $i, '\%_')));
+  $table = $internal ? 'hosting_client' : 'node';
+  $field = $internal ? 'uname' : 'title';
+  $name = $internal ? hosting_client_sanitize($name) : $name;
+
+  for ($i = 0; $i < 20; $i++) {
+    $nid = db_result(db_query("SELECT nid FROM {%s} WHERE %s = '%s'", $table, $field, $name . $i));
     if (!$nid) {
-      $suggestion = $node->title . $i;
-      break;
+      return $name . $i;
     }
   }
-  return $suggestion;
 }
 
 /**
@@ -596,7 +610,117 @@ function hosting_client_menu() {
     'access arguments' => array('create', 'client'),
   );
 
+  $items['node/%node/clients'] = array(
+    'title' => 'Clients',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('hosting_client_platform_access_form', 1),
+    'access callback' => '_hosting_client_platform_access',
+    'access arguments' => array(1),
+  );
+
+
   return $items;
+}
+
+/**
+ * Access callback for the client platform access tab.
+ */
+function _hosting_client_platform_access($node) {
+  return $node->type == 'platform' &&
+         $node->platform_status != HOSTING_PLATFORM_DELETED &&
+         node_access('update', $node) &&
+         user_access('administer clients');
+}
+
+/**
+ * Page callback for the client platform access form.
+ */
+function hosting_client_platform_access_form($form, $node) {
+  $form = array();
+
+  $clients = isset($node->clients) ? $node->clients : array();
+  if (count($clients)) {
+    foreach ($clients as $client) {
+      $client_node = hosting_get_client($client);
+      $form['name'][$client] = array('#type' => 'markup', '#value' => l($client_node->title, 'node/' . $client));
+      // Remove the label for the checkbox
+      $clients[$client] = '';
+    }
+  }
+  else {
+    // No access control on this platform.
+    $form['name']['all'] = array('#type' => 'markup', '#value' => 'All clients have access to this platform.');
+  }
+  $form['clients'] = array('#type' => 'checkboxes', '#options' => $clients);
+  $form['header'] = array('#type' => 'value', '#value' => array(array('data' => t('Allowed clients')), array('data' => t('Remove'))));
+  $form['new_client'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Grant a client access to this platform'),
+    '#weight' => 2,
+    '#autocomplete_path' => 'hosting_client/autocomplete/client',
+    '#description' => t('This field allows you to grant a client access to this platform.
+                         Remove all clients from this list to grant all clients access to this platform'),
+  );
+  $form['#theme'] = 'hosting_client_platform_access_form';
+  $form['apply'] = array(
+    '#type' => 'submit',
+    '#value' => t('Apply'),
+    '#access' => user_access('administer clients'),
+    '#submit' => array('hosting_client_platform_access_form_submit'),
+    '#weight' => 10,
+  );
+
+  return $form;
+}
+
+/**
+ * Callback to theme the client platform access form.
+ */
+function theme_hosting_client_platform_access_form($form) {
+  foreach (element_children($form['name']) as $client) {
+    $row = array();
+    $row['data'][] = drupal_render($form['name'][$client]);
+    if (user_access('administer clients')) {
+      $row['data'][] = drupal_render($form['clients'][$client]);
+    }
+    $rows[] = $row;
+  }
+  $output = theme('table', $form['header']['#value'], $rows);
+  $output .= drupal_render($form);
+  return $output;
+}
+
+/**
+ * Submit handler for the client platform access form.
+ */
+function hosting_client_platform_access_form_submit($form, $form_state) {
+  $clients = $form_state['values']['clients'];
+  $new_client = isset($form_state['values']['new_client']) ? $form_state['values']['new_client'] : FALSE;
+  $existing = $form['#parameters']['2']->clients;
+  $platform = $form['#parameters']['2']->nid;
+
+  // Remove the selected client(s).
+  foreach ($clients as $cid => $remove) {
+    if ($remove) {
+      db_query("DELETE FROM {hosting_platform_client_access} WHERE pid = %d AND cid = %d", $platform, $cid);
+    }
+  }
+
+  // Add the new client.
+  if ($new_client) {
+    $client = hosting_get_client($new_client);
+    if ($client) {
+      db_query("INSERT INTO {hosting_platform_client_access} (pid, cid) VALUES (%d, %d)", $platform, $client->nid);
+    }
+    else {
+      $add_client = '';
+      if (user_access('create client') || user_access('administer clients')) {
+        $add_client = ' or ' . l('add a new client', 'node/add/client');
+      }
+      form_set_error('new_client', t('The client name (%client) was not recognized. Please try again', array('%client' => $new_client)) . $add_client . '.');
+    }
+  }
 }
 
 
@@ -820,27 +944,6 @@ function hosting_client_autocomplete($type, $keyword) {
 }
 
 /**
- * Implementation of hook_form_alter().
- */
-function hosting_client_form_alter(&$form, $form_state, $form_id) {
-  if (user_access('administer clients')) {
-    if (hosting_feature('client') && $form_id == 'platform_node_form') {
-      global $user;
-      $node = $form["#node"];
-      // Show a list of clients to give access to this platform
-      $clients = _hosting_get_clients();
-      $form['clients'] = array(
-        '#type' => 'checkboxes',
-        '#title' => t('Platform access control'),
-        '#options' => $clients,
-        '#default_value' => isset($node->clients) ? $node->clients : array(),
-        '#description' => t('Grant access to this platform for relevant clients where required. Leave all checkboxes unchecked to grant all clients access to this platform.'),
-      );
-    }
-  }
-}
-
-/**
  * Implementation of hook_nodeapi_TYPE_OP().
  *
  * This loads the platform/client access control mappings in the platform node.
@@ -865,31 +968,6 @@ function hosting_nodeapi_platform_load($node) {
  */
 function hosting_client_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
   switch ($op) {
-    case 'insert':
-    case 'update':
-      if ($node->type == 'platform') {
-        // Enter access rights in to the db for clients if any were selected
-        if (!empty($node->clients)) {
-          $clients = $node->clients;
-          foreach ($clients as $cid => $choice) {
-            if ($choice) {
-              // Client has been selected, add them to the access table
-              $existing = db_result(db_query("SELECT cid FROM {hosting_platform_client_access} WHERE pid = %d AND cid = %d", $node->nid, $cid));
-              if (!$existing) {
-                db_query("INSERT INTO {hosting_platform_client_access} (pid, cid) VALUES (%d, %d)", $node->nid, $cid);
-              }
-            }
-            else {
-              // Client has not been selected, or unselected
-              $existing = db_result(db_query("SELECT cid FROM {hosting_platform_client_access} WHERE pid = %d AND cid = %d", $node->nid, $cid));
-              if ($existing) {
-                db_query("DELETE FROM {hosting_platform_client_access} WHERE pid = %d AND cid = %d", $node->nid, $cid);
-              }
-            }
-          }
-        }
-      }
-      break;
     case 'delete':
       if ($node->type == 'platform') {
         db_query("DELETE FROM {hosting_platform_client_access} WHERE pid = %d", $node->nid);

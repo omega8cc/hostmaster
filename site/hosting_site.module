@@ -104,8 +104,10 @@ function _hosting_site_form_check() {
   if (isset($_GET['platform'])) {
     $platform = $_GET['platform'];
   }
+
+  $result = hosting_site_available_options($_POST, $platform);
   drupal_json(
-    hosting_site_available_options($_POST, $platform)
+    $result
   );
   exit();
 }
@@ -134,7 +136,7 @@ function hosting_site_node_load($arg) {
  */
 function _hosting_site_goto_link($node) {
   $cache = cache_get("hosting:site:" . $node->nid . ":login_link");
-  if ($cache && (time() < $cache->data['expire'])) {
+  if (user_access('create login-reset task') && $cache && (time() < $cache->data['expire'])) {
     $title = t("Log in to !url" , array('!url' => $node->title));
   }
   else {
@@ -164,7 +166,7 @@ function theme_hosting_site_goto_link($title, $url) {
 function hosting_site_goto($node) {
   $cid = "hosting:site:" . $node->nid . ":login_link";
   $cache = cache_get($cid);
-  if (!is_null($cache) && (time() < $cache->data['expire'])) {
+  if (user_access('create login-reset task') && !is_null($cache) && (time() < $cache->data['expire'])) {
     $theurl = $cache->data['link'];
     cache_clear_all($cid, 'cache');
   }
@@ -422,7 +424,7 @@ function hosting_site_op_login_reset($nodes) {
  * Access callback for Site add by platform.
  */
 function hosting_site_add_by_platform_access($node) {
-  return $node->type == 'platform' && node_access('create', 'site');
+  return $node->type == 'platform' && $node->platform_status == HOSTING_PLATFORM_ENABLED && node_access('create', 'site');
 }
 
 /**
@@ -669,7 +671,7 @@ function _hosting_site_list_class($node, $verified = null) {
 function hosting_site_views_api() {
   return array(
     'api' => 3,
-    'path' => drupal_get_path('module', 'hosting_site'),
+    'path' => drupal_get_path('module', 'hosting_site') . '/views',
   );
 }
 
@@ -681,4 +683,42 @@ function theme_hosting_site_profile($profile, $html = FALSE) {
     return "{$profile->title} <em>({$profile->short_name})</em>";
   }
   return "{$profile->title} ({$profile->short_name})";
+}
+
+/**
+ * Control block visibility.
+ */
+function hosting_site_client_list_block_visibility() {
+  global $user;
+  $node = menu_get_object();
+  $menu_item = menu_get_item();
+  if (!empty($node) && $menu_item['number_parts'] == 2) {
+    return $node->type == 'client' && !user_access('administer clients', $user);
+  }
+  return FALSE;
+}
+
+/**
+ * Control block visibility.
+ */
+function hosting_site_client_admin_block_visibility() {
+  global $user;
+  $node = menu_get_object();
+  $menu_item = menu_get_item();
+  if (!empty($node) && $menu_item['number_parts'] == 2) {
+    return $node->type == 'client' && user_access('administer clients', $user);
+  }
+  return FALSE;
+}
+
+/**
+ * Control block visibility.
+ */
+function hosting_site_profile_block_visibility() {
+  $node = menu_get_object();
+  $menu_item = menu_get_item();
+  if (!empty($node) && $menu_item['number_parts'] == 2) {
+    return $node->type == 'package' && $node->package_type == 'profile';
+  }
+  return FALSE;
 }

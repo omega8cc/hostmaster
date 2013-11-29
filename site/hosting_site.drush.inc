@@ -78,7 +78,7 @@ function hosting_site_post_hosting_install_task($task, $data) {
     $context = $data['context'];
     $packages = $context['packages'];
     hosting_package_sync($packages);
-    hosting_package_instance_sync($task->ref->nid, $packages);
+    hosting_package_instance_sync($task->ref->nid, $task->ref->type, $packages);
     $task->ref->site_status = HOSTING_SITE_ENABLED;
     $task->ref->no_verify = TRUE;
     $task->ref->verified = time();
@@ -168,6 +168,9 @@ function hosting_site_post_hosting_delete_task($task, $data) {
     // Record the backup created during delete.
     $task->task_args['description'] = t('Pre-delete backup');
     hosting_site_post_hosting_backup_task($task, $data);
+
+    // Clean up package instances
+    hosting_package_instance_sync($task->ref->nid, 'site');
   }
 }
 
@@ -193,7 +196,7 @@ function hosting_site_post_hosting_import_task($task, $data) {
   
   $packages = $data['context']['packages'];
   hosting_package_sync($packages);
-  hosting_package_instance_sync($task->ref->nid, $packages);
+  hosting_package_instance_sync($task->ref->nid, $task->ref->type, $packages);
 
 }
 
@@ -210,7 +213,7 @@ function hosting_site_post_hosting_verify_task($task, $data) {
     $context = $data['context'];
     $packages = $context['packages'];
     hosting_package_sync($packages);
-    hosting_package_instance_sync($task->ref->nid, $packages);
+    hosting_package_instance_sync($task->ref->nid, $task->ref->type, $packages);
   }
 }
 

@@ -26,7 +26,7 @@ function hosting_ssl_site_form(&$form, &$form_state, $form_id) {
       '#description' => t('Enabling encryption will publish your site on both HTTP and HTTPS ports, allowing you to redirect users to the more secure version for certain pages that require the additional security. Requiring encryption will automatically redirect all unencrypted traffic to your HTTPS site.'),
       '#required' => TRUE,
       '#default_value' => (isset($node->ssl_enabled)) ? $node->ssl_enabled : HOSTING_SSL_DISABLED,
-      '#access' => user_access('administer ssl'),
+      '#access' => user_access('create ssl certificate'),
       '#weight' => -9
     ), 'hosting_ssl_status_options', $ssl_available);
 
@@ -37,7 +37,7 @@ function hosting_ssl_site_form(&$form, &$form_state, $form_id) {
       '#options' => hosting_ssl_get_keys(null, TRUE),
       '#required' => TRUE,
       '#default_value' => ($node->ssl_key) ? $node->ssl_key : HOSTING_SSL_CUSTOM_KEY,
-      '#access' => user_access('administer ssl'),
+      '#access' => user_access('create ssl certificate'),
       '#weight' => -8
     ), 'hosting_ssl_output_key', $ssl_available, !$node->nid);
 
@@ -46,7 +46,7 @@ function hosting_ssl_site_form(&$form, &$form_state, $form_id) {
       '#title' => t('New encryption key'),
       '#description' => t("This field should only contain lower case alpha-numeric and '_', '-' or '.' characters. If the SSL certificate is not found, Aegir will automatically generate a self-signed certificate for you."),
       '#default_value' => '',
-      '#access' => user_access('administer ssl'),
+      '#access' => user_access('create ssl certificate'),
       '#weight' => -7
     ), 'filter_xss', $ssl_available, FALSE);
 }
@@ -118,7 +118,12 @@ function hosting_ssl_get_key($cid) {
 }
 
 function hosting_ssl_get_ip($cid) {
-  return db_result(db_query("SELECT ips.ip_address FROM {hosting_ssl_cert_ips} cert INNER JOIN {hosting_ip_addresses} ips ON cert.ip_address = ips.id WHERE cid=%d", $cid));
+  $result = db_query("SELECT h.name AS server_name, ips.ip_address FROM {hosting_ssl_cert_ips} cert INNER JOIN {hosting_ip_addresses} ips ON cert.ip_address = ips.id INNER JOIN {hosting_context} h ON h.nid = ips.nid WHERE cid=%d", $cid);
+  $ip_addresses = array();
+  while ($row = db_fetch_object($result)) {
+    $ip_addresses[$row->server_name] = $row->ip_address;
+  }
+  return $ip_addresses;
 }
 
 function hosting_ssl_output_key($cid) {
@@ -211,10 +216,10 @@ function hosting_ssl_nodeapi_site_update($node) {
     hosting_ssl_nodeapi_site_insert($node);
   }
   else {
+    if ($node->site_status == HOSTING_SITE_DELETED || !$node->ssl_enabled) {
+      hosting_ssl_clean_keys($node);
+    }
     db_query("UPDATE {hosting_ssl_site} SET ssl_enabled=%d, ssl_key=%d WHERE vid=%d", $node->ssl_enabled, $node->ssl_key, $node->vid);
-  }
-  if ($node->site_status == HOSTING_SITE_DELETED) {
-    hosting_ssl_clean_keys($node);
   }
 }
 
@@ -225,8 +230,8 @@ function hosting_ssl_nodeapi_site_load($node) {
 }
 
 function hosting_ssl_nodeapi_site_delete($node) {
-  db_query("DELETE FROM {hosting_ssl_site} WHERE nid=%d", $node->nid);
   hosting_ssl_clean_keys($node);
+  db_query("DELETE FROM {hosting_ssl_site} WHERE nid=%d", $node->nid);
 }
 
 function hosting_ssl_nodeapi_site_delete_revision($node) {
@@ -320,9 +325,17 @@ function hosting_ssl_get_keys($client = null, $ask_custom = FALSE) {
  */
 function hosting_ssl_clean_keys($node) {
   // check if there are still sites using this site's certificate
-  if (!db_result(db_query("SELECT * FROM hosting_ssl_site siteA INNER JOIN hosting_ssl_site siteB ON siteA.ssl_key = siteB.ssl_key INNER JOIN hosting_site s ON s.nid = siteA.nid WHERE siteA.ssl_enabled = 1 AND s.status <> %d AND siteB.nid = %d;", HOSTING_SITE_DELETED, $node->nid))) {
-    drupal_set_message(t("cleaning up unused certificate associated with site"));
-    db_query("DELETE FROM {hosting_ssl_cert} WHERE cid = %d", $node->ssl_key);
-    db_query("DELETE FROM {hosting_ssl_cert_ips} WHERE cid = %d", $node->ssl_key);
+  if (!db_result(db_query("SELECT * FROM hosting_ssl_site siteA
+                             INNER JOIN hosting_ssl_site siteB ON siteA.ssl_key = siteB.ssl_key 
+                             INNER JOIN hosting_site s ON s.nid = siteA.nid
+                               WHERE siteA.nid <> siteB.nid
+                                 AND siteA.ssl_enabled = 1
+                                 AND s.status <> %d
+                                 AND siteB.nid = %d;", HOSTING_SITE_DELETED, $node->nid))) {
+    // we need to fetch the ssl_key field from the DB because the object comes from the node edit, so it's gone
+    $ssl_key = db_result(db_query('SELECT ssl_key FROM {hosting_ssl_site} WHERE nid = %d', $node->nid));
+    drupal_set_message(t("cleaning up unused certificate %cert associated with site %site", array('%cert' => $ssl_key, '%site' => $node->nid)));
+    db_query("DELETE FROM {hosting_ssl_cert} WHERE cid = %d", $ssl_key);
+    db_query("DELETE FROM {hosting_ssl_cert_ips} WHERE cid = %d", $ssl_key);
   }
 }

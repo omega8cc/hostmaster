@@ -335,10 +335,11 @@ function hosting_site_update_6202() {
 /**
  * Add new Action permissions.
  */
-function hosting_platform_update_6203() {
+function hosting_site_update_6203() {
   $ret = array();
 
-  // Enable Acstions permissions, and temporarily Install Profile API module to load includes.
+  // Enable Actions permissions, and temporarily Install Profile API
+  // module to load permission CRUD functions
   module_enable(array('actions_permissions', 'install_profile_api'));
   module_load_include('inc', 'install_profile_api', 'core/user');
 
@@ -348,5 +349,102 @@ function hosting_platform_update_6203() {
 
   module_disable(array('install_profile_api'));
 
+  return $ret;
+}
+
+/**
+ * Place new block.
+ */
+function hosting_site_update_6204() {
+  $ret = array();
+
+  // Temporarily enable Install Profile API module and load includes.
+  module_enable(array('install_profile_api'));
+  drupal_load('module', 'install_profile_api');
+  install_include(array('block'));
+
+  // Enable blocks.
+  $theme = 'eldir';
+  install_set_block('views', 'hosting_site_list-block_client2', $theme, 'content_bottom', 0, 2, "<?php
+global \$user;
+\$node = menu_get_object();
+\$menu_item = menu_get_item();
+if (!empty(\$node)) && \$menu_item['number_parts'] == 2) {
+  return \$node->type == 'client' && $user->uid != 1;
+}
+?>");
+  install_set_block('views', 'hosting_site_list-block_client', $theme, 'content_bottom', 0, 2, "<?php
+\$node = menu_get_object();
+\$menu_item = menu_get_item();
+if (!empty(\$node) && \$menu_item['number_parts'] == 2) {
+  return \$node->type == 'client';
+}
+?>");
+  install_set_block('views', 'hosting_site_list-block_1' , $theme, 'content_bottom', 0, 1, 'hosting/c/platform_*');
+  module_disable(array('install_profile_api'));
+
+  return $ret;
+}
+
+/**
+ * Place platform site-list block.
+ */
+function hosting_site_update_6205() {
+  $ret = array();
+
+  // Temporarily enable Install Profile API module and load includes.
+  module_enable(array('install_profile_api'));
+  drupal_load('module', 'install_profile_api');
+  install_include(array('block'));
+
+  // Enable block.
+  $theme = 'eldir';
+  install_set_block('views', 'hosting_site_list-block_1' , $theme, 'content_bottom', 0, 1, 'hosting/c/platform_*');
+
+  module_disable(array('install_profile_api'));
+
+  return $ret;
+}
+
+/**
+ * Place call custom functions for block visibility.
+ */
+function hosting_site_update_6206() {
+  $ret = array();
+
+  // Temporarily enable Install Profile API module and load includes.
+  module_enable(array('install_profile_api'));
+  drupal_load('module', 'install_profile_api');
+  install_include(array('block'));
+
+  // Set block visibility.
+  $theme = 'eldir';
+  install_set_block('views', 'hosting_site_list-block_client' , $theme, 'content_bottom', 0, 2, "<?php
+return hosting_site_client_admin_block_visibility();
+?>");
+  install_set_block('views', 'hosting_site_list-block_client2' , $theme, 'content_bottom', 0, 2, "<?php
+return hosting_site_client_list_block_visibility();
+?>");
+  install_set_block('views', 'hosting_site_list-block_profile' , $theme, 'content_bottom', 0, 2, "
+<?php
+return hosting_site_profile_block_visibility();
+?>");
+
+  module_disable(array('install_profile_api'));
+
+  return $ret;
+
+}
+
+/**
+ * Force a re-verification of all enabled sites,
+ * to re-generate their Apache virtualhost configurations to use
+ * correct handlers in the 'files' or 'private' subdirectories
+ */
+function hosting_site_update_6207() {
+  $result = db_query("SELECT nid FROM {hosting_site} WHERE status=1");
+  while ($site = db_fetch_object($result)) {
+    hosting_add_task($site->nid, 'verify');
+  }
   return $ret;
 }

@@ -10,15 +10,23 @@
 function hosting_package_views_handlers() {
   return array(
     'info' => array(
-      'path' => drupal_get_path('module', 'hosting_package'),
+      'path' => drupal_get_path('module', 'hosting_package') . '/views',
     ),
     'handlers' => array(
       // field handlers
       'views_handler_field_hosting_package_status' => array(
         'parent' => 'views_handler_field_hosting_site_status',
       ),
+      'views_handler_field_hosting_package_site_count' => array(
+        'parent' => 'views_handler_field',
+      ),
+      // filter handlers
       'views_handler_filter_hosting_package_status' => array(
         'parent' => 'views_handler_filter_in_operator',
+      ),
+      // sort handlers
+      'views_handler_sort_hosting_package_site_count' => array(
+        'parent' => 'views_handler_sort',
       ),
     ),
   );
@@ -103,6 +111,19 @@ function hosting_package_views_data() {
     ),
     'argument' => array(
       'handler' => 'views_handler_argument_node_nid',
+    ),
+  );
+
+  $data['hosting_package_instance']['site_count'] = array(
+    'title' => t('Site count'),
+    'help' => t('A count of sites using a package.'),
+    'field' => array(
+      'field' => 'platform',
+      'handler' => 'views_handler_field_hosting_package_site_count',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'views_handler_sort_hosting_package_site_count',
     ),
   );
 
@@ -218,4 +239,70 @@ function hosting_package_views_data() {
   );
 
   return $data;
+}
+
+
+/**
+ * Implementation of hook_views_plugins
+ */
+function hosting_package_views_plugins() {
+  $plugins = array(
+    'access' => array(
+      'parent' => array(
+        'no ui' => TRUE,
+        'handler' => 'views_plugin_access',
+        'parent' => '',
+      ),
+      'package' => array(
+        'title' => t('Hosting package'),
+        'help' => t('Manage package access.'),
+        'handler' => 'views_plugin_access_hosting_package',
+        'path' => drupal_get_path('module', 'hosting_package') . '/views',
+      ),
+    ),
+  );
+
+  return $plugins;
+}
+
+/**
+ * Views access callback.
+ *
+ * @param $type
+ *   The display plugin.
+ * @param $display
+ *   The display ID (machine_name).
+ * @param $account
+ *   The current user.
+ */
+function hosting_package_views_access($type, $display, $account = NULL) {
+  switch ($type) {
+    case 'page':
+      $path = explode('/', drupal_get_normal_path($_GET['q']));
+      $nid = $path['1'];
+      if (is_numeric($nid)) {
+        $node = node_load($nid);
+        if (!is_null($account) && (!user_access('view package', $account) || !node_access('view', $node, $account))) {
+          return FALSE;
+        }
+        switch ($display) {
+          case 'page_packages_site':
+            return $node->type == 'site' && $node->site_status != -2;
+            break;
+          case 'page_packages_platform':
+            return $node->type == 'platform' && $node->platform_status != -2;
+            break;
+        }
+      }
+      break;
+    case 'block':
+      if ($node = menu_get_object()) {
+        return $node->type == 'package' && $node->package_type != 'profile';
+      }
+      break;
+    default:
+      return FALSE;
+  }
+
+  return FALSE;
 }

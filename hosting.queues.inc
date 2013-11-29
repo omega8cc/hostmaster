@@ -6,7 +6,7 @@
  */
 
 /**
- * @defgroup backend-frontend-IPC
+ * @defgroup backend-frontend-IPC Frontend/Backend Inter-process Communication
  * @{
  * Aegir is based on a very important distinction between the
  * "frontend" and the "backend". The frontend is the Drupal website
@@ -170,14 +170,14 @@ function _hosting_queues_clean_output($return) {
 
 
 function _hosting_dispatch_cmd() {
-  $cmd = sprintf("%s %s hosting-dispatch ", DRUSH_COMMAND, escapeshellarg(d()->name));
+  $cmd = sprintf("/usr/bin/env php %s %s hosting-dispatch ", DRUSH_COMMAND, escapeshellarg(d()->name));
   return $cmd;
 }
 
 function hosting_queues_cron_cmd() {
   $command = _hosting_dispatch_cmd();
   $return = <<<END
-SHELL=/bin/bash
+SHELL=/bin/sh
 PATH=$_SERVER[PATH]
 */1 * * * * $command
 END;
