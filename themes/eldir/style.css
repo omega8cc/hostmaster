@@ -503,6 +503,7 @@ input.form-submit {
 
 .form-submit {
   width: 25%;
+  min-width: 50px;
   text-align:center;
   display:block;
   margin-top:15px;
