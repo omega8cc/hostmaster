@@ -53,41 +53,6 @@ function _hosting_valid_fqdn($fqdn) {
   }
 }
 
-
-/**
- * Check if the FQDN provided is valid.
- *
- * @param $fqdn
- *   The Fully Qualified Domain Name (FQDN) to validate.
- * @return
- *   An integer greater than 0 if the $fqdn is valid, or 0 or FALSE if it not
- *   valid.
- */
-function _hosting_valid_fqdn_subdir($fqdn) {
-  # regex is an implementation of RFC1035
-  # original: return preg_match("/^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.?)+$/i", $fqdn);
-  #
-  # We don't allow IPs here.
-  #
-  if (preg_match("/host8\.biz$/", $fqdn)) {
-    return (preg_match("/^[a-z0-9]+[a-z0-9-.]*[a-z0-9]+\.((?:v|o)[1-9]{1}|(?:a|b|v|o)[0-9]{10,12})\./", $fqdn) &&
-           !preg_match("/[-.]{2,}/", $fqdn));
-  }
-  else {
-    if (!preg_match("/^([a-z0-9]+\.)?xn--/", $fqdn) && preg_match("/[-]{2,}/", $fqdn)) {
-      return FALSE;
-    }
-    else {
-      return (preg_match("/^(\*\.)?([a-z0-9]([a-z0-9-]*[a-z0-9])?\.?)+[a-z0-9]+$/", $fqdn) &&
-              preg_match("/[a-z]+/", $fqdn) &&
-             !preg_match("/[.]{2,}/", $fqdn) &&
-             !preg_match("/^(\*\.)[a-z]+$/", $fqdn) &&
-             !preg_match("/^(\*\.)[a-z]{3}\.[a-z]{2}$/", $fqdn));
-    }
-  }
-}
-
-
 /**
  * Check if the FQDN or IP provided is valid.
  */
