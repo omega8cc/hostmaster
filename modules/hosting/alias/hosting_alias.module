@@ -229,9 +229,6 @@ function hosting_alias_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
               form_set_error('aliases', t('The domain name @alias is not a valid url. IP address is not allowed. Lower case only.', array('@alias' => $alias)));
             }
           }
-          if (!module_exists('hosting_subdirs')) {
-            hosting_alias_validate_alias($node, $alias);
-          }
         }
         break;
       case 'load':
@@ -254,14 +251,14 @@ function hosting_alias_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
           $node->content['info']['aliases'] = array(
             '#type' => 'item',
             '#title' => t('Domain aliases'),
-            '#value' => implode(', ', $links),
+            '#value' => implode(', ', $links), 
             '#weight' => 11,
           );
           $redirection = db_result(db_query("SELECT redirection FROM {hosting_site_alias} WHERE vid=%d", $node->vid));
           $node->content['info']['redirection'] = array(
             '#type' => 'item',
             '#title' => t('Redirection'),
-            '#value' => $redirection['redirection'] ? t('Yes') : t('No'),
+            '#value' => $redirection['redirection'] ? t('Yes') : t('No'), 
             '#weight' => 12,
           );
         }
@@ -337,10 +334,10 @@ function hosting_alias_automatic_aliases($url) {
  * generated aliases to ensure that this url has not been used before
  */
 function hosting_alias_allow_domain($url, $params = array()) {
-  $query = "SELECT COUNT(n.nid) FROM {node} n
-      LEFT JOIN {hosting_site} h ON h.nid=n.nid
-      LEFT JOIN {hosting_site_alias} a  ON n.vid = a.vid
-    WHERE
+  $query = "SELECT COUNT(n.nid) FROM {node} n 
+      LEFT JOIN {hosting_site} h ON h.nid=n.nid 
+      LEFT JOIN {hosting_site_alias} a  ON n.vid = a.vid 
+    WHERE 
       type='site' AND alias='%s' AND h.status <> %d";
   $args[] = $url;
   $args[] = HOSTING_SITE_DELETED;
