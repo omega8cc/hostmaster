@@ -15,7 +15,7 @@ projects[install_profile_api][download][type] = "get"
 projects[install_profile_api][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/install_profile_api.tar.gz"
 
 projects[jquery_ui][type] = "module"
-;projects[jquery_ui][version] = "1.4"
+;projects[jquery_ui][version] = "1.5"
 projects[jquery_ui][download][type] = "get"
 projects[jquery_ui][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/jquery_ui.tar.gz"
 
