@@ -57,7 +57,7 @@ projects[hosting_backup_queue][download][type] = "get"
 projects[hosting_backup_queue][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/hosting_backup_queue.tar.gz"
 
 projects[hosting_platform_pathauto][type] = "module"
-;projects[hosting_platform_pathauto][version] = "2.0-beta2"
+;projects[hosting_platform_pathauto][version] = "2.1"
 projects[hosting_platform_pathauto][download][type] = "get"
 projects[hosting_platform_pathauto][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/hosting_platform_pathauto.tar.gz"
 
