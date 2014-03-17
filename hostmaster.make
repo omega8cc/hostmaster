@@ -10,7 +10,7 @@ projects[admin_menu][download][type] = "get"
 projects[admin_menu][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/admin_menu.tar.gz"
 
 projects[install_profile_api][type] = "module"
-;projects[install_profile_api][version] = "2.1"
+;projects[install_profile_api][version] = "2.2"
 projects[install_profile_api][download][type] = "get"
 projects[install_profile_api][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/install_profile_api.tar.gz"
 
@@ -19,8 +19,13 @@ projects[jquery_ui][type] = "module"
 projects[jquery_ui][download][type] = "get"
 projects[jquery_ui][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/jquery_ui.tar.gz"
 
+projects[jquery_update][type] = "module"
+;projects[jquery_update][version] = "2.0-alpha1"
+projects[jquery_update][download][type] = "get"
+projects[jquery_update][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/jquery_update.tar.gz"
+
 projects[modalframe][type] = "module"
-;projects[modalframe][version] = "1.6"
+;projects[modalframe][version] = "1.9"
 projects[modalframe][download][type] = "get"
 projects[modalframe][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/modalframe.tar.gz"
 
@@ -84,5 +89,5 @@ projects[userprotect][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/stat
 ; Libraries
 libraries[jquery_ui][download][type] = "get"
 libraries[jquery_ui][destination] = "modules/jquery_ui"
-libraries[jquery_ui][download][url] = "http://files.aegir.cc/dev/jquery.ui-1.6.zip"
+libraries[jquery_ui][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/jquery-ui-1.7.3.zip"
 libraries[jquery_ui][directory_name] = "jquery.ui"
