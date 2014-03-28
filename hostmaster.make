@@ -10,7 +10,7 @@ projects[admin_menu][download][type] = "get"
 projects[admin_menu][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/admin_menu.tar.gz"
 
 projects[install_profile_api][type] = "module"
-;projects[install_profile_api][version] = "2.2"
+;projects[install_profile_api][version] = "2.1"
 projects[install_profile_api][download][type] = "get"
 projects[install_profile_api][download][url] = "http://files.aegir.cc/dev/BOA-2.2.0/static/install_profile_api.tar.gz"
 
