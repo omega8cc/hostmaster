@@ -717,19 +717,48 @@ div.node ul.links {
  */
 div.comment ul.links li {
   padding:5px 5px 0px;
-  margin-right:0px;
+  margin-right:5px;
   float:right;
+  font-size:11px;
   }
 
 div.node ul.links li.comment_add {
-  padding:5px 5px 5px;
+  padding:5px 5px 0px;
   margin-right:5px;
+  font-size:11px;
   }
 
 .credit {
   padding-left:3px;
   padding-right:3px;
-}
+  }
+
+.submitted {
+  font-size:10px;
+  padding-left:2px;
+  margin-left:2px;
+  }
+
+div.comment h3 {
+  font-size:12px;
+  line-height:12px;
+  padding-left:2px;
+  margin-left:2px;
+  }
+
+div.comment div.content p {
+  font-size:11px;
+  line-height:15px;
+  padding-left:2px;
+  margin-left:2px;
+  }
+
+div.comment-folded {
+  font-size:11px;
+  line-height:17px;
+  padding-left:2px;
+  margin-left:2px;
+  }
 
 /**
  * AEGIR-SPECIFIC =====================================================
