@@ -713,6 +713,25 @@ div.node ul.links {
     }
 
 /**
+ * COMMENTS ===========================================================
+ */
+div.comment ul.links li {
+  padding:5px 5px 0px;
+  margin-right:0px;
+  float:right;
+  }
+
+div.node ul.links li.comment_add {
+  padding:5px 5px 5px;
+  margin-right:5px;
+  }
+
+.credit {
+  padding-left:3px;
+  padding-right:3px;
+}
+
+/**
  * AEGIR-SPECIFIC =====================================================
  */
 div#hosting-wizard-form,
