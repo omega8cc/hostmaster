@@ -36,6 +36,11 @@ projects[openidadmin][download][url] = "http://files.aegir.cc/dev/HEAD/static/op
 
 
 ; These are contrib modules, but come under the Octopus 'umbrella' of control.
+projects[css_emimage][type] = "module"
+;projects[css_emimage][version] = "2.x-dev"
+projects[css_emimage][download][type] = "get"
+projects[css_emimage][download][url] = "http://files.aegir.cc/dev/HEAD/static/css_emimage.tar.gz"
+
 projects[ctools][type] = "module"
 ;projects[ctools][version] = "1.10"
 projects[ctools][download][type] = "get"
