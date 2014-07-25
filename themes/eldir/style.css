@@ -1,4 +1,3 @@
-/* $Id$ */
 
 /**
  * Eldir for Drupal 6
@@ -216,11 +215,17 @@ div#navigation ul.links li {
   }
 
   div#navigation ul.links a {
+    -moz-border-radius: 0px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    -webkit-border-radius: 0px;
+    -webkit-border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
     background:#147;
-    font-size:11px;
-    line-height:25px;
+    font-size:12px;
+    line-height:26px;
     padding:5px 15px;
-    margin-right:1px;
+    margin-right:4px;
     }
 
   div#navigation ul.links a:hover {
@@ -274,6 +279,13 @@ div#header-region ul.tabs { clear:both; }
   div#header-region ul.tabs li a {
     padding:5px 15px;
     font-size:11px;
+    -moz-border-radius: 0px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    -webkit-border-radius: 0px;
+    -webkit-border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    margin-right:2px;
     }
 
   div#header-region ul.tabs li a:hover {
@@ -305,6 +317,12 @@ div#page div.limiter { background:url(images/page.png) repeat-y; }
     }
 
 div#main {
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -moz-box-shadow:    0 0 5px 2px #ccc;
+  -webkit-box-shadow: 0 0 5px 2px #ccc;
+  box-shadow:         0 0 5px 2px #ccc;
+  background:#fff;
   float:left;
   width:600px;
   padding:10px;
@@ -369,23 +387,23 @@ div.sidebar div.item-list li {
   div.sidebar ul.menu li,
   div.sidebar ul.menu a,
   div.sidebar div.item-list li {
-    -moz-border-radius:3px;
+    -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     }
 
   div.sidebar ul.menu li.expanded a {
-    -moz-border-radius:0px;
-    -moz-border-radius-topleft:3px;
-    -moz-border-radius-topright:3px;
+    -moz-border-radius: 0px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
 
     -webkit-border-radius: 0px;
-    -webkit-border-top-left-radius:3px;
-    -webkit-border-top-right-radius:3px;
+    -webkit-border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
     }
 
     div.sidebar ul.menu li.expanded li,
     div.sidebar ul.menu li.expanded li a {
-      -moz-border-radius:0px;
+      -moz-border-radius: 0px;
       -webkit-border-radius: 0px;
       }
 
@@ -497,13 +515,13 @@ input.form-submit {
   background:#4372aa;
   cursor:pointer;
   text-align:center;
-  -moz-border-radius:3px;
+  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   }
 
 .form-submit {
   width: 25%;
-  min-width: 50px;
+  min-width: 80px;
   text-align:center;
   display:block;
   margin-top:15px;
@@ -593,7 +611,7 @@ body.aegir fieldset {
   border:0px;
 
   display:block;
-  -moz-border-radius:3px;
+  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   }
 
@@ -632,15 +650,15 @@ html.js body.aegir fieldset.collapsible legend a {
   }
 
 body.aegir fieldset.collapsible legend a {
-  -moz-border-radius-topleft:3px;
-  -moz-border-radius-topright:3px;
+  -moz-border-radius-topleft: 3px;
+  -moz-border-radius-topright: 3px;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-top-right-radius: 3px;
   }
 
   body.aegir fieldset.collapsed legend a {
-    -moz-border-radius:3px;
-    -webkit-border-radius:3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
     }
 
 /**
@@ -693,7 +711,7 @@ div.node div.meta {
   }
 
   body.node-page div.node div.meta {
-    border-bottom:1px solid #e8e8e8;
+    border-bottom:0px solid #e8e8e8;
     padding:0px 0px 9px;
     }
 
@@ -975,7 +993,7 @@ a.hosting-button-enabled,
   padding-top: 0.1em;
   padding-bottom: 0.1em;
 
-  -moz-border-radius:3px;
+  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
 }
 
@@ -1069,10 +1087,11 @@ body.error-page div.page-content {
 .modalframe {
   color: #000000;
   background-color: #ffffff;
-  border: 2px solid black;
+  border: 1px solid black;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 
 .modalframe .ui-dialog-titlebar {
-  border : 1px solid black;
-
+  border-bottom: 1px solid black;
 }
