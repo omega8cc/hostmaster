@@ -1,2 +1,4 @@
+# Ignore paths from OS X
+.DS_Store
 themes/*
 modules/*

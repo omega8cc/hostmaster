@@ -1,12 +1,18 @@
 core = 6.x
 api = 2
 
-; this makefile will make sure we get the development code from the
-; aegir modules instead of the tagged releases
+; BOA-2.3.x
+
 includes[hostmaster] = "drupal-org.make"
+
+; Aegir modules dev
+projects[hosting][type] = "module"
 projects[hosting][download][type] = 'git'
-projects[hosting][download][url] = 'http://git.drupal.org/project/hosting.git'
-projects[hosting][download][branch] = '6.x-2.x'
+projects[hosting][download][url] = 'https://github.com/omega8cc/hosting.git'
+projects[hosting][download][branch] = '2.3.x-hosting-dev'
+
+; Aegir theme dev
+projects[eldir][type] = "theme"
 projects[eldir][download][type] = 'git'
-projects[eldir][download][url] = 'http://git.drupal.org/project/eldir.git'
-projects[eldir][download][branch] = '6.x-2.x'
+projects[eldir][download][url] = 'https://github.com/omega8cc/eldir.git'
+projects[eldir][download][branch] = '2.3.x-eldir-dev'
