@@ -171,7 +171,7 @@ function hosting_client_form(&$node) {
    $form['email'] = array(
     '#type' => 'textfield',
     '#title' => t('Email address'),
-    '#description' => t('Email address of the contact created with this client. Optional - if none is provided, no user will be created with this client.'),
+    '#description' => t('Email address of the contact created with this client. Optional - if none is provided, no Aegir control panel user will be created with this client. <strong>NOTE: FTPS and Limited Shell extra user for this client will always be created - but only if this is an Octopus Satellite Instance</strong>.'),
     '#required' => FALSE,
     '#size' => 40,
     '#default_value' => $node->email,

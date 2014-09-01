@@ -43,7 +43,7 @@ function hosting_site_views_data() {
   );
 
   $data['hosting_site']['profile'] = array(
-    'title' => t('Install Profile'),
+    'title' => t('Profile'),
     'help' => t('Type of drupal site.'),
     'relationship' => array(
       'handler' => 'views_handler_relationship',

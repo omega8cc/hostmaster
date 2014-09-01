@@ -962,7 +962,7 @@ function hosting_settings() {
     '#type' => 'select',
     '#title' => t('Default profile'),
     '#options' => $profiles,
-    '#description' => t('The default install profile to use when creating new sites.'),
+    '#description' => t('The default installation profile to use when creating new sites.'),
     '#default_value' => $default_value,
   );
   $form['hosting_ignore_default_profiles'] = array(

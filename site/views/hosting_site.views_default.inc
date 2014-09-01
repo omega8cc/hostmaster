@@ -245,7 +245,7 @@ function hosting_site_views_default_views() {
   $handler->display->display_options['style_options']['hide_selector'] = 0;
   $handler->display->display_options['style_options']['preserve_selection'] = 1;
   $handler->display->display_options['exposed_block'] = TRUE;
-  /* Relationship: Hosting Site: Install Profile */
+  /* Relationship: Hosting Site: Installation Profile */
   $handler->display->display_options['relationships']['profile']['id'] = 'profile';
   $handler->display->display_options['relationships']['profile']['table'] = 'hosting_site';
   $handler->display->display_options['relationships']['profile']['field'] = 'profile';
