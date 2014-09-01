@@ -248,7 +248,7 @@ function hosting_site_form($node) {
 
   _hosting_site_field($form, $node, 'profile', array(
       '#type' => 'radios',
-      '#title' => t('Installation profile'),
+      '#title' => t('Profile'),
       '#description' => t('The type of site to install.<br />
                            The profile selected here determines the list of supported platforms below.'),
       '#options' => $profiles,
