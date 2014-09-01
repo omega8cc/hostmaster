@@ -108,7 +108,7 @@ function hosting_site_available_options($node, $platform = NULL) {
   // Load up the user we'll use to check platform and profile access
   $user = user_load($GLOBALS['user']->uid);
 
-  // Install profiles
+  // Installation profiles
   $profiles = hosting_get_profiles();
   $platform_profiles = array();
   foreach ($profiles as $id => $name) {
@@ -233,7 +233,7 @@ function hosting_site_form($node) {
       '#autocomplete_path' => 'hosting_client/autocomplete/client',
     ), 'filter_xss', $editable);
 
-  // Install profiles
+  // Installation profiles
   $profiles = hosting_get_profiles();
   foreach ($profiles as $id => $name) {
     $profile = hosting_package_instance_load(array('p.nid' => $id));
@@ -248,7 +248,7 @@ function hosting_site_form($node) {
 
   _hosting_site_field($form, $node, 'profile', array(
       '#type' => 'radios',
-      '#title' => t('Install profile'),
+      '#title' => t('Installation profile'),
       '#description' => t('The type of site to install.<br />
                            The profile selected here determines the list of supported platforms below.'),
       '#options' => $profiles,
