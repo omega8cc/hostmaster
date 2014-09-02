@@ -55,7 +55,7 @@ function hosting_site_view(&$node, $teaser = false) {
   if ($node->profile) {
     $node->content['info']['profile'] = array(
       '#type' => 'item',
-      '#title' => t('Installation profile'),
+      '#title' => t('Profile'),
       '#value' => _hosting_node_link($node->profile),
     );
   }
@@ -75,18 +75,18 @@ function hosting_site_view(&$node, $teaser = false) {
     );
   }
 
-  if ($node->db_server) {
-    $node->content['info']['db_server'] = array(
-      '#type' => 'item',
-      '#title' => t('Database server'),
-      '#value' => _hosting_node_link($node->db_server),
-    );
-  }
+//   if ($node->db_server) {
+//     $node->content['info']['db_server'] = array(
+//       '#type' => 'item',
+//       '#title' => t('Database server'),
+//       '#value' => _hosting_node_link($node->db_server),
+//     );
+//   }
 
   if ($node->db_name) {
     $node->content['info']['db_name'] = array(
       '#type' => 'item',
-      '#title' => t('Database name'),
+      '#title' => t('Database'),
       '#value' => check_plain($node->db_name),
     );
   }
