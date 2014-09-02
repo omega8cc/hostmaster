@@ -101,13 +101,14 @@ function hosting_alias_form_data(&$form, &$form_state) {
         '#type' => 'item',
         '#title' => t('Automatic domain aliases'),
         '#value' => implode(', ', $links),
-        '#weight' => 10,
+        '#weight' => 5,
       );
     }
 
     // Add a wrapper for the aliases and more button.
     $form['aliases_wrapper'] = array(
       '#tree' => FALSE,
+      '#weight' => 9,
       '#title' => t('Domain Aliases'),
       '#type' => 'fieldset',
       '#prefix' => '<div class="clear-block" id="hosting-aliases-wrapper">',
