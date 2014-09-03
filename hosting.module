@@ -795,7 +795,7 @@ function hosting_form_alter(&$form, &$form_state, $form_id) {
       $form['menu']['#access'] = FALSE;
       $form['revision_information']['#access'] = FALSE;
       $form['author']['#access'] = FALSE;
-      $form['comment_settings']['#access'] = FALSE;
+      $form['comment_settings']['#access'] = TRUE;
 
       // because these aren't really posts, 'preview' doesnt make sense in this context.
       $form['buttons']['preview']['#access'] = FALSE;
