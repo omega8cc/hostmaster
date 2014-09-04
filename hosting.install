@@ -412,6 +412,10 @@ function hosting_update_6201() {
   menu_link_delete(NULL, 'hosting/platforms');
   menu_link_delete(NULL, 'hosting/sites');
 
+  // Remove old BOA menu links
+  menu_link_delete(NULL, 'node/add/site');
+  menu_link_delete(NULL, 'hosting/signup');
+
   // Enable and install Views and Views Bulk operations.
   drupal_install_modules(array('views', 'views_bulk_operations'));
 
