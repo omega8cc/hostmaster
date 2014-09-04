@@ -408,6 +408,8 @@ function hosting_update_6015(&$sandbox) {
 function hosting_update_6201() {
   $ret = array();
 
+  hosting_menu_rebuild();
+
   // Remove menu links that will be replaced by Views
   menu_link_delete(NULL, 'hosting/platforms');
   menu_link_delete(NULL, 'hosting/sites');
@@ -417,6 +419,8 @@ function hosting_update_6201() {
   menu_link_delete(NULL, 'hosting/signup');
   menu_link_delete(NULL, 'node/add/client');
   menu_link_delete(NULL, 'node/add/site');
+
+  hosting_menu_rebuild();
 
   // Enable and install Views and Views Bulk operations.
   drupal_install_modules(array('views', 'views_bulk_operations'));
