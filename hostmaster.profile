@@ -201,7 +201,6 @@ function hostmaster_task_finalize() {
 
   menu_rebuild();
 
-
   $theme = 'eldir';
   drupal_set_message(st('Configuring Eldir theme'));
   install_disable_theme('garland');
@@ -215,7 +214,7 @@ function hostmaster_task_finalize() {
   install_add_block('user', 1, $theme, 1, 1, 'right', 1);
   install_add_block('hosting', 'hosting_queues', $theme, 1, 5, 'right', 1);
   install_add_block('views', 'hosting_task_list-block' , $theme, 1, 0, 'right', 0);
-  // TODO: Set visibility in Views on Drupal 7 
+  // TODO: Set visibility in Views on Drupal 7
   install_add_block('views', 'hosting_site_list-block_1' , $theme, 1, 0, 'content_bottom', 1, 'hosting/c/platform_*');
   install_add_block('views', 'hosting_site_list-block_profile' , $theme, 1, 0, 'content_bottom', 2, "<?php\n
 return hosting_site_profile_block_visibility();
