@@ -368,7 +368,7 @@ function hosting_add_task($nid, $type, $args = null, $status = HOSTING_TASK_QUEU
 
  // Guard against destructive or insecure tasks run on the hostmaster site
  $hostmaster_nid = hosting_get_hostmaster_nid();
- if ($nid == $hostmaster_nid && in_array($type, array('delete', 'disable', 'backup', 'backup-delete', 'restore'))) {
+ if ($nid == $hostmaster_nid && in_array($type, array('delete', 'disable', 'backup', 'backup-delete', 'restore', 'login-reset'))) {
    drupal_set_message(t('You cannot !task the Hostmaster site.', array('!task' => $type)), 'warning');
    watchdog('hostmaster', t('Attempt to !task the Hostmaster site blocked.', array('!task' => $type)), array(), WATCHDOG_WARNING);
    return FALSE;
