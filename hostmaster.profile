@@ -9,7 +9,7 @@
  */
 function hostmaster_profile_modules() {
   return array(
-    /* core */ 'block', 'color', 'filter', 'help', 'menu', 'node', 'system', 'user',
+    /* core */ 'block', 'color', 'comment', 'filter', 'help', 'menu', 'node', 'system', 'user',
     /* aegir contrib */ 'hosting', 'hosting_task', 'hosting_client', 'hosting_db_server', 'hosting_package', 'hosting_platform', 'hosting_site', 'hosting_web_server', 'hosting_server', 'hosting_clone', 'hosting_cron', 'hosting_migrate',
     /* other contrib */ 'install_profile_api', 'jquery_ui', 'jquery_update', 'modalframe', 'admin_menu', 'views', 'views_bulk_operations', 'actions_permissions',
     /* Aegir actual contrib */
@@ -228,6 +228,13 @@ return hosting_site_client_list_block_visibility();
   install_add_block('views', 'hosting_package_list-block_1' , $theme, 1, 0, 'content_bottom', 2, "<?php\n
 return hosting_site_profile_block_visibility();\n
 ?>");
+
+  // Simplified UI for Barracuda and Octopus
+  install_disable_block('hosting', 'hosting_summary', $theme);
+  install_disable_block('user', 1 , $theme);
+  install_disable_block('system', 0 , $theme);
+  install_add_block('menu', 'menu-administration', $theme, 1, 10, 'right', 1);
+  // Simplified UI for Barracuda and Octopus
 
   drupal_set_message(st('Configuring roles'));
   install_remove_permissions(install_get_rid('anonymous user'), array('access content', 'access all views'));
