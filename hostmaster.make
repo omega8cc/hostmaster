@@ -1,18 +1,21 @@
-core = 6.x
-api = 2
+; Aegir Hostmaster main makefile
+;
 
-; BOA-2.3.x
+api = 2
+core = 6.x
+
+; BOA-2.3.0
 
 includes[hostmaster] = "drupal-org.make"
 
 ; Aegir modules dev
-projects[hosting][type] = "module"
-projects[hosting][download][type] = 'git'
-projects[hosting][download][url] = 'https://github.com/omega8cc/hosting.git'
-projects[hosting][download][branch] = '2.3.x-hosting'
+;projects[hosting][type] = "module"
+;projects[hosting][download][type] = 'git'
+;projects[hosting][download][url] = 'https://github.com/omega8cc/hosting.git'
+;projects[hosting][download][branch] = '2.3.x-hosting'
 
 ; Aegir theme dev
-projects[eldir][type] = "theme"
-projects[eldir][download][type] = 'git'
-projects[eldir][download][url] = 'https://github.com/omega8cc/eldir.git'
-projects[eldir][download][branch] = '2.3.x-eldir'
+;projects[eldir][type] = "theme"
+;projects[eldir][download][type] = 'git'
+;projects[eldir][download][url] = 'https://github.com/omega8cc/eldir.git'
+;projects[eldir][download][branch] = '2.3.x-eldir'

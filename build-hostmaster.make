@@ -1,7 +1,13 @@
-core = 6.x
-api = 2
+; Aegir Hostmaster build makefile
+;
 
-; this makefile is designed to be able to bootstrap hostmaster without
-; having to use provosion's makefile
-projects[drupal][type] = "core"
+api = 2
+core = 6.x
+
+; BOA-2.3.0
+
+projects[pressflow][type] = "core"
+projects[pressflow][download][type] = "get"
+projects[pressflow][download][url] = "http://files.aegir.cc/core/pressflow-6.33.1.tar.gz"
+
 includes[hostmaster] = "drupal-org.make"
