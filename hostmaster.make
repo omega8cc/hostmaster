@@ -4,7 +4,7 @@
 api = 2
 core = 6.x
 
-; BOA-2.3.2
+; BOA-2.3.3
 
 includes[hostmaster] = "drupal-org.make"
 
