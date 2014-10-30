@@ -4,117 +4,117 @@
 api = 2
 core = 6.x
 
-; BOA-2.3.5
+; BOA-2.3.6
 
 ; Aegir modules for stable releases
 projects[hosting][type] = "module"
 projects[hosting][download][type] = "get"
-projects[hosting][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/hosting.tar.gz"
+projects[hosting][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/hosting.tar.gz"
 
 ; Aegir theme for stable releases
 projects[eldir][type] = "theme"
 projects[eldir][download][type] = "get"
-projects[eldir][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/eldir.tar.gz"
+projects[eldir][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/eldir.tar.gz"
 
 ; Contrib modules
 projects[views][type] = "module"
 ;projects[views][version] = "3.0"
 projects[views][download][type] = "get"
-projects[views][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/views-6.x-3.0.tar.gz"
+projects[views][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/views-6.x-3.0.tar.gz"
 
 projects[views_bulk_operations][type] = "module"
 ;projects[views_bulk_operations][version] = "1.16"
 projects[views_bulk_operations][download][type] = "get"
-projects[views_bulk_operations][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/views_bulk_operations-6.x-1.16.tar.gz"
+projects[views_bulk_operations][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/views_bulk_operations-6.x-1.16.tar.gz"
 
 projects[admin_menu][type] = "module"
 ;projects[admin_menu][version] = "1.8"
 projects[admin_menu][download][type] = "get"
-projects[admin_menu][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/admin_menu.tar.gz"
+projects[admin_menu][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/admin_menu.tar.gz"
 
 projects[install_profile_api][type] = "module"
 ;projects[install_profile_api][version] = "2.1"
 projects[install_profile_api][download][type] = "get"
-projects[install_profile_api][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/install_profile_api.tar.gz"
+projects[install_profile_api][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/install_profile_api.tar.gz"
 
 projects[jquery_ui][type] = "module"
 ;projects[jquery_ui][version] = "1.5"
 projects[jquery_ui][download][type] = "get"
-projects[jquery_ui][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/jquery_ui.tar.gz"
+projects[jquery_ui][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/jquery_ui.tar.gz"
 
 projects[jquery_update][type] = "module"
 ;projects[jquery_update][version] = "2.0-alpha1"
 projects[jquery_update][download][type] = "get"
-projects[jquery_update][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/jquery_update.tar.gz"
+projects[jquery_update][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/jquery_update.tar.gz"
 
 projects[modalframe][type] = "module"
 ;projects[modalframe][version] = "1.9"
 projects[modalframe][download][type] = "get"
-projects[modalframe][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/modalframe.tar.gz"
+projects[modalframe][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/modalframe.tar.gz"
 
 projects[openidadmin][type] = "module"
 ;projects[openidadmin][version] = "1.2"
 projects[openidadmin][download][type] = "get"
-projects[openidadmin][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/openidadmin.tar.gz"
+projects[openidadmin][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/openidadmin.tar.gz"
 
 ; These are contrib modules, but come under the Octopus 'umbrella' of control.
 projects[css_emimage][type] = "module"
 ;projects[css_emimage][version] = "2.x-dev"
 projects[css_emimage][download][type] = "get"
-projects[css_emimage][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/css_emimage.tar.gz"
+projects[css_emimage][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/css_emimage.tar.gz"
 
 projects[ctools][type] = "module"
 ;projects[ctools][version] = "1.10"
 projects[ctools][download][type] = "get"
-projects[ctools][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/ctools.tar.gz"
+projects[ctools][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/ctools.tar.gz"
 
 projects[features_extra][type] = "module"
 ;projects[features_extra][version] = "1.x-dev"
 projects[features_extra][download][type] = "get"
-projects[features_extra][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/features_extra.tar.gz"
+projects[features_extra][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/features_extra.tar.gz"
 
 projects[features][type] = "module"
 ;projects[features][version] = "1.2"
 projects[features][download][type] = "get"
-projects[features][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/features.tar.gz"
+projects[features][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/features.tar.gz"
 
 projects[hosting_backup_queue][type] = "module"
 ;projects[hosting_backup_queue][version] = "1.x-dev"
 projects[hosting_backup_queue][download][type] = "get"
-projects[hosting_backup_queue][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/hosting_backup_queue.tar.gz"
+projects[hosting_backup_queue][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/hosting_backup_queue.tar.gz"
 
 projects[hosting_platform_pathauto][type] = "module"
 ;projects[hosting_platform_pathauto][version] = "2.1"
 projects[hosting_platform_pathauto][download][type] = "get"
-projects[hosting_platform_pathauto][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/hosting_platform_pathauto.tar.gz"
+projects[hosting_platform_pathauto][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/hosting_platform_pathauto.tar.gz"
 
 projects[hosting_task_gc][type] = "module"
 ;projects[hosting_task_gc][version] = "1.0-alpha1"
 projects[hosting_task_gc][download][type] = "get"
-projects[hosting_task_gc][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/hosting_task_gc.tar.gz"
+projects[hosting_task_gc][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/hosting_task_gc.tar.gz"
 
 projects[protect_critical_users][type] = "module"
 ;projects[protect_critical_users][version] = "1.1"
 projects[protect_critical_users][download][type] = "get"
-projects[protect_critical_users][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/protect_critical_users.tar.gz"
+projects[protect_critical_users][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/protect_critical_users.tar.gz"
 
 projects[revision_deletion][type] = "module"
 ;projects[revision_deletion][version] = "1.x-dev"
 projects[revision_deletion][download][type] = "get"
-projects[revision_deletion][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/revision_deletion.tar.gz"
+projects[revision_deletion][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/revision_deletion.tar.gz"
 
 projects[strongarm][type] = "module"
 ;projects[strongarm][version] = "2.2"
 projects[strongarm][download][type] = "get"
-projects[strongarm][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/strongarm.tar.gz"
+projects[strongarm][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/strongarm.tar.gz"
 
 projects[userprotect][type] = "module"
 ;projects[userprotect][version] = "1.5"
 projects[userprotect][download][type] = "get"
-projects[userprotect][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/userprotect.tar.gz"
+projects[userprotect][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/userprotect.tar.gz"
 
 ; Libraries
 libraries[jquery_ui][download][type] = "get"
 libraries[jquery_ui][destination] = "modules/jquery_ui"
-libraries[jquery_ui][download][url] = "http://files.aegir.cc/dev/BOA-2.3.5/static/jquery-ui-1.7.3.zip"
+libraries[jquery_ui][download][url] = "http://files.aegir.cc/dev/BOA-2.3.6/static/jquery-ui-1.7.3.zip"
 libraries[jquery_ui][directory_name] = "jquery.ui"
