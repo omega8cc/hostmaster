@@ -4,8 +4,6 @@
 api = 2
 core = 6.x
 
-; HEAD
-
 projects[pressflow][type] = "core"
 projects[pressflow][download][type] = "get"
 projects[pressflow][download][url] = "http://files.aegir.cc/core/pressflow-6.34.1.tar.gz"

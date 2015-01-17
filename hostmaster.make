@@ -4,8 +4,6 @@
 api = 2
 core = 6.x
 
-; HEAD
-
 includes[hostmaster] = "drupal-org.make"
 
 ; Aegir modules dev
