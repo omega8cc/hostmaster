@@ -16,7 +16,7 @@ projects[eldir][download][source] = "/opt/tmp/make_local/eldir"
 
 ; Contrib modules
 projects[views][type] = "module"
-;projects[views][version] = "3.0"
+;projects[views][version] = "3.2"
 projects[views][download][type] = "local"
 projects[views][download][source] = "/opt/tmp/make_local/views"
 
@@ -26,7 +26,7 @@ projects[views_bulk_operations][download][type] = "local"
 projects[views_bulk_operations][download][source] = "/opt/tmp/make_local/views_bulk_operations"
 
 projects[admin_menu][type] = "module"
-;projects[admin_menu][version] = "1.8"
+;projects[admin_menu][version] = "1.9"
 projects[admin_menu][download][type] = "local"
 projects[admin_menu][download][source] = "/opt/tmp/make_local/admin_menu"
 
