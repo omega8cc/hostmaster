@@ -62,7 +62,7 @@ projects[css_emimage][download][type] = "local"
 projects[css_emimage][download][source] = "/opt/tmp/make_local/css_emimage"
 
 projects[ctools][type] = "module"
-;projects[ctools][version] = "1.13"
+;projects[ctools][version] = "1.14"
 projects[ctools][download][type] = "local"
 projects[ctools][download][source] = "/opt/tmp/make_local/ctools"
 
