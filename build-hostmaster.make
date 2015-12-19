@@ -1,11 +1,11 @@
 ; Aegir Hostmaster build makefile
 ;
 
+core = 7.x
 api = 2
-core = 6.x
 
-projects[pressflow][type] = "core"
-projects[pressflow][download][type] = "get"
-projects[pressflow][download][url] = "http://files.aegir.cc/core/pressflow-6.37.1.tar.gz"
+projects[drupal][type] = "core"
+projects[drupal][download][type] = "get"
+projects[drupal][download][url] = "http://files.aegir.cc/core/drupal-7.41.1.tar.gz"
 
 includes[hostmaster] = "drupal-org.make"
