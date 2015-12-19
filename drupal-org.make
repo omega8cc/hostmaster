@@ -1,118 +1,130 @@
 ; Aegir Hostmaster include makefile
 ;
 
+core = 7.x
 api = 2
-core = 6.x
 
-; Aegir modules for stable releases
-projects[hosting][type] = "module"
+defaults[projects][subdir] = "contrib"
+defaults[projects][type] = "module"
+
+; Aegir core modules
+
+; http://ftp.drupal.org/files/projects/hosting-7.x-3.2.tar.gz
+projects[hosting][subdir] = "aegir"
 projects[hosting][download][type] = "copy"
 projects[hosting][download][url] = "/opt/tmp/make_local/hosting"
 
-; Aegir theme for stable releases
+; Aegir theme
+
+; http://ftp.drupal.org/files/projects/eldir-7.x-3.2.tar.gz
+projects[eldir][subdir] = "aegir"
 projects[eldir][type] = "theme"
 projects[eldir][download][type] = "copy"
 projects[eldir][download][url] = "/opt/tmp/make_local/eldir"
 
-; Contrib modules
-projects[views][type] = "module"
-;projects[views][version] = "3.2"
-projects[views][download][type] = "copy"
-projects[views][download][url] = "/opt/tmp/make_local/views"
+; Modules - Aegir "golden"
 
-projects[views_bulk_operations][type] = "module"
-;projects[views_bulk_operations][version] = "1.16"
-projects[views_bulk_operations][download][type] = "copy"
-projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk_operations"
+; http://ftp.drupal.org/files/projects/hosting_git-7.x-3.1.tar.gz
+projects[hosting_git][subdir] = aegir
+projects[hosting_git][download][type] = "copy"
+projects[hosting_git][download][url] = "/opt/tmp/make_local/hosting_git"
 
-projects[admin_menu][type] = "module"
-;projects[admin_menu][version] = "1.9"
+; http://ftp.drupal.org/files/projects/hosting_remote_import-7.x-3.0.tar.gz
+projects[hosting_remote_import][subdir] = aegir
+projects[hosting_remote_import][download][type] = "copy"
+projects[hosting_remote_import][download][url] = "/opt/tmp/make_local/hosting_remote_import"
+
+; http://ftp.drupal.org/files/projects/hosting_site_backup_manager-7.x-3.3.tar.gz
+projects[hosting_site_backup_manager][subdir] = aegir
+projects[hosting_site_backup_manager][download][type] = "copy"
+projects[hosting_site_backup_manager][download][url] = "/opt/tmp/make_local/hosting_site_backup_manager"
+
+; http://ftp.drupal.org/files/projects/hosting_tasks_extra-7.x-3.2.tar.gz
+projects[hosting_tasks_extra][subdir] = aegir
+projects[hosting_tasks_extra][download][type] = "copy"
+projects[hosting_tasks_extra][download][url] = "/opt/tmp/make_local/hosting_tasks_extra"
+
+; http://ftp.drupal.org/files/projects/hosting_civicrm-7.x-3.2.tar.gz
+projects[hosting_civicrm][subdir] = aegir
+projects[hosting_civicrm][download][type] = "copy"
+projects[hosting_civicrm][download][url] = "/opt/tmp/make_local/hosting_civicrm"
+
+; Modules - contrib
+
+; http://ftp.drupal.org/files/projects/admin_menu-7.x-3.0-rc5.tar.gz
 projects[admin_menu][download][type] = "copy"
 projects[admin_menu][download][url] = "/opt/tmp/make_local/admin_menu"
 
-projects[install_profile_api][type] = "module"
-;projects[install_profile_api][version] = "2.1"
-projects[install_profile_api][download][type] = "copy"
-projects[install_profile_api][download][url] = "/opt/tmp/make_local/install_profile_api"
+; http://ftp.drupal.org/files/projects/betterlogin-7.x-1.4.tar.gz
+projects[betterlogin][download][type] = "copy"
+projects[betterlogin][download][url] = "/opt/tmp/make_local/betterlogin"
 
-projects[jquery_ui][type] = "module"
-;projects[jquery_ui][version] = "1.5"
-projects[jquery_ui][download][type] = "copy"
-projects[jquery_ui][download][url] = "/opt/tmp/make_local/jquery_ui"
-
-projects[jquery_update][type] = "module"
-;projects[jquery_update][version] = "2.0-alpha1"
-projects[jquery_update][download][type] = "copy"
-projects[jquery_update][download][url] = "/opt/tmp/make_local/jquery_update"
-
-projects[modalframe][type] = "module"
-;projects[modalframe][version] = "1.9"
-projects[modalframe][download][type] = "copy"
-projects[modalframe][download][url] = "/opt/tmp/make_local/modalframe"
-
-projects[openidadmin][type] = "module"
-;projects[openidadmin][version] = "1.2"
-projects[openidadmin][download][type] = "copy"
-projects[openidadmin][download][url] = "/opt/tmp/make_local/openidadmin"
-
-; These are contrib modules, but come under the Octopus 'umbrella' of control.
-projects[css_emimage][type] = "module"
-;projects[css_emimage][version] = "2.x-dev"
-projects[css_emimage][download][type] = "copy"
-projects[css_emimage][download][url] = "/opt/tmp/make_local/css_emimage"
-
-projects[ctools][type] = "module"
-;projects[ctools][version] = "1.14"
+; http://ftp.drupal.org/files/projects/ctools-7.x-1.9.tar.gz
 projects[ctools][download][type] = "copy"
 projects[ctools][download][url] = "/opt/tmp/make_local/ctools"
 
-projects[features_extra][type] = "module"
-;projects[features_extra][version] = "1.x-dev"
+; http://ftp.drupal.org/files/projects/entity-7.x-1.6.tar.gz
+projects[entity][download][type] = "copy"
+projects[entity][download][url] = "/opt/tmp/make_local/entity"
+
+; http://ftp.drupal.org/files/projects/openidadmin-7.x-1.0.tar.gz
+projects[openidadmin][download][type] = "copy"
+projects[openidadmin][download][url] = "/opt/tmp/make_local/openidadmin"
+
+; http://ftp.drupal.org/files/projects/overlay_paths-7.x-1.3.tar.gz
+projects[overlay_paths][download][type] = "copy"
+projects[overlay_paths][download][url] = "/opt/tmp/make_local/overlay_paths"
+
+; http://ftp.drupal.org/files/projects/r4032login-7.x-1.8.tar.gz
+projects[r4032login][download][type] = "copy"
+projects[r4032login][download][url] = "/opt/tmp/make_local/r4032login"
+
+; http://ftp.drupal.org/files/projects/views-7.x-3.13.tar.gz
+projects[views][download][type] = "copy"
+projects[views][download][url] = "/opt/tmp/make_local/views"
+
+; http://ftp.drupal.org/files/projects/views_bulk_operations-7.x-3.3.tar.gz
+projects[views_bulk_operations][download][type] = "copy"
+projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk_operations"
+
+; BOA contrib
+
+; http://ftp.drupal.org/files/projects/css_emimage-7.x-1.3.tar.gz
+projects[css_emimage][download][type] = "copy"
+projects[css_emimage][download][url] = "/opt/tmp/make_local/css_emimage"
+
+; http://ftp.drupal.org/files/projects/features_extra-7.x-1.0.tar.gz
 projects[features_extra][download][type] = "copy"
 projects[features_extra][download][url] = "/opt/tmp/make_local/features_extra"
 
-projects[features][type] = "module"
-;projects[features][version] = "1.2"
+; http://ftp.drupal.org/files/projects/features-7.x-2.7.tar.gz
 projects[features][download][type] = "copy"
 projects[features][download][url] = "/opt/tmp/make_local/features"
 
-projects[hosting_backup_queue][type] = "module"
-;projects[hosting_backup_queue][version] = "1.x-dev"
-projects[hosting_backup_queue][download][type] = "copy"
-projects[hosting_backup_queue][download][url] = "/opt/tmp/make_local/hosting_backup_queue"
-
-projects[hosting_platform_pathauto][type] = "module"
-;projects[hosting_platform_pathauto][version] = "2.1"
-projects[hosting_platform_pathauto][download][type] = "copy"
-projects[hosting_platform_pathauto][download][url] = "/opt/tmp/make_local/hosting_platform_pathauto"
-
-projects[hosting_task_gc][type] = "module"
-;projects[hosting_task_gc][version] = "1.0-alpha1"
-projects[hosting_task_gc][download][type] = "copy"
-projects[hosting_task_gc][download][url] = "/opt/tmp/make_local/hosting_task_gc"
-
-projects[protect_critical_users][type] = "module"
-;projects[protect_critical_users][version] = "1.1"
-projects[protect_critical_users][download][type] = "copy"
-projects[protect_critical_users][download][url] = "/opt/tmp/make_local/protect_critical_users"
-
-projects[revision_deletion][type] = "module"
-;projects[revision_deletion][version] = "1.x-dev"
+; http://ftp.drupal.org/files/projects/revision_deletion-7.x-1.x-dev.tar.gz
 projects[revision_deletion][download][type] = "copy"
 projects[revision_deletion][download][url] = "/opt/tmp/make_local/revision_deletion"
 
-projects[strongarm][type] = "module"
-;projects[strongarm][version] = "2.2"
+; http://ftp.drupal.org/files/projects/strongarm-7.x-2.0.tar.gz
 projects[strongarm][download][type] = "copy"
 projects[strongarm][download][url] = "/opt/tmp/make_local/strongarm"
 
-projects[userprotect][type] = "module"
-;projects[userprotect][version] = "1.5"
+; http://ftp.drupal.org/files/projects/userprotect-7.x-1.2.tar.gz
 projects[userprotect][download][type] = "copy"
 projects[userprotect][download][url] = "/opt/tmp/make_local/userprotect"
 
-; Libraries
-libraries[jquery_ui][download][type] = "copy"
-libraries[jquery_ui][destination] = "modules/jquery_ui"
-libraries[jquery_ui][download][url] = "/opt/tmp/make_local/jquery-ui-1.7.3"
-libraries[jquery_ui][directory_name] = "jquery.ui"
+; Old BOA contrib changelog
+
+; projects[hosting_backup_queue][download][type] = "copy"
+; REMOVED
+
+; projects[hosting_platform_pathauto][download][type] = "copy"
+; Included in Aegir core
+
+; projects[hosting_task_gc][download][type] = "copy"
+; Included in Aegir core, but w/o feature/thermonuclear
+; See: https://www.drupal.org/node/2053929#comment-8575755
+
+; projects[protect_critical_users][download][type] = "copy"
+; REMOVED, D7 core should provide this protection
+
