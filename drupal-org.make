@@ -7,14 +7,12 @@ api = 2
 defaults[projects][subdir] = "contrib"
 defaults[projects][type] = "module"
 
-; Aegir core modules
+; Aegir Core
 
 ; http://ftp.drupal.org/files/projects/hosting-7.x-3.2.tar.gz
 projects[hosting][subdir] = "aegir"
 projects[hosting][download][type] = "copy"
 projects[hosting][download][url] = "/opt/tmp/make_local/hosting"
-
-; Aegir theme
 
 ; http://ftp.drupal.org/files/projects/eldir-7.x-3.2.tar.gz
 projects[eldir][subdir] = "aegir"
@@ -22,7 +20,12 @@ projects[eldir][type] = "theme"
 projects[eldir][download][type] = "copy"
 projects[eldir][download][url] = "/opt/tmp/make_local/eldir"
 
-; Modules - Aegir "golden"
+; Aegir Golden
+
+; http://ftp.drupal.org/files/projects/hosting_civicrm-7.x-3.2.tar.gz
+projects[hosting_civicrm][subdir] = aegir
+projects[hosting_civicrm][download][type] = "copy"
+projects[hosting_civicrm][download][url] = "/opt/tmp/make_local/hosting_civicrm"
 
 ; http://ftp.drupal.org/files/projects/hosting_git-7.x-3.1.tar.gz
 projects[hosting_git][subdir] = aegir
@@ -44,12 +47,7 @@ projects[hosting_tasks_extra][subdir] = aegir
 projects[hosting_tasks_extra][download][type] = "copy"
 projects[hosting_tasks_extra][download][url] = "/opt/tmp/make_local/hosting_tasks_extra"
 
-; http://ftp.drupal.org/files/projects/hosting_civicrm-7.x-3.2.tar.gz
-projects[hosting_civicrm][subdir] = aegir
-projects[hosting_civicrm][download][type] = "copy"
-projects[hosting_civicrm][download][url] = "/opt/tmp/make_local/hosting_civicrm"
-
-; Modules - contrib
+; Aegir Drupal Contrib
 
 ; http://ftp.drupal.org/files/projects/admin_menu-7.x-3.0-rc5.tar.gz
 projects[admin_menu][download][type] = "copy"
@@ -87,11 +85,7 @@ projects[views][download][url] = "/opt/tmp/make_local/views"
 projects[views_bulk_operations][download][type] = "copy"
 projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk_operations"
 
-; BOA contrib
-
-; http://ftp.drupal.org/files/projects/css_emimage-7.x-1.3.tar.gz
-projects[css_emimage][download][type] = "copy"
-projects[css_emimage][download][url] = "/opt/tmp/make_local/css_emimage"
+; BOA Drupal Contrib
 
 ; http://ftp.drupal.org/files/projects/features_extra-7.x-1.0.tar.gz
 projects[features_extra][download][type] = "copy"
@@ -113,7 +107,7 @@ projects[strongarm][download][url] = "/opt/tmp/make_local/strongarm"
 projects[userprotect][download][type] = "copy"
 projects[userprotect][download][url] = "/opt/tmp/make_local/userprotect"
 
-; Old BOA contrib changelog
+; Old BOA Contrib Changelog
 
 ; projects[hosting_backup_queue][download][type] = "copy"
 ; REMOVED
