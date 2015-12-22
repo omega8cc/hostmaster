@@ -107,6 +107,16 @@ projects[strongarm][download][url] = "/opt/tmp/make_local/strongarm"
 projects[userprotect][download][type] = "copy"
 projects[userprotect][download][url] = "/opt/tmp/make_local/userprotect"
 
+; BOA Custom Contrib
+
+; aegir_custom_settings
+projects[aegir_custom_settings][download][type] = "copy"
+projects[aegir_custom_settings][download][url] = "/opt/tmp/make_local/aegir_custom_settings"
+
+; hosting_advanced_cron
+projects[hosting_advanced_cron][download][type] = "copy"
+projects[hosting_advanced_cron][download][url] = "/opt/tmp/make_local/hosting_advanced_cron"
+
 ; Old BOA Contrib Changelog
 
 ; projects[hosting_backup_queue][download][type] = "copy"
