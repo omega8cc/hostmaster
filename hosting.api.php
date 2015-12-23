@@ -369,7 +369,7 @@ function hook_hosting_task_update_status($task, $status) {
  * @see: hook_hosting_task_guarded_nodes_alter();
  */
 function hook_hosting_task_guarded_nodes() {
-  // Guard against destructive tasks run on the hostmaster site or platform.
+  // Guard against destructive or insecure tasks run on the hostmaster site or platform.
   $hostmaster_site_nid = hosting_get_hostmaster_site_nid();
   $hostmaster_platform_nid = hosting_get_hostmaster_platform_nid();
   $guarded_nids = array(
@@ -396,8 +396,12 @@ function hook_hosting_task_guarded_nodes_alter(&$nids) {}
  */
 function hook_hosting_task_dangerous_tasks() {
   $dangerous_tasks = array(
-    'disable',
+    'backup-delete',
+    'backup',
     'delete',
+    'disable',
+    'login-reset',
+    'restore',
   );
   return $dangerous_tasks;
 }

@@ -60,7 +60,7 @@ function hosting_site_view(&$node, $teaser = FALSE) {
   if ($node->profile) {
     $node->content['info']['profile'] = array(
       '#type' => 'item',
-      '#title' => t('Install profile'),
+      '#title' => t('Profile'),
       '#markup' => _hosting_node_link($node->profile),
     );
   }
@@ -83,7 +83,7 @@ function hosting_site_view(&$node, $teaser = FALSE) {
   if ($node->db_server) {
     $node->content['info']['db_server'] = array(
       '#type' => 'item',
-      '#title' => t('Database server'),
+      '#title' => t('DBS'),
       '#markup' => _hosting_node_link($node->db_server),
     );
   }
@@ -91,7 +91,7 @@ function hosting_site_view(&$node, $teaser = FALSE) {
   if ($node->db_name) {
     $node->content['info']['db_name'] = array(
       '#type' => 'item',
-      '#title' => t('Database name'),
+      '#title' => t('Database'),
       '#markup' => check_plain($node->db_name),
     );
   }

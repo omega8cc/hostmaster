@@ -95,13 +95,14 @@ function hosting_alias_form_data(&$form, &$form_state) {
       '#type' => 'item',
       '#title' => t('Automatic domain aliases'),
       '#value' => implode(', ', $links),
-      '#weight' => 10,
+      '#weight' => 5,
     );
   }
 
   // Add a wrapper for the aliases and more button.
   $form['aliases_wrapper'] = array(
     '#tree' => FALSE,
+    '#weight' => 9,
     '#title' => t('Domain Aliases'),
     '#type' => 'fieldset',
     '#prefix' => '<div class="clear-block" id="hosting-aliases-wrapper">',
@@ -402,16 +403,16 @@ function hosting_alias_node_view($node, $view_mode, $langcode) {
       }
       $node->content['info']['aliases'] = array(
         '#type' => 'item',
-        '#title' => t('Domain aliases'),
+        '#title' => t('Aliases'),
         '#markup' => implode(', ', $links),
-        '#weight' => 10,
+        '#weight' => 11,
       );
       $redirection = db_query("SELECT redirection FROM {hosting_site_alias} WHERE vid = :vid", array(':vid' => $node->vid))->fetchAssoc();
       $node->content['info']['redirection'] = array(
         '#type' => 'item',
         '#title' => t('Redirection'),
         '#markup' => $redirection['redirection'] ? t('Yes') : t('No'),
-        '#weight' => 10,
+        '#weight' => 12,
       );
     }
   }

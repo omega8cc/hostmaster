@@ -61,6 +61,8 @@ function hosting_cron_queue($count) {
       ))
       ->condition('nid', $site->nid)
       ->execute();
+    // A small trick to avoid high load when still too many crons are started at once.
+    sleep(5);
     $i++;
   }
 }

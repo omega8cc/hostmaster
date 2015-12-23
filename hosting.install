@@ -517,7 +517,7 @@ function hosting_update_6206() {
  *
  * https://drupal.org/node/1971348
  */
-function hosting_update_6207() {
+function hosting_update_6209() {
   $ret = array();
   $spec = array(
         'type' => 'varchar',

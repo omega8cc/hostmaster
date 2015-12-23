@@ -234,7 +234,7 @@ function hosting_task_menu_access($node, $task) {
       if (($task == 'login-reset') && ($node->site_status != HOSTING_SITE_ENABLED)) {
         return FALSE;
       }
-      $safe_tasks = array('backup', 'backup-delete', 'verify', 'enable');
+      $safe_tasks = array('verify', 'enable');
       if (!in_array($task, $safe_tasks)) {
         // Don't show certain tasks if the site is the 'special' main aegir site.
         $profile = node_load($node->profile);
@@ -1089,9 +1089,9 @@ function _hosting_task_log_table($node, $last_position = 0) {
     $exec_time = '';
     $row_count = -1;
     foreach ($result as $entry) {
-      if (strlen($entry->message) > 300) {
+      if (strlen($entry->message) > 200) {
         $summary = "<span class='hosting-task-summary'>" . filter_xss(substr($entry->message, 0, 75), array()) . "... <a href='javascript:void(0)' class='hosting-summary-expand modalframe-exclude'>(" . t('Expand') . ')</a></span>';
-        $message = $summary . "<span class='hosting-task-full'>" . filter_xss($entry->message) . '</span>';
+        $message = $summary . "<span class='hosting-task-full'><pre>" . filter_xss($entry->message) . '</pre></span>';
       }
       else {
         $message = filter_xss($entry->message);
@@ -1732,7 +1732,7 @@ function hosting_task_get_guarded_nodes() {
  * Implements hook_hosting_task_guarded_nodes().
  */
 function hosting_task_hosting_task_guarded_nodes() {
-  // Guard against destructive tasks run on the hostmaster site or platform.
+  // Guard against destructive or insecure tasks run on the hostmaster site or platform.
   $hostmaster_site_nid = hosting_get_hostmaster_site_nid();
   $hostmaster_platform_nid = hosting_get_hostmaster_platform_nid();
   $guarded_nids = array(
@@ -1759,8 +1759,12 @@ function hosting_task_get_dangerous_tasks() {
  */
 function hosting_task_hosting_task_dangerous_tasks() {
   $dangerous_tasks = array(
-    'disable',
+    'backup-delete',
+    'backup',
     'delete',
+    'disable',
+    'login-reset',
+    'restore',
   );
   return $dangerous_tasks;
 }

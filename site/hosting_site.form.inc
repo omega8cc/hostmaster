@@ -240,7 +240,7 @@ function hosting_site_form($node, &$form_state) {
 
   _hosting_site_field($form, $node, 'profile', array(
     '#type' => 'radios',
-    '#title' => t('Install profile'),
+    '#title' => t('Profile'),
     '#description' => t('The type of site to install.<br />
                            The profile selected here determines the list of supported platforms below.'),
     '#options' => $profiles,
@@ -309,7 +309,7 @@ function hosting_site_form($node, &$form_state) {
 
   _hosting_site_field($form, $node, 'db_server', array(
     '#type' => 'radios',
-    '#title' => t('Database server'),
+    '#title' => t('DBS'),
     '#required' => TRUE,
     '#description' => t('The database server the site will use to host its content.'),
     '#options' => hosting_get_servers('db'),
