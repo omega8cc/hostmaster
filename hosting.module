@@ -1008,6 +1008,7 @@ function hosting_form_alter(&$form, &$form_state, $form_id) {
       $form['options']['#access'] = FALSE;
       $form['revision_information']['#access'] = FALSE;
       $form['author']['#access'] = FALSE;
+      $form['comment_settings']['#access'] = TRUE;
 
       // Because these aren't really posts, 'preview' doesn't make sense in
       // this context.
