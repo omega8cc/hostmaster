@@ -671,15 +671,16 @@ function drush_hosting_setup() {
  */
 function _hosting_setup_cron($add = TRUE) {
   $existing = FALSE;
-  $cron = array();
+  $cron = '';
+  $cron_lines = array();
 
   // Load any existing crontab.
-  exec('crontab -l 2> /dev/null', $cron);
-  variable_set('hosting_cron_backup', $cron);
-  if (count($cron)) {
+  exec('crontab -l 2> /dev/null', $cron_lines);
+  variable_set('hosting_cron_backup', $cron_lines);
+  if (count($cron_lines)) {
     drush_log(dt("Replacing existing crontab"), 'warning');
-    $cron = hosting_queues_cron_removal($cron);
-    $cron = implode("\n", $cron);
+    $cron_lines = hosting_queues_cron_removal($cron_lines);
+    $cron = implode("\n", $cron_lines);
   }
   else {
     drush_log(dt("No existing crontab was found"), 'message');
@@ -696,7 +697,7 @@ function _hosting_setup_cron($add = TRUE) {
   $success = TRUE;
   if ($fp) {
     if (fwrite($fp, $cron) && fwrite($fp, "\n")) {
-      drush_log(dt("Installed a new crontab entry."), 'success');
+      $success = TRUE;
     }
     else {
       $success = FALSE;
@@ -709,7 +710,11 @@ function _hosting_setup_cron($add = TRUE) {
   else {
     $success = FALSE;
   }
-  if (!$success) {
+
+  if ($success) {
+    drush_log(dt("Installed a new crontab entry."), 'success');
+  }
+  else {
     drush_set_error('PROVISION_CRON_FAILED', dt('Failed to install cron job'));
   }
 }
@@ -1014,8 +1019,6 @@ function hosting_form_alter(&$form, &$form_state, $form_id) {
       $form['options']['#access'] = FALSE;
       $form['revision_information']['#access'] = FALSE;
       $form['author']['#access'] = FALSE;
-      $form['comment_settings']['#access'] = TRUE;
-      $form['menu']['#access'] = FALSE;
 
       // Because these aren't really posts, 'preview' doesn't make sense in
       // this context.
