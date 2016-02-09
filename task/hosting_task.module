@@ -1001,7 +1001,7 @@ function hosting_task_view($node, $teaser = FALSE, $page = FALSE) {
       );
       $node->content['info']['delta'] = array(
         '#type' => 'item',
-        '#title' => t('Execution time'),
+        '#title' => t('Time'),
         '#markup' => format_interval($node->delta),
         '#weight' => 2,
       );
@@ -1082,7 +1082,7 @@ function hosting_task_view($node, $teaser = FALSE, $page = FALSE) {
 function _hosting_task_log_table($node, $last_position = 0) {
   $result = db_query("SELECT * FROM {hosting_task_log} WHERE vid = :vid AND lid > :lid ORDER BY lid", array(':vid' => $node->vid, ':lid' => $last_position));
   if ($result) {
-    $headers = array('data' => 'Log message', 'execution_time' => 'Execution time');
+    $headers = array('data' => 'Log message', 'execution_time' => 'Time');
     $rows = array();
     $last_lid = $last_position;
     $last_timestamp = 0;
@@ -1636,7 +1636,7 @@ function hosting_task_views_api() {
 function hosting_task_overlay_paths() {
   $paths = array(
     'hosting/task/*' => array(
-      'width' => 600,
+      'width' => '80%',
     ),
     'hosting_confirm/*' => array(
       'width' => 600,

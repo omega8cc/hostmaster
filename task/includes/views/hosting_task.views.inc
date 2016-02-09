@@ -84,7 +84,7 @@ function hosting_task_views_data() {
   );
 
   $data['hosting_task']['delta'] = array(
-    'title' => t('Execution time'),
+    'title' => t('Time'),
     'help' => t('Time this task took.'),
     'field' => array(
       'handler' => 'views_handler_field_time_interval',
