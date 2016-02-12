@@ -84,9 +84,8 @@ projects[userprotect][download][url] = "/opt/tmp/make_local/userprotect"
 ; BOA Custom Contrib
 
 ; hosting_custom_settings
-;projects[hosting_custom_settings][download][type] = "copy"
-;projects[hosting_custom_settings][download][url] = "/opt/tmp/make_local/hosting_custom_settings"
-; dis tmp for debugging
+projects[hosting_custom_settings][download][type] = "copy"
+projects[hosting_custom_settings][download][url] = "/opt/tmp/make_local/hosting_custom_settings"
 
 ; hosting_advanced_cron
 projects[hosting_advanced_cron][download][type] = "copy"
