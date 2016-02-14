@@ -1,0 +1,51 @@
+<?php
+/**
+ * Implements hook_schema().
+ */
+function hosting_cron_schema() {
+  $schema['hosting_cron'] = array(
+  'description' => 'Allows the hosting system to run cron on all the installed sites on a schedule.',
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unique ID for site cron.',
+      ),
+      'cron_interval' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Site specific cron interval.',
+      ),
+    ),
+    'primary key' => array('nid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function hosting_cron_install() {
+  return;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function hosting_cron_uninstall() {
+  variable_del('hosting_cron_default_interval');
+}
+
+/**
+ * Rename legacy hosting_advanced_cron table.
+ */
+function hosting_cron_update_7001() {
+  if (db_table_exists('hosting_advanced_cron') && !db_table_exists('hosting_cron')) {
+    db_rename_table('hosting_advanced_cron', 'hosting_cron');
+  }
+}
