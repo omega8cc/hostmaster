@@ -52,3 +52,16 @@ function hosting_cron_update_7002() {
     db_rename_table('hosting_advanced_cron', 'hosting_cron');
   }
 }
+
+/**
+ * Fix cron for hostmaster site.
+ */
+function hosting_cron_update_7003() {
+  if (db_table_exists('hosting_cron')) {
+    db_update('hosting_cron')
+      ->fields(array('cron_interval' => '3600'))
+      ->condition('nid', '10')
+      ->execute();
+  }
+}
+
