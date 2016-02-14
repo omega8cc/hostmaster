@@ -44,8 +44,11 @@ function hosting_cron_uninstall() {
 /**
  * Rename legacy hosting_advanced_cron table.
  */
-function hosting_cron_update_7001() {
-  if (db_table_exists('hosting_advanced_cron') && !db_table_exists('hosting_cron')) {
+function hosting_cron_update_7002() {
+  if (db_table_exists('hosting_advanced_cron')) {
+    if (db_table_exists('hosting_cron')) {
+      db_drop_table('hosting_cron');
+    }
     db_rename_table('hosting_advanced_cron', 'hosting_cron');
   }
 }
