@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Allow the hosting system to cron all the installed sites on a schedule.
+ */
 
 // Define the default cron interval, if not specified
 // in hosting_cron_default_interval variable.
