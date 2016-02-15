@@ -339,7 +339,7 @@ function hosting_cron_form_site_node_form_alter(&$form, $form_state) {
       }
     }
     else {
-      $default_value = variable_get('hosting_cron_default_interval', 3600);
+      $default_value = variable_get('hosting_cron_default_interval', ADV_CRON_DEFAULT);
     }
     $form['cron_interval'] = array(
       '#type' => 'select',
