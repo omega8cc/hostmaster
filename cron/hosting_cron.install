@@ -42,6 +42,35 @@ function hosting_cron_uninstall() {
 }
 
 /**
+ * Create the hosting_cron table via update as a workaround for D6->D7 upgrade.
+ */
+function hosting_cron_update_7001() {
+  if (!db_table_exists('hosting_cron')) {
+    $schema['hosting_cron'] = array(
+    'description' => 'Allows the hosting system to run cron on all the installed sites on a schedule.',
+      'fields' => array(
+        'nid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'description' => 'Unique ID for site cron.',
+        ),
+        'cron_interval' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'description' => 'Site specific cron interval.',
+        ),
+      ),
+      'primary key' => array('nid'),
+    );
+    db_create_table('hosting_cron', $schema['hosting_cron']);
+  }
+}
+
+/**
  * Rename legacy hosting_advanced_cron table.
  */
 function hosting_cron_update_7002() {
