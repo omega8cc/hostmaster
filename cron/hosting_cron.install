@@ -1,0 +1,102 @@
+<?php
+/**
+ * Implements hook_schema().
+ */
+function hosting_cron_schema() {
+  $schema['hosting_cron'] = array(
+  'description' => 'Allows the hosting system to run cron on all the installed sites on a schedule.',
+    'fields' => array(
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Unique ID for site cron.',
+      ),
+      'cron_interval' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Site specific cron interval.',
+      ),
+    ),
+    'primary key' => array('nid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function hosting_cron_install() {
+  // Insert a row for the hostmaster site.
+  db_insert('hosting_cron')
+    ->fields(array(
+      'nid' => 10,
+      'cron_interval' => '3600',
+    ))
+    ->execute();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function hosting_cron_uninstall() {
+  variable_del('hosting_cron_default_interval');
+}
+
+/**
+ * Create the hosting_cron table via update as a workaround for D6->D7 upgrade.
+ */
+function hosting_cron_update_7001() {
+  if (!db_table_exists('hosting_cron')) {
+    $schema['hosting_cron'] = array(
+    'description' => 'Allows the hosting system to run cron on all the installed sites on a schedule.',
+      'fields' => array(
+        'nid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'description' => 'Unique ID for site cron.',
+        ),
+        'cron_interval' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+          'description' => 'Site specific cron interval.',
+        ),
+      ),
+      'primary key' => array('nid'),
+    );
+    db_create_table('hosting_cron', $schema['hosting_cron']);
+  }
+}
+
+/**
+ * Rename legacy hosting_advanced_cron table.
+ */
+function hosting_cron_update_7002() {
+  if (db_table_exists('hosting_advanced_cron')) {
+    if (db_table_exists('hosting_cron')) {
+      db_drop_table('hosting_cron');
+    }
+    db_rename_table('hosting_advanced_cron', 'hosting_cron');
+  }
+}
+
+/**
+ * Fix cron for hostmaster site.
+ */
+function hosting_cron_update_7003() {
+  if (db_table_exists('hosting_cron')) {
+    db_update('hosting_cron')
+      ->fields(array('cron_interval' => '3600'))
+      ->condition('nid', '10')
+      ->execute();
+  }
+}
+
