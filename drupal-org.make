@@ -35,7 +35,7 @@ projects[betterlogin][download][url] = "/opt/tmp/make_local/betterlogin"
 projects[ctools][download][type] = "copy"
 projects[ctools][download][url] = "/opt/tmp/make_local/ctools"
 
-; http://ftp.drupal.org/files/projects/entity-7.x-1.6.tar.gz
+; http://ftp.drupal.org/files/projects/entity-7.x-1.7.tar.gz
 projects[entity][download][type] = "copy"
 projects[entity][download][url] = "/opt/tmp/make_local/entity"
 
@@ -65,7 +65,7 @@ projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk
 projects[features_extra][download][type] = "copy"
 projects[features_extra][download][url] = "/opt/tmp/make_local/features_extra"
 
-; http://ftp.drupal.org/files/projects/features-7.x-2.7.tar.gz
+; http://ftp.drupal.org/files/projects/features-7.x-2.8.tar.gz
 projects[features][download][type] = "copy"
 projects[features][download][url] = "/opt/tmp/make_local/features"
 
