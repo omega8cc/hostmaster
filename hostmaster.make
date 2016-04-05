@@ -8,13 +8,13 @@ includes[hostmaster] = "drupal-org.make"
 
 ; Aegir Core
 
-; http://ftp.drupal.org/files/projects/hosting-7.x-3.2.tar.gz
-projects[hosting][download][type] = "copy"
-projects[hosting][download][url] = "/opt/tmp/make_local/hosting"
-
 ; http://ftp.drupal.org/files/projects/eldir-7.x-3.2.tar.gz
 projects[eldir][download][type] = "copy"
 projects[eldir][download][url] = "/opt/tmp/make_local/eldir"
+
+; http://ftp.drupal.org/files/projects/hosting-7.x-3.2.tar.gz
+projects[hosting][download][type] = "copy"
+projects[hosting][download][url] = "/opt/tmp/make_local/hosting"
 
 ; Aegir Golden
 
