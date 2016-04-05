@@ -9,9 +9,9 @@ defaults[projects][type] = "module"
 
 ; Aegir Core
 
-projects[hosting][subdir] = "aegir"
 projects[eldir][subdir] = "aegir"
 projects[eldir][type] = "theme"
+projects[hosting][subdir] = "aegir"
 
 ; Aegir Golden
 
