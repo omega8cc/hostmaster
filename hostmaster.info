@@ -4,7 +4,9 @@ core = 7.x
 
 ;; Drupal core ;;
 dependencies[] = block
+dependencies[] = book
 dependencies[] = color
+dependencies[] = comment
 dependencies[] = filter
 dependencies[] = help
 dependencies[] = menu
@@ -15,23 +17,33 @@ dependencies[] = user
 
 ;; Aegir core ;;
 dependencies[] = hosting
-dependencies[] = hosting_task
+dependencies[] = hosting_alias
 dependencies[] = hosting_client
+dependencies[] = hosting_clone
+dependencies[] = hosting_cron
 dependencies[] = hosting_db_server
+dependencies[] = hosting_migrate
 dependencies[] = hosting_package
 dependencies[] = hosting_platform
-dependencies[] = hosting_site
-dependencies[] = hosting_web_server
 dependencies[] = hosting_server
-;dependencies[] = hosting_clone
-;dependencies[] = hosting_cron
-;dependencies[] = hosting_migrate
+dependencies[] = hosting_signup
+dependencies[] = hosting_site
+dependencies[] = hosting_site_backup_manager
+dependencies[] = hosting_task
+dependencies[] = hosting_tasks_extra
+dependencies[] = hosting_web_server
 
 ;; Drupal contrib ;;
+dependencies[] = actions_permissions
 dependencies[] = admin_menu
-dependencies[] = betterlogin
+dependencies[] = ctools
+dependencies[] = fe_block
+dependencies[] = features
 dependencies[] = overlay_paths
+dependencies[] = revision_deletion
+dependencies[] = strongarm
+dependencies[] = userprotect
 dependencies[] = views
 dependencies[] = views_bulk_operations
-dependencies[] = actions_permissions
-dependencies[] = r4032login
+;dependencies[] = betterlogin
+;dependencies[] = r4032login
