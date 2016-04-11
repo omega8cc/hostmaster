@@ -444,6 +444,7 @@ function _hosting_client_get_role() {
  */
 function hosting_client_register_user($node) {
   $pass = user_password();
+  $types = node_types_rebuild();
   $user = new stdClass();
   $edit['name'] = $node->uname;
   $edit['hosting_client'] = $node->nid;
@@ -672,6 +673,7 @@ function hosting_import_client($name) {
   $client = hosting_get_client_by_uname($name);
 
   if (!$client) {
+    $types = node_types_rebuild();
     $client = new stdClass();
     $client->type = 'client';
     $client->uid = 1;
@@ -915,6 +917,7 @@ function _hosting_client_site_default($node) {
   if (!$client) {
     // We give up, couldn't find a client, we're probably in a preview so
     // just use the node client.
+    $types = node_types_rebuild();
     $client = new stdClass();
     $client->title = isset($node->client) ? $node->client : NULL;
   }
@@ -926,6 +929,7 @@ function _hosting_client_site_default($node) {
  * Wrapper around the regular site_node_form that passes a dummy site with a proper client.
  */
 function hosting_client_site_form($form, $node) {
+  $types = node_types_rebuild();
   $site = new stdClass();
   $site->type = 'site';
   $site->client = $node->nid;

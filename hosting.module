@@ -1240,6 +1240,7 @@ function hosting_create_roles() {
   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access disabled sites'));
   user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access disabled sites'));
 
+  $types = node_types_rebuild();
   // Create a default role for Aegir clients.
   $client_role = new stdClass();
   $client_role->name = 'aegir client';

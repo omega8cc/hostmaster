@@ -68,6 +68,7 @@ function hosting_package_instance_sync($rid, $type) {
         'i.package_id' => $package['package_id'],
       ));
       if (!$instance) {
+        $types = node_types_rebuild();
         $instance = new stdClass();
         $instance->rid = $rid;
         $instance->package_id = $package['package_id'];

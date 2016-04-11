@@ -138,6 +138,7 @@ function hosting_drush_import($alias) {
   }
   else {
     // First time we've seen this context.
+    $types = node_types_rebuild();
     $node = new stdClass();
     $node->type = $context->type;
     // Set the hosting name too.
