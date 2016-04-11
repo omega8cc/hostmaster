@@ -152,6 +152,9 @@ function hosting_drush_import($alias) {
     $func($context, $node);
   }
 
+  $node->language = LANGUAGE_NONE;
+  node_object_prepare($node);
+  $node = node_submit($node);
   node_save($node);
   if ($node->nid) {
     drush_log("Context {$name} has been imported. Updated {$node->type} node {$node->nid}.");

@@ -121,6 +121,9 @@ function hosting_signup_form_submit($form, &$form_state) {
   $client->type = 'client';
   $client->status = 1;
   $client->title = $client->client_name;
+  $client->language = LANGUAGE_NONE;
+  node_object_prepare($client);
+  $client = node_submit($client);
   node_save($client, 'submit');
 
   $site = (object) $form_state['values'];
@@ -128,6 +131,9 @@ function hosting_signup_form_submit($form, &$form_state) {
   $site->status = 1;
   $site->client = $client->nid;
   $site->uid = $client->uid;
+  $site->language = LANGUAGE_NONE;
+  node_object_prepare($site);
+  $site = node_submit($site);
   node_save($site);
 
   $form_state['redirect'] = sprintf("hosting/signup/thanks/%s/%s/%s", $site->title, $client->email, $client->client_name);

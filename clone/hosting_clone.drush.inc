@@ -64,6 +64,9 @@ function hosting_clone_post_hosting_clone_task($task, $data) {
       $clone->profile = $profile->package_id;
     }
 
+    $clone->language = LANGUAGE_NONE;
+    node_object_prepare($clone);
+    $clone = node_submit($clone);
     node_save($clone);
 
     // Record the backup created during clone.

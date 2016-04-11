@@ -65,6 +65,9 @@ function hosting_server_post_hosting_verify_task($task, $data) {
     $task->ref->no_verify = TRUE;
     $task->ref->verified = REQUEST_TIME; // set verified flag on server, to let it know it has been checked.
     $task->ref->server_status = HOSTING_SERVER_ENABLED;
+    $task->ref->language = LANGUAGE_NONE;
+    node_object_prepare($task->ref);
+    $task->ref = node_submit($task->ref);
     node_save($task->ref);
 
     // Verify the platforms on this server
@@ -82,6 +85,9 @@ function hosting_server_post_hosting_delete_task($task, $data) {
   $task->ref->server_status = HOSTING_SERVER_DELETED;
   $task->ref->no_verify = TRUE;
   $task->ref->services = array();
+  $task->ref->language = LANGUAGE_NONE;
+  node_object_prepare($task->ref);
+  $task->ref = node_submit($task->ref);
   node_save($task->ref);
   hosting_context_delete($task->ref->nid);
 }

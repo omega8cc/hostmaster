@@ -46,6 +46,9 @@ function drush_hosting_resume() {
     elseif (preg_match("/hostmaster/i", $platform->title)) {
       $platform->title = 'Aegir Hostmaster';
     }
+    $platform->language = LANGUAGE_NONE;
+    node_object_prepare($platform);
+    $platform = node_submit($platform);
     node_save($platform);
     $platform_id = $platform->nid;
   }
@@ -59,6 +62,9 @@ function drush_hosting_resume() {
   drush_log('fixing platform for site node');
   $node->verified = 0;
   $node->platform = $platform_id;
+  $node->language = LANGUAGE_NONE;
+  node_object_prepare($node);
+  $node = node_submit($node);
   node_save($node);
   provision_backend_invoke(d()->name, 'hosting-setup');
 }

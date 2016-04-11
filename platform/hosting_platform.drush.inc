@@ -70,6 +70,9 @@ function hosting_platform_post_hosting_verify_task($task, $data) {
     }
     $node->no_verify = TRUE;
     // Save the platform being verified
+    $node->language = LANGUAGE_NONE;
+    node_object_prepare($node);
+    $node = node_submit($node);
     node_save($node);
 
     hosting_package_sync($packages['base']);
@@ -95,6 +98,9 @@ function hosting_platform_post_hosting_verify_task($task, $data) {
         $site->platform = $node->nid;
         $site->client = HOSTING_DEFAULT_CLIENT;
         $site->db_server = HOSTING_DEFAULT_DB_SERVER;
+        $site->language = LANGUAGE_NONE;
+        node_object_prepare($site);
+        $site = node_submit($site);
         node_save($site);
         drush_log(dt("Imported existing site !domain", array('!domain' => _hosting_node_link($site->nid))));
         hosting_package_instance_sync($site->nid, $site->type, $packages['base']);
@@ -109,6 +115,9 @@ function hosting_platform_post_hosting_verify_task($task, $data) {
 function hosting_platform_post_hosting_delete_task($task, $data) {
   $task->ref->platform_status = HOSTING_PLATFORM_DELETED;
   $task->ref->no_verify = TRUE;
+  $task->ref->language = LANGUAGE_NONE;
+  node_object_prepare($task->ref);
+  $task->ref = node_submit($task->ref);
   node_save($task->ref);
   hosting_context_delete($task->ref->nid);
   db_delete('hosting_platform_client_access')
@@ -125,6 +134,9 @@ function hosting_platform_post_hosting_delete_task($task, $data) {
 function hosting_platform_post_hosting_lock_task($task, $data) {
   $task->ref->platform_status = HOSTING_PLATFORM_LOCKED;
   $task->ref->no_verify = TRUE;
+  $task->ref->language = LANGUAGE_NONE;
+  node_object_prepare($task->ref);
+  $task->ref = node_submit($task->ref);
   node_save($task->ref);
 }
 
@@ -135,6 +147,9 @@ function hosting_platform_post_hosting_lock_task($task, $data) {
 function hosting_platform_post_hosting_unlock_task($task, $data) {
   $task->ref->platform_status = HOSTING_PLATFORM_ENABLED;
   $task->ref->no_verify = TRUE;
+  $task->ref->language = LANGUAGE_NONE;
+  node_object_prepare($task->ref);
+  $task->ref = node_submit($task->ref);
   node_save($task->ref);
 }
 

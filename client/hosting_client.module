@@ -677,6 +677,9 @@ function hosting_import_client($name) {
     $client->uid = 1;
     $client->title = trim($name);
     $client->status = 1;
+    $client->language = LANGUAGE_NONE;
+    node_object_prepare($client);
+    $client = node_submit($client);
     node_save($client);
   }
 

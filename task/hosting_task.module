@@ -173,6 +173,9 @@ function hosting_task_ajax_queue() {
 function hosting_task_cancel($node) {
   if ($node->type == 'task' && $node->task_status == HOSTING_TASK_QUEUED) {
     $node->task_status = HOSTING_TASK_WARNING;
+    $node->language = LANGUAGE_NONE;
+    node_object_prepare($node);
+    $node = node_submit($node);
     node_save($node);
     // Log the cancellation.
     hosting_task_log($node->vid, 'warning', t("Task was cancelled."));
@@ -486,6 +489,9 @@ function hosting_task_retry($task_id) {
     $node->revision = TRUE;
     $node->changed = REQUEST_TIME;
     $node->task_status = HOSTING_TASK_QUEUED;
+    $node->language = LANGUAGE_NONE;
+    node_object_prepare($node);
+    $node = node_submit($node);
     node_save($node);
   }
 }
@@ -527,6 +533,9 @@ function hosting_add_task($nid, $type, $args = NULL, $status = HOSTING_TASK_QUEU
   if (is_array($args)) {
     $task->task_args = $args;
   }
+  $task->ref->language = LANGUAGE_NONE;
+  node_object_prepare($task->ref);
+  $task->ref = node_submit($task->ref);
   node_save($task);
   return $task;
 }
