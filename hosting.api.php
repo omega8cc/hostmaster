@@ -210,9 +210,6 @@ function hook_hosting_TASK_TYPE_task_rollback($task, $data) {
   else {
     $task->ref->no_verify = TRUE;
     $task->ref->site_status = HOSTING_SITE_DISABLED;
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task->ref);
   }
 }

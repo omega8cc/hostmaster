@@ -460,9 +460,6 @@ function hosting_package_sync(&$data) {
         $package->description = isset($file['info']['description']) ? $file['info']['description'] : '';
         $package->old_short_name = isset($file['info']['old_short_name']) ? $file['info']['old_short_name'] : '';
 
-        $package->language = LANGUAGE_NONE;
-        node_object_prepare($package);
-        $package = node_submit($package);
         node_save($package);
       }
       $data[$plural][$short_name]['package_id'] = $package->nid;

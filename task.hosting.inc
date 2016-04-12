@@ -79,9 +79,6 @@ function drush_hosting_task_validate($id, $type = NULL) {
     }
     $task->task_status = HOSTING_TASK_PROCESSING;
     $task->revision = TRUE;
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task);
     drush_set_context('HOSTING_TASK', $task);
     drush_set_context('DRUSH_LOG_CALLBACK', '_hosting_task_log');
@@ -158,9 +155,6 @@ function drush_hosting_task() {
   // New revision is created at the beginning of function.
   $task->revision = FALSE;
   $task->delta = microtime(TRUE) - $task->executed;
-  $task->ref->language = LANGUAGE_NONE;
-  node_object_prepare($task->ref);
-  $task->ref = node_submit($task->ref);
   node_save($task);
 }
 

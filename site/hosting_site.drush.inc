@@ -112,9 +112,6 @@ function hosting_site_post_hosting_install_task($task, $data) {
     if ($context['cron_key']) {
       $task->ref->cron_key = $context['cron_key'];
     }
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task->ref);
 
     if ($context['login_link']) {
@@ -143,9 +140,6 @@ function hosting_site_hosting_install_task_rollback($task, $data) {
   else {
     $task->ref->no_verify = TRUE;
     $task->ref->site_status = HOSTING_SITE_DISABLED;
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task->ref);
   }
 }
@@ -161,9 +155,6 @@ function hosting_site_post_hosting_disable_task($task, $data) {
   }
   $task->ref->site_status = HOSTING_SITE_DISABLED;
   $task->ref->no_verify = TRUE;
-  $task->ref->language = LANGUAGE_NONE;
-  node_object_prepare($task->ref);
-  $task->ref = node_submit($task->ref);
   node_save($task->ref);
 
   // Record the backup created during disable.
@@ -188,9 +179,6 @@ function hosting_site_post_hosting_restore_task($task, $data) {
 function hosting_site_post_hosting_enable_task($task, $data) {
   $task->ref->site_status = HOSTING_SITE_ENABLED;
   $task->ref->no_verify = TRUE;
-  $task->ref->language = LANGUAGE_NONE;
-  node_object_prepare($task->ref);
-  $task->ref = node_submit($task->ref);
   node_save($task->ref);
 }
 
@@ -202,9 +190,6 @@ function hosting_site_post_hosting_delete_task($task, $data) {
     $task->ref->site_status = HOSTING_SITE_DELETED;
     $task->ref->no_verify = TRUE;
     hosting_context_delete($task->ref->nid);
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task->ref);
 
     // Record the backup created during delete.
@@ -242,9 +227,6 @@ function hosting_site_post_hosting_import_task($task, $data) {
   // Update the site node with the database name.
   $node = node_load($site_nid);
   $node->db_name = $data['self']['db_name'];
-  $task->ref->language = LANGUAGE_NONE;
-  node_object_prepare($task->ref);
-  $task->ref = node_submit($task->ref);
   node_save($node);
 
   $packages = $data['context']['packages'];
@@ -263,9 +245,6 @@ function hosting_site_post_hosting_verify_task($task, $data) {
     if ($data['context']['cron_key']) {
       $task->ref->cron_key = $data['context']['cron_key'];
     }
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task->ref);
 
     $context = $data['context'];
@@ -282,9 +261,6 @@ function hosting_site_hosting_verify_task_rollback($task, $data) {
   if ($task->ref->type == 'site') {
     $task->ref->no_verify = TRUE;
     $task->ref->verified = 0;
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task->ref);
   }
 }
@@ -297,9 +273,6 @@ function hosting_site_hosting_import_task_rollback($task, $data) {
     $task->ref->no_verify = TRUE;
     $task->ref->verified = 0;
     $task->ref->site_status = HOSTING_SITE_DISABLED;
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task->ref);
   }
 }
@@ -310,9 +283,6 @@ function hosting_site_hosting_import_task_rollback($task, $data) {
 function hosting_site_post_hosting_login_reset_task($task, $data) {
   if ($task->ref->type == 'site') {
     $task->ref->no_verify = TRUE;
-    $task->ref->language = LANGUAGE_NONE;
-    node_object_prepare($task->ref);
-    $task->ref = node_submit($task->ref);
     node_save($task->ref);
 
     $context = $data['context'];

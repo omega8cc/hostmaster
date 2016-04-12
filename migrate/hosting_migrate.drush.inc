@@ -83,10 +83,6 @@ function hosting_migrate_post_hosting_migrate_task($task, $data) {
     $site->verified = REQUEST_TIME;
     $site->no_verify = TRUE;
     $site->platform = $target;
-
-    $site->language = LANGUAGE_NONE;
-    node_object_prepare($site);
-    $site = node_submit($site);
     node_save($site);
 
     $task->ref = $site;
