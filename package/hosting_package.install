@@ -205,7 +205,6 @@ function hosting_package_update_5() {
     $release = db_fetch_object(db_query("SELECT * FROM {hosting_package_release} WHERE nid = %d",
       $platform->release_id));
 
-    $types = node_types_rebuild();
     $instance = new stdClass();
     $instance->rid = $nid;
     $instance->package_id = $release->package;

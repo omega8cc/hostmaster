@@ -440,7 +440,6 @@ function hosting_package_sync(&$data) {
       $name = isset($file['info']['name']) ? $file['info']['name'] : $short_name;
       if (!($package = hosting_get_package($short_name, $type))) {
         // Create a new package.
-        $types = node_types_rebuild();
         $package = new stdClass();
         $package->type = 'package';
         $package->uid = 1;

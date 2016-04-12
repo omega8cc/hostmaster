@@ -39,7 +39,6 @@ function drush_hosting_clone_pre_hosting_task($task) {
 function hosting_clone_post_hosting_clone_task($task, $data) {
   if ($task->ref->type == 'site') {
     $target = $task->task_args['target_platform'];
-    $types = node_types_rebuild();
     $clone = new stdClass();
     # copy some of the settings of the cloned site ($task->ref) to $clone
     foreach (array('type', 'status', 'uid', 'comment', 'promote', 'moderate', 'sticky', 'name', 'format', 'client', 'db_server', 'profile', 'site_status', 'site_language') as $field) {

@@ -56,7 +56,6 @@ function hosting_signup_form($form, &$form_state) {
   if (!variable_get('hosting_client_register_user', FALSE) && !$user->uid) {
     drupal_set_message(t("Please login first. We have no way of guessing your email and this site is configured not to register new users. You will not receive the login link for your new site. This is probably a bad configuration."));
   }
-  $types = node_types_rebuild();
   $node = new stdClass();
   $form['site'] = hosting_site_form($node, $form_state);
   unset($form['site']['client']);

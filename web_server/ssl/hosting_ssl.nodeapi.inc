@@ -356,7 +356,6 @@ function hosting_ssl_save_key($node) {
     }
     else {
       // insert
-      $types = node_types_rebuild();
       $obj = new stdClass();
       $obj->ssl_key = $ssl_key;
       $obj->client = $client->nid;
