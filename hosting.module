@@ -479,28 +479,6 @@ function _hosting_node_link($nid, $title = NULL) {
  * Implements hook_block_info().
  */
 function hosting_block_info() {
-  $blocks['hosting_summary'] = array(
-    'info' => t('Hosting summary'),
-    'enabled' => 1,
-    'status' => 1,
-    'region' => 'sidebar_second',
-    'weight' => 10,
-  );
-  $blocks['hosting_queues'] = array(
-    'info' => t('Hosting queues'),
-    'enabled' => 1,
-    'status' => 1,
-    'region' => 'sidebar_first',
-    'weight' => 0,
-  );
-  $blocks['hosting_queues_summary'] = array(
-    'info' => t('Hosting queues summary'),
-    'enabled' => 1,
-    'status' => 1,
-    'region' => 'sidebar_first',
-    'weight' => 1,
-    'cache' => 'BLOCK_NO_CACHE',
-  );
   $blocks['hosting_supporting_aegir'] = array(
     'info' => t('Support Aegir'),
     'enabled' => 1,
@@ -517,20 +495,6 @@ function hosting_block_info() {
 function hosting_block_view($delta) {
   $out = NULL;
   switch ($delta) {
-    case 'hosting_queues':
-      $out = array(
-        'title' => t('Queues'),
-        'content' => hosting_queue_block(),
-      );
-      break;
-
-    case 'hosting_queues_summary':
-      $out = array(
-        'title' => t('Queues summary'),
-        'content' => hosting_queue_summary_block(),
-      );
-      break;
-
     case 'hosting_supporting_aegir':
       $out = array(
         'title' => t('Support Aegir'),
@@ -539,7 +503,6 @@ function hosting_block_view($delta) {
       break;
   }
   return $out;
-  // @todo where is 'hosting_summary'?
 }
 
 /**
