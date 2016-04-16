@@ -234,7 +234,7 @@ function hosting_task_menu_access($node, $task) {
       if (($task == 'login-reset') && ($node->site_status != HOSTING_SITE_ENABLED)) {
         return FALSE;
       }
-      $safe_tasks = array('backup', 'backup-delete', 'verify', 'enable');
+      $safe_tasks = array('verify', 'enable');
       if (!in_array($task, $safe_tasks)) {
         // Don't show certain tasks if the site is the 'special' main aegir site.
         $profile = node_load($node->profile);
@@ -272,9 +272,9 @@ function hosting_task_menu_access($node, $task) {
       if (hosting_task_outstanding($node->nid, 'delete') || ($node->platform_status == HOSTING_PLATFORM_DELETED)) {
         return FALSE;
       }
-      // If the platform's been locked, we can unlock it, delete, batch migrate existing sites or verify
+      // If the platform's been locked, we can unlock it, delete or verify
       if ($node->platform_status == HOSTING_PLATFORM_LOCKED) {
-        $platform_tasks = array('verify', 'unlock', 'delete', 'migrate');
+        $platform_tasks = array('verify', 'unlock', 'delete');
         return (in_array($task, $platform_tasks));
       }
       else {
@@ -1005,7 +1005,7 @@ function hosting_task_view($node, $view_mode, $langcode = NULL) {
       );
       $node->content['info']['delta'] = array(
         '#type' => 'item',
-        '#title' => t('Execution time'),
+        '#title' => t('Time'),
         '#markup' => format_interval($node->delta),
         '#weight' => 2,
       );
@@ -1086,16 +1086,16 @@ function hosting_task_view($node, $view_mode, $langcode = NULL) {
 function _hosting_task_log_table($node, $last_position = 0) {
   $result = db_query("SELECT * FROM {hosting_task_log} WHERE vid = :vid AND lid > :lid ORDER BY lid", array(':vid' => $node->vid, ':lid' => $last_position));
   if ($result) {
-    $headers = array('data' => 'Log message', 'execution_time' => 'Execution time');
+    $headers = array('data' => 'Log message', 'execution_time' => 'Time');
     $rows = array();
     $last_lid = $last_position;
     $last_timestamp = 0;
     $exec_time = '';
     $row_count = -1;
     foreach ($result as $entry) {
-      if (strlen($entry->message) > 300) {
+      if (strlen($entry->message) > 200) {
         $summary = "<span class='hosting-task-summary'>" . filter_xss(substr($entry->message, 0, 75), array()) . "... <a href='javascript:void(0)' class='hosting-summary-expand modalframe-exclude'>(" . t('Expand') . ')</a></span>';
-        $message = $summary . "<span class='hosting-task-full'>" . filter_xss($entry->message) . '</span>';
+        $message = $summary . "<span class='hosting-task-full'><pre>" . filter_xss($entry->message) . '</pre></span>';
       }
       else {
         $message = filter_xss($entry->message);
@@ -1627,7 +1627,7 @@ function hosting_task_views_api() {
 function hosting_task_overlay_paths() {
   $paths = array(
     'hosting/task/*' => array(
-      'width' => 600,
+      'width' => '80%',
     ),
     'hosting_confirm/*' => array(
       'width' => 600,
@@ -1741,8 +1741,12 @@ function hosting_task_get_dangerous_tasks() {
  */
 function hosting_task_hosting_task_dangerous_tasks() {
   $dangerous_tasks = array(
-    'disable',
+    'backup-delete',
+    'backup',
     'delete',
+    'disable',
+    'login-reset',
+    'restore',
   );
   return $dangerous_tasks;
 }
