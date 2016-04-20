@@ -21,9 +21,13 @@ function site_data_provision_register_autoload() {
     $loaded = TRUE;
     $list = drush_commandfile_list();
     $provision_dir = dirname($list['provision']);
-    include_once($provision_dir . '/provision.inc');
-    include_once($provision_dir . '/provision.service.inc');
-    provision_autoload_register_prefix('Provision_', dirname(__FILE__));
+    if (is_readable($provision_dir . '/provision.inc')) {
+      include_once($provision_dir . '/provision.inc');
+      include_once($provision_dir . '/provision.service.inc');
+      if (function_exists('provision_autoload_register_prefix')) {
+        provision_autoload_register_prefix('Provision_', dirname(__FILE__));
+      }
+    }
   }
 }
 
