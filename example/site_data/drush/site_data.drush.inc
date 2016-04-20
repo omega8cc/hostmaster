@@ -19,6 +19,10 @@ function site_data_provision_register_autoload() {
   static $loaded = FALSE;
   if (!$loaded) {
     $loaded = TRUE;
+    $list = drush_commandfile_list();
+    $provision_dir = dirname($list['provision']);
+    include_once($provision_dir . '/provision.inc');
+    include_once($provision_dir . '/provision.service.inc');
     provision_autoload_register_prefix('Provision_', dirname(__FILE__));
   }
 }
