@@ -68,6 +68,24 @@ function _hosting_site_field(&$form, $node, $item, $element, $filter_display = '
   $form[$item]['#suffix'] = "</div>";
 }
 
+/**
+ * pre_render form callback
+ *
+ * Add the needed .js and .css files to render the form correctly before printing it
+ */
+function _hosting_site_form_pre_render($elements) {
+  static $settings_added = FALSE;
+  if (!$settings_added) {
+    $settings_added = TRUE;
+    $setting = array();
+    $setting['hosting']['site']['form_check_url'] = url('hosting/hosting_site_form_check');
+    drupal_add_js($setting, 'setting');
+  }
+
+  drupal_add_js(drupal_get_path('module', 'hosting_site') . '/hosting_site.form.js');
+  return $elements;
+}
+
 
 /**
  * Pass in a site node and return an array of valid options for it's fields.
@@ -197,6 +215,7 @@ function hosting_site_available_options($node, $platform = NULL) {
  * Implements hook_form().
  */
 function hosting_site_form($node, &$form_state) {
+  $form['#pre_render'][] = '_hosting_site_form_pre_render';
   $form['#node'] = $node;
 
   if (isset($node->nid)) {
