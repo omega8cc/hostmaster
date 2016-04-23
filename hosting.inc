@@ -36,6 +36,9 @@ function _hosting_valid_fqdn($fqdn) {
   //
   // We don't allow IPs here.
   //
+  if (function_exists('idna_convert_encode')) {
+    $fqdn = idna_convert_encode($fqdn);
+  }
   if (preg_match("/\.(?:host8|boa)\.(?:biz|io)$/", $fqdn)) {
     return (preg_match("/^[a-z0-9]+[a-z0-9-.]*[a-z0-9]+\.((?:v|o)[1-9]{1}|(?:a|b|v|o)[0-9]{10,12})\./", $fqdn) &&
            !preg_match("/[-.]{2,}/", $fqdn));
@@ -71,6 +74,9 @@ function _hosting_valid_fqdn_wildcard($fqdn) {
   //
   // We don't allow IPs here.
   //
+  if (function_exists('idna_convert_encode')) {
+    $fqdn = idna_convert_encode($fqdn);
+  }
   if (preg_match("/\.(?:host8|boa)\.(?:biz|io)$/", $fqdn)) {
     return (preg_match("/^[a-z0-9]+[a-z0-9-.]*[a-z0-9]+\.((?:v|o)[1-9]{1}|(?:a|b|v|o)[0-9]{10,12})\./", $fqdn) &&
            !preg_match("/[-.]{2,}/", $fqdn));
