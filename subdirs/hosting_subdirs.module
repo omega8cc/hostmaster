@@ -89,7 +89,26 @@ function hosting_subdirs_site_form_validate($form, &$form_state) {
  * @return bool
  *   TRUE if the $fqdn is valid or FALSE if it not valid.
  */
+// function hosting_subdirs_valid_fqdn_subdir($fqdn) {
+//   return preg_match("/^([a-z0-9]([a-z0-9-\/]*[a-z0-9])?\.?)+$/i", $fqdn) &&
+//          preg_match("/\//", $fqdn) && !preg_match("/\/\//", $fqdn);
+// }
 function hosting_subdirs_valid_fqdn_subdir($fqdn) {
-  return preg_match("/^([a-z0-9]([a-z0-9-\/]*[a-z0-9])?\.?)+$/i", $fqdn) &&
-         preg_match("/\//", $fqdn) && !preg_match("/\/\//", $fqdn);
+  if (preg_match("/\.(?:host8|boa)\.(?:biz|io)$/", $fqdn)) {
+    return FALSE;
+  }
+  else {
+    if (!preg_match("/^([a-z0-9]+\.)?xn--/", $fqdn) && preg_match("/[-]{2,}/", $fqdn)) {
+      return FALSE;
+    }
+    else {
+      return (preg_match("/^([a-z0-9]([a-z0-9-\/]*[a-z0-9])?\.?)+[a-z0-9]+$/i", $fqdn) &&
+              preg_match("/\//", $fqdn) &&
+             !preg_match("/[.]{2,}/", $fqdn) &&
+             !preg_match("/\/\//", $fqdn));
+    }
+  }
 }
+
+
+
