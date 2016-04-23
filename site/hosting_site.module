@@ -200,7 +200,12 @@ function _hosting_site_url($node) {
   $schema = 'http';
   $port = NULL;
 
-  $url = strtolower(trim($node->title));
+  if (function_exists('idna_convert_encode')) {
+    $url = idna_convert_encode(strtolower(trim($node->title)));
+  }
+  else {
+    $url = strtolower(trim($node->title));
+  }
 
   $platform = node_load($node->platform);
   $server = node_load($platform->web_server);

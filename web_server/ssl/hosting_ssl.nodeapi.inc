@@ -201,6 +201,9 @@ function hosting_ssl_status_options($status = NULL) {
  * Only lowercase alphanumeric- and '.', '_' or '-' characters are allowed for ssl keys.
  */
 function hosting_ssl_filter_key($key) {
+  if (function_exists('idna_convert_encode')) {
+    $key = idna_convert_encode(strtolower(trim($key)));
+  }
   return strtolower(preg_replace("/[^\w\.\-]/", "", $key));
 }
 

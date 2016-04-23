@@ -218,6 +218,13 @@ function hosting_site_form($node, &$form_state) {
   $form['#pre_render'][] = '_hosting_site_form_pre_render';
   $form['#node'] = $node;
 
+  if (function_exists('idna_convert_encode')) {
+    $this_title = idna_convert_encode(strtolower(trim($node->title)));
+  }
+  else {
+    $this_title = strtolower(trim($node->title));
+  }
+
   if (isset($node->nid)) {
     $form['info'] = array(
       '#prefix' => '<div class="clear-block" id="hosting-site-edit-info">',
@@ -230,7 +237,7 @@ function hosting_site_form($node, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Domain name'),
     '#required' => TRUE,
-    '#default_value' => isset($node->title) ? strtolower(trim($node->title)) : '',
+    '#default_value' => isset($this_title) ? $this_title : '',
     '#weight' => -10,
   ));
 
@@ -362,9 +369,11 @@ function hosting_site_validate($node, &$form) {
   $valid_options = hosting_site_available_options($node);
 
   // Domain names are case-insensitive, set to lower case.
-  $url = strtolower(trim($node->title));
   if (function_exists('idna_convert_encode')) {
-    $url = idna_convert_encode($url);
+    $url = idna_convert_encode(strtolower(trim($node->title)));
+  }
+  else {
+    $url = strtolower(trim($node->title));
   }
 
   if (!_hosting_valid_fqdn($url)) {

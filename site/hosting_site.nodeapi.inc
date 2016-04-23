@@ -167,7 +167,12 @@ function hosting_site_delete($node) {
  */
 function hosting_site_nodeapi_site_presave(&$node) {
   // Domain names are case-insensitive.
-  $node->title = strtolower(trim($node->title));
+  if (function_exists('idna_convert_encode')) {
+    $node->title = idna_convert_encode(strtolower(trim($node->title)));
+  }
+  else {
+    $node->title = strtolower(trim($node->title));
+  }
 }
 
 /**
@@ -208,6 +213,12 @@ function hosting_site_insert(&$node) {
  */
 function hosting_site_node_insert($node) {
   if ($node->type == "site") {
+    if (function_exists('idna_convert_encode')) {
+      $node->title = idna_convert_encode(strtolower(trim($node->title)));
+    }
+    else {
+      $node->title = strtolower(trim($node->title));
+    }
     if ((empty($node->old_vid))) {
       hosting_context_register($node->nid, isset($node->hosting_name) ? $node->hosting_name : $node->title);
       if (isset($node->import)) {
