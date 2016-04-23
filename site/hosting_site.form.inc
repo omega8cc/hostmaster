@@ -363,6 +363,9 @@ function hosting_site_validate($node, &$form) {
 
   // Domain names are case-insensitive, set to lower case.
   $url = strtolower(trim($node->title));
+  if (function_exists('idna_convert_encode')) {
+    $url = idna_convert_encode($url);
+  }
 
   if (!_hosting_valid_fqdn($url)) {
     form_set_error('title', t("You have not specified a valid url for this site."));
