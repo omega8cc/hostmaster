@@ -245,7 +245,7 @@ function hosting_get_packages_by_type($type) {
  * @todo document this function
  */
 function hosting_get_default_profile($default = NULL) {
-  if ($p = hosting_get_package(variable_get('hosting_default_profile', 'minimal'), 'profile')) {
+  if ($p = hosting_get_package(variable_get('hosting_default_profile', 'standard'), 'profile')) {
     return $p->nid;
   }
   elseif ($p = hosting_get_package('standard', 'profile')) {
