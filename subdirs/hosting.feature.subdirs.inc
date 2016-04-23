@@ -13,7 +13,7 @@ function hosting_subdirs_hosting_feature() {
     'description' => t('Subdirectory multisite support.'),
     'status' => HOSTING_FEATURE_DISABLED,
     'module' => 'hosting_subdirs',
-    'group' => 'experimental',
+    'group' => 'optional',
     );
   return $features;
 }
