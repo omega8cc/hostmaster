@@ -69,6 +69,10 @@ projects[features_extra][download][url] = "/opt/tmp/make_local/features_extra"
 projects[features][download][type] = "copy"
 projects[features][download][url] = "/opt/tmp/make_local/features"
 
+; http://ftp.drupal.org/files/projects/idna_convert-7.x-1.0.tar.gz
+projects[idna_convert][download][type] = "copy"
+projects[idna_convert][download][url] = "/opt/tmp/make_local/idna_convert"
+
 ; http://ftp.drupal.org/files/projects/revision_deletion-7.x-1.x-dev.tar.gz
 projects[revision_deletion][download][type] = "copy"
 projects[revision_deletion][download][url] = "/opt/tmp/make_local/revision_deletion"
