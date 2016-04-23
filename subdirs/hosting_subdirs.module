@@ -98,6 +98,11 @@ function hosting_subdirs_valid_fqdn_subdir($fqdn) {
     return FALSE;
   }
   else {
+
+    if (function_exists('idna_convert_encode')) {
+      $fqdn = idna_convert_encode($fqdn);
+    }
+
     if (!preg_match("/^([a-z0-9]+\.)?xn--/", $fqdn) && preg_match("/[-]{2,}/", $fqdn)) {
       return FALSE;
     }
