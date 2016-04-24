@@ -7,7 +7,14 @@
 function drush_hosting_clone_pre_hosting_task($task) {
   $task = &drush_get_context('HOSTING_TASK');
   if ($task->ref->type == 'site' && $task->task_type == 'clone') {
-    $task->args[2] = '@' . strtolower(trim($task->task_args['new_uri']));
+
+    if (function_exists('idna_convert_encode')) {
+      $task->args[2] = '@' . idna_convert_encode(strtolower(trim($task->task_args['new_uri'])));
+    }
+    else {
+      $task->args[2] = '@' . strtolower(trim($task->task_args['new_uri']));
+    }
+
     $platform = node_load($task->task_args['target_platform']);
     $task->args[3] = hosting_context_name($platform->nid);
 
@@ -44,7 +51,14 @@ function hosting_clone_post_hosting_clone_task($task, $data) {
     foreach (array('type', 'status', 'uid', 'comment', 'promote', 'moderate', 'sticky', 'name', 'format', 'client', 'db_server', 'profile', 'site_status', 'site_language') as $field) {
       $clone->$field = $task->ref->$field;
     }
-    $clone->title = strtolower(trim($task->task_args['new_uri']));
+
+    if (function_exists('idna_convert_encode')) {
+      $clone->title = idna_convert_encode(strtolower(trim($task->task_args['new_uri'])));
+    }
+    else {
+      $clone->title = strtolower(trim($task->task_args['new_uri']));
+    }
+
     $clone->hosting_name = $clone->title;
     $clone->platform = $target;
     $clone->import = 1; # make sure the site doesn't reinstall...

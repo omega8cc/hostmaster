@@ -93,14 +93,24 @@ function hosting_task_TASK_TYPE_form_validate($form, &$form_state) {
   // From hosting_task_clone_form_validate()
   $site = $form['parameters']['#node'];
 
-  $url = strtolower(trim($form_state['values']['parameters']['new_uri'])); // domain names are case-insensitive
-  if ($url == strtolower(trim($site->title))) {
-    form_set_error('new_uri', t("To clone a site you need to specify a new Domain name to clone it to."));
+  if (function_exists('idna_convert_encode')) {
+    $url = idna_convert_encode(strtolower(trim($form_state['values']['parameters']['new_uri']))); // domain names are case-insensitive
+    if ($url == idna_convert_encode(strtolower(trim($site->title)))) {
+      form_set_error('new_uri', t("To clone a site you need to specify a new Domain name to clone it to."));
+    }
+    else {
+      hosting_task_migrate_form_validate($form, $form_state);
+    }
   }
   else {
-    hosting_task_migrate_form_validate($form, $form_state);
+    $url = strtolower(trim($form_state['values']['parameters']['new_uri'])); // domain names are case-insensitive
+    if ($url == strtolower(trim($site->title))) {
+      form_set_error('new_uri', t("To clone a site you need to specify a new Domain name to clone it to."));
+    }
+    else {
+      hosting_task_migrate_form_validate($form, $form_state);
+    }
   }
-
 }
 
 

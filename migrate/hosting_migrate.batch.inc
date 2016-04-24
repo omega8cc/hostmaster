@@ -207,6 +207,9 @@ function hosting_migrate_platform_submit($form, &$form_state) {
  */
 function hosting_migrate_platform_submit_batch($site_id, $target_platform, $url, $platform_task_vid) {
   $site = node_load($site_id);
+  if (function_exists('idna_convert_encode')) {
+    $url = idna_convert_encode($url);
+  }
   hosting_add_task($site_id, 'migrate', array(
     'target_platform' => $target_platform,
     'new_uri' => $url,
