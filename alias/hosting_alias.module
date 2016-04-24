@@ -366,9 +366,12 @@ function hosting_alias_node_revision_delete($node) {
  *   The array index of this alias, to set any error on the proper sub-field.
  */
 function hosting_alias_validate_alias($site, $alias, $key) {
-  if ($alias = trim($alias)) {
+  if ($alias = strtolower(trim($alias))) {
     if (function_exists('idna_convert_encode')) {
-      $alias = idna_convert_encode(strtolower($alias));
+      $alias = idna_convert_encode(strtolower(trim($alias)));
+    }
+    else {
+      $alias = strtolower(trim($alias));
     }
     $params = isset($site->nid) ? array('nid' => $site->nid) : array();
     if (!hosting_domain_allowed($alias, $params) || $alias == $site->title) {
