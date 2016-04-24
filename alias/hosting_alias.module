@@ -224,6 +224,7 @@ function hosting_alias_get_aliases($node, $type = NULL) {
   foreach ($result as $obj) {
     $alias[] = $obj->alias;
   }
+  $alias = array_unique($alias);
   if (count($alias)) {
     return $alias;
   }
