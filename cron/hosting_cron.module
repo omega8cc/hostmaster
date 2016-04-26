@@ -127,16 +127,21 @@ function hosting_cron_queue($count) {
 function hosting_cron_node_load($nodes, $types) {
   foreach ($nodes as $nid => &$node) {
     if ($node->type == 'site') {
+
       $result = db_query("SELECT cron_interval FROM {hosting_cron} WHERE nid = :nid", array(':nid' => $node->nid))->fetchField();
       if ($result) {
         $this_cron_interval = array('cron_interval' => $result);
       }
+
+      if ($node->cron_interval > -1) {
+        $cron_interval_ok = TRUE;
+      }
       else {
-        $this_cron_interval = array('cron_interval' => variable_get('hosting_cron_default_interval', ADV_CRON_DEFAULT));
+        if ($this_cron_interval > -1) {
+          $node->cron_interval = $this_cron_interval;
+        }
       }
-      if (!$node->cron_interval && $this_cron_interval) {
-        $node->cron_interval = $this_cron_interval;
-      }
+
       return $this_cron_interval;
     }
   }
@@ -179,12 +184,18 @@ function hosting_cron_node_delete($node) {
  * Implements hook_node_update().
  */
 function hosting_cron_node_update($node) {
-  if ($node->type == "site" && $node->cron_interval) {
+  if ($node->type == "site") {
+    $use_cron_interval = ADV_CRON_TURNED_OFF;
     $this_cron_interval = db_query("SELECT cron_interval FROM {hosting_cron} WHERE nid = :nid", array(':nid' => $node->nid))->fetchField();
-    if (!$node->cron_interval && $this_cron_interval) {
-      $node->cron_interval = $this_cron_interval;
+    if ($node->cron_interval > -1) {
+      $use_cron_interval = $node->cron_interval;
     }
-    if ($node->cron_interval == ADV_CRON_TURNED_OFF) {
+    else {
+      if ($this_cron_interval > -1) {
+        $use_cron_interval = $this_cron_interval;
+      }
+    }
+    if ($use_cron_interval == ADV_CRON_TURNED_OFF) {
       db_update('hosting_cron')
         ->fields(array(
           'cron_interval' => ADV_CRON_TURNED_OFF,
@@ -192,20 +203,20 @@ function hosting_cron_node_update($node) {
         ->condition('nid', $node->nid)
         ->execute();
     }
-    elseif ($node->cron_interval > ADV_CRON_TURNED_OFF) {
+    elseif ($use_cron_interval > ADV_CRON_TURNED_OFF) {
       db_update('hosting_cron')
         ->fields(array(
-          'cron_interval' => $node->cron_interval,
+          'cron_interval' => $use_cron_interval,
         ))
         ->condition('nid', $node->nid)
         ->execute();
     }
     else {
-      db_update('hosting_cron')
+      db_insert('hosting_cron')
         ->fields(array(
-          'cron_interval' => ADV_CRON_DEFAULT,
+          'nid' => $node->nid,
+          'cron_interval' => ADV_CRON_TURNED_OFF,
         ))
-        ->condition('nid', $node->nid)
         ->execute();
     }
   }
@@ -215,12 +226,18 @@ function hosting_cron_node_update($node) {
  * Implements hook_node_insert().
  */
 function hosting_cron_node_insert($node) {
-  if ($node->type == 'site' && $node->cron_interval) {
+  if ($node->type == 'site') {
+    $use_cron_interval = ADV_CRON_TURNED_OFF;
     $this_cron_interval = db_query("SELECT cron_interval FROM {hosting_cron} WHERE nid = :nid", array(':nid' => $node->nid))->fetchField();
-    if (!$node->cron_interval && $this_cron_interval) {
-      $node->cron_interval = $this_cron_interval;
+    if ($node->cron_interval > -1) {
+      $use_cron_interval = $node->cron_interval;
     }
-    if ($node->cron_interval == ADV_CRON_TURNED_OFF) {
+    else {
+      if ($this_cron_interval > -1) {
+        $use_cron_interval = $this_cron_interval;
+      }
+    }
+    if ($use_cron_interval == ADV_CRON_TURNED_OFF) {
       db_insert('hosting_cron')
         ->fields(array(
           'nid' => $node->nid,
@@ -228,11 +245,11 @@ function hosting_cron_node_insert($node) {
         ))
         ->execute();
     }
-    elseif ($node->cron_interval > ADV_CRON_TURNED_OFF) {
+    elseif ($use_cron_interval > ADV_CRON_TURNED_OFF) {
       db_insert('hosting_cron')
         ->fields(array(
           'nid' => $node->nid,
-          'cron_interval' => $node->cron_interval,
+          'cron_interval' => $use_cron_interval,
         ))
         ->execute();
     }
@@ -240,7 +257,7 @@ function hosting_cron_node_insert($node) {
       db_insert('hosting_cron')
         ->fields(array(
           'nid' => $node->nid,
-          'cron_interval' => ADV_CRON_DEFAULT,
+          'cron_interval' => ADV_CRON_TURNED_OFF,
         ))
         ->execute();
     }
