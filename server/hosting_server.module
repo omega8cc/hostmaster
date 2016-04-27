@@ -402,7 +402,7 @@ function hosting_server_form($node, &$form_state) {
     
     foreach ($service['types'] as $type => $class_name) {
       $serviceClass = new $class_name;
-      $options[] = isset($serviceClass->name)? $serviceClass->name: $type;
+      $options[$type] = isset($serviceClass->name)? $serviceClass->name: $type;
     }
 
     $form['services'][$name]['type'] = array(
