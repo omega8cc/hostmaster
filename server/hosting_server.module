@@ -396,10 +396,19 @@ function hosting_server_form($node, &$form_state) {
       '#weight' => isset($service['weight']) ? $service['weight'] : 0,
     );
 
+    $options = array(
+      'null' => t('None'),
+    );
+    
+    foreach ($service['types'] as $type => $class_name) {
+      $serviceClass = new $class_name;
+      $options[] = isset($serviceClass->name)? $serviceClass->name: $type;
+    }
+
     $form['services'][$name]['type'] = array(
       '#type' => 'radios',
       '#weight' => -99,
-      '#options' => array_merge(array('null' => 'None'), drupal_map_assoc(array_keys($service['types']))),
+      '#options' => $options,
       '#default_value' => isset($node->services[$name]->available) && $node->services[$name]->available ? $node->services[$name]->type : 'null',
     );
 
