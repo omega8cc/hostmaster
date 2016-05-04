@@ -103,7 +103,6 @@ function hosting_cron_update_7004() {
     db_delete('hosting_cron')
       ->condition('nid', '10')
       ->execute();
-    }
     db_insert('hosting_cron')
       ->fields(array(
         'nid' => 10,
