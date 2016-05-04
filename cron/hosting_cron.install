@@ -31,13 +31,7 @@ function hosting_cron_schema() {
  * Implements hook_install().
  */
 function hosting_cron_install() {
-  // Insert a row for the hostmaster site.
-  db_insert('hosting_cron')
-    ->fields(array(
-      'nid' => 10,
-      'cron_interval' => '3600',
-    ))
-    ->execute();
+  variable_set('hosting_cron_default_interval', '86400');
 }
 
 /**
