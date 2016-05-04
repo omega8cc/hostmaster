@@ -197,6 +197,15 @@ function hosting_cron_node_update($node) {
       }
     }
 
+    if ($node->nid == 10) {
+      if ($node->cron_interval == ADV_CRON_TURNED_OFF) {
+        db_update('hosting_cron')
+          ->fields(array('cron_interval' => '3600'))
+          ->condition('nid', '10')
+          ->execute();
+      }
+    }
+
     if ($this_cron_interval > -1) {
       $cron_interval_ok = TRUE;
     }
@@ -250,6 +259,12 @@ function hosting_cron_node_insert($node) {
     else {
       if ($this_cron_interval > -1) {
         $use_cron_interval = $this_cron_interval;
+      }
+    }
+
+    if ($node->nid == 10) {
+      if ($node->cron_interval == ADV_CRON_TURNED_OFF) {
+        $use_cron_interval = '3600';
       }
     }
 
