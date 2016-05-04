@@ -94,3 +94,22 @@ function hosting_cron_update_7003() {
   }
 }
 
+/**
+ * Fix cron for hostmaster site.
+ */
+function hosting_cron_update_7004() {
+  // Re-create a row for the hostmaster site.
+  if (db_table_exists('hosting_cron')) {
+    db_delete('hosting_cron')
+      ->condition('nid', '10')
+      ->execute();
+    }
+    db_insert('hosting_cron')
+      ->fields(array(
+        'nid' => 10,
+        'cron_interval' => '3600',
+      ))
+      ->execute();
+  }
+}
+
