@@ -263,9 +263,7 @@ function hosting_cron_node_insert($node) {
     }
 
     if ($node->nid == 10) {
-      if ($node->cron_interval == ADV_CRON_TURNED_OFF) {
-        $use_cron_interval = '3600';
-      }
+      $use_cron_interval = '3600';
     }
 
     if ($use_cron_interval == ADV_CRON_TURNED_OFF) {
