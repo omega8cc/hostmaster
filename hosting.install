@@ -557,3 +557,21 @@ function hosting_update_7000() {
                     WHERE pkg.short_name = \'hostmaster\'')->fetchField();
   variable_set('aegir_hostmaster_site_nid', $nid);
 }
+
+/**
+ * Fix old comments in the hostmaster site.
+ */
+function hosting_update_7001() {
+  if (db_table_exists('comment')) {
+    db_update('comment')
+      ->fields(array('language' => 'und'))
+      ->condition('status', '1')
+      ->execute();
+  }
+  if (db_table_exists('field_data_comment_body')) {
+    db_update('field_data_comment_body')
+      ->fields(array('comment_body_format' => 'filtered_html'))
+      ->condition('comment_body_format', '1')
+      ->execute();
+  }
+}
