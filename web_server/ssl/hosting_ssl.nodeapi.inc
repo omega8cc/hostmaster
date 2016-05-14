@@ -364,9 +364,9 @@ function hosting_ssl_save_key($node) {
       $obj->client = $client->nid;
       $obj->status = 0;
       drupal_write_record("hosting_ssl_cert", $obj);
-      if (!hosting_ip_allocate($obj, $node)) {
-        form_set_error('ssl_key_new', t("Unable to allocate IP address for certificate, assuming SNI (Server Name Indication) will work (incompatible with Safari and IE on Windows XP, Android 2.2, etc)."));
-      }
+      // if (!hosting_ip_allocate($obj, $node)) {
+      //   form_set_error('ssl_key_new', t("Unable to allocate IP address for certificate, assuming SNI (Server Name Indication) will work (incompatible with Safari and IE on Windows XP, Android 2.2, etc)."));
+      // }
       $node->ssl_key = $obj->cid;
     }
   }
