@@ -22,6 +22,7 @@ dependencies[] = hosting_client
 dependencies[] = hosting_clone
 dependencies[] = hosting_cron
 dependencies[] = hosting_db_server
+dependencies[] = hosting_le
 dependencies[] = hosting_migrate
 dependencies[] = hosting_package
 dependencies[] = hosting_platform

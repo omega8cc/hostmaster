@@ -26,6 +26,10 @@ projects[hosting_civicrm][download][url] = "/opt/tmp/make_local/hosting_civicrm"
 projects[hosting_git][download][type] = "copy"
 projects[hosting_git][download][url] = "/opt/tmp/make_local/hosting_git"
 
+; https://github.com/omega8cc/hosting_le/tree/7.x-3.x
+projects[hosting_le][download][type] = "copy"
+projects[hosting_le][download][url] = "/opt/tmp/make_local/hosting_le"
+
 ; http://ftp.drupal.org/files/projects/hosting_remote_import-7.x-3.0.tar.gz
 projects[hosting_remote_import][download][type] = "copy"
 projects[hosting_remote_import][download][url] = "/opt/tmp/make_local/hosting_remote_import"

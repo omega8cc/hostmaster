@@ -17,6 +17,7 @@ projects[hosting][subdir] = "aegir"
 
 projects[hosting_civicrm][subdir] = aegir
 projects[hosting_git][subdir] = aegir
+projects[hosting_le][subdir] = aegir
 projects[hosting_remote_import][subdir] = aegir
 projects[hosting_site_backup_manager][subdir] = aegir
 projects[hosting_tasks_extra][subdir] = aegir
@@ -105,4 +106,3 @@ projects[hosting_custom_settings][download][url] = "/opt/tmp/make_local/hosting_
 
 ; projects[protect_critical_users][download][type] = "copy"
 ; REMOVED, D7 core should provide this protection
-
