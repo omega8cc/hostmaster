@@ -131,7 +131,7 @@ function hosting_ssl_nodeapi_site_view(&$node, $teaser = FALSE) {
       '#type' => 'item',
       '#title' => t('SSL key'),
       '#value' => hosting_ssl_output_key($node->ssl_key),
-      '#markup' => hosting_ssl_get_key($node->ssl_key) ? t("%path", array('%path' => sprintf("ssl.d/%s/", hosting_ssl_output_key($node->ssl_key)))) : t("(key deleted)"),
+      '#markup' => hosting_ssl_get_key($node->ssl_key) ? t("%path", array('%path' => sprintf("%s", hosting_ssl_output_key($node->ssl_key)))) : t("(key deleted)"),
       '#weight' => 7,
     );
   }
