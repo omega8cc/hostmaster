@@ -129,7 +129,7 @@ function hosting_ssl_nodeapi_site_view(&$node, $teaser = FALSE) {
   if (isset($node->ssl_enabled) && $node->ssl_enabled == TRUE) {
     $node->content['info']['ssl_key'] = array(
       '#type' => 'item',
-      '#title' => t('Encryption key'),
+      '#title' => t('SSL key'),
       '#value' => hosting_ssl_output_key($node->ssl_key),
       '#description' => hosting_ssl_get_key($node->ssl_key) ? t("%path", array('%path' => sprintf("ssl.d/%s/", hosting_ssl_output_key($node->ssl_key)))) : t("(key deleted)"),
       '#weight' => 7,
