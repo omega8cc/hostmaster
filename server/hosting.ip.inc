@@ -10,7 +10,7 @@
 function _hosting_ip_view(&$node) {
   $ip_list = isset($node->ip_addresses) ? $node->ip_addresses : array();
 
-  if (sizeof($ip_list)) {
+  if (count($ip_list)) {
     $node->content['info']['ip_addresses'] = array(
       '#type' => 'item',
       '#title' => t('IP addresses'),

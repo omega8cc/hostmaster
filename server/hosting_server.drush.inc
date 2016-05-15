@@ -13,7 +13,7 @@
 function hosting_hosting_server_context_options(&$task) {
   $task->context_options['remote_host'] = $task->ref->title;
   $ip_list = $task->ref->ip_addresses;
-  $task->context_options['ip_addresses'] = sizeof($ip_list) ? implode(',', $ip_list) : 'null';
+  $task->context_options['ip_addresses'] = count($ip_list) ? implode(',', $ip_list) : 'null';
 
   foreach (hosting_server_services() as $type => $info) {
     if (isset($task->ref->services[$type])) {

@@ -134,7 +134,7 @@ class hostingService_example_basic extends hostingService_example {
     // REMEMBER TO CALL THE PARENT!
     parent::validate($node, $form, $form_state);
 
-    if (sizeof($this->example_field) > 30) {
+    if (count($this->example_field) > 30) {
       form_set_error('example_field', t("The example string must not be longer than 30 characters"));
     }
   }

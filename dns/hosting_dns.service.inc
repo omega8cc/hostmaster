@@ -20,7 +20,7 @@ class hostingService_dns_master extends hostingService_dns {
   function view(&$render) {
     parent::view($render);
 
-    if (sizeof($this->slave_servers)) {
+    if (count($this->slave_servers)) {
       $render['slave_servers'] = array(
         '#type' => 'item',
         '#title' => t('Slave servers'),
@@ -39,7 +39,7 @@ class hostingService_dns_master extends hostingService_dns {
       unset($servers[$this->server->nid]);
     }
 
-    if (sizeof($servers)) {
+    if (count($servers)) {
       $form['slave_servers'] = array(
         '#title' => t('Slave DNS servers'),
         '#type' => 'checkboxes',
@@ -98,7 +98,7 @@ class hostingService_dns_master extends hostingService_dns {
   function context_options($task_type, $ref_type, &$task) {
     parent::context_options($task_type, $ref_type, $task);
 
-    if (is_array($this->slave_servers) && sizeof($this->slave_servers)) {
+    if (is_array($this->slave_servers) && count($this->slave_servers)) {
       $task->context_options['slave_servers'] = implode(',', array_values(array_map('hosting_context_name', array_intersect_key($this->slave_servers, hosting_get_servers('dns')))));
     }
   }

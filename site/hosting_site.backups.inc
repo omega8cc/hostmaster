@@ -103,7 +103,7 @@ function hosting_task_backup_delete_form_validate($form, &$form_state) {
  */
 function hosting_task_backup_delete_form($node) {
   $list = hosting_site_backup_list($node->nid);
-  if (sizeof($list)) {
+  if (count($list)) {
     foreach ($list as $bid => $info) {
       $backup = hosting_site_get_backup($bid);
       $form[$bid] = array(

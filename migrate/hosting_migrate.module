@@ -147,7 +147,7 @@ function hosting_task_migrate_form($node) {
   );
 
   $db_servers = hosting_get_servers('db');
-  if (sizeof($db_servers) > 1) {
+  if (count($db_servers) > 1) {
     $form['new_db_server'] = array(
       '#type' => 'radios',
       '#title' => t('DBS'),

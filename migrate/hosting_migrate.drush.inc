@@ -28,7 +28,7 @@ function drush_hosting_migrate_pre_hosting_task($task) {
     }
 
     $profile_instance = _hosting_migrate_get_target_profile_name($task);
-    if (sizeof($profile_instance)) {
+    if (count($profile_instance)) {
       $task->options['profile'] = $profile_instance->short_name;
     }
     else {
@@ -47,7 +47,7 @@ function _hosting_migrate_get_target_profile_name($task) {
     'p.short_name' => $profile->short_name,
   ));
 
-  if (!sizeof($profile_instance)) {
+  if (!count($profile_instance)) {
     // get a possible upgrade path for the profile.
     $profile_instance = hosting_package_instance_load(array(
       'i.rid' => $task->task_args['target_platform'],
