@@ -429,7 +429,7 @@ function hosting_alias_node_view($node, $view_mode, $langcode) {
       $node->content['info']['redirection'] = array(
         '#type' => 'item',
         '#title' => t('Redirection'),
-        '#markup' => $redirection['redirection'] ? t('Yes') : t('No'),
+        '#markup' => $redirection['redirection'] ? $redirection['redirection'] : t('No'),
         '#weight' => 12,
       );
     }
