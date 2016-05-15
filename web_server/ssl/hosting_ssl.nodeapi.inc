@@ -7,16 +7,17 @@
 /**
  * This SSL key is a custom, Aegir generated one.
  */
-define('HOSTING_SSL_CUSTOM_KEY', 'null');
+define('HOSTING_SSL_CUSTOM_KEY', 'NULL');
 
 /**
  * Form API code to extend the site form with SSL fields.
  */
 function hosting_ssl_site_form(&$form, &$form_state, $form_id) {
-  $node = $form['#node'];
 
+  $node = $form['#node'];
   $new_site = TRUE;
   $ssl_available = FALSE;
+
   // Only allow the user to modify these values when the platform is SSL enabled.
   if (isset($node->nid)) {
     $new_site = FALSE;
@@ -91,6 +92,7 @@ function hosting_ssl_hosting_site_options_alter(&$return, $node) {
   if (isset($node->ssl_enabled) && $node->ssl_enabled) {
 
     $keys = hosting_ssl_get_keys($node->client, TRUE);
+
     // Return the list of valid keys, including the special 'new key' option.
     $return['ssl_key'] = array_keys($keys);
 
