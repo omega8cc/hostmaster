@@ -24,7 +24,7 @@ function hook_hosting_site_options_alter(&$return, $node) {
   // From: hosting_ssl_hosting_site_options_alter().
 
   // Disable the ssl key fields by default.
-  if (!sizeof(hosting_ssl_get_servers())) {
+  if (!count(hosting_ssl_get_servers())) {
     $return['ssl_enabled'] = FALSE;
   }
 
@@ -40,7 +40,7 @@ function hook_hosting_site_options_alter(&$return, $node) {
     $return['ssl_key'] = array_keys($keys);
 
     // properly default this value so things dont fall apart later.
-    if (sizeof($return['ssl_key']) == 1) {
+    if (count($return['ssl_key']) == 1) {
       $node->ssl_key = HOSTING_SSL_CUSTOM_KEY;
     }
 
