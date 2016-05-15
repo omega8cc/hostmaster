@@ -94,7 +94,7 @@ function hosting_alias_form_data(&$form, &$form_state) {
     }
     $form['aliases_automatic'] = array(
       '#type' => 'item',
-      '#title' => t('Automatic domain aliases'),
+      '#title' => t('Automatic domain alias'),
       '#markup' => implode(', ', $links),
       '#weight' => 5,
     );
@@ -442,7 +442,7 @@ function hosting_alias_node_view($node, $view_mode, $langcode) {
       }
       $node->content['info']['aliases_automatic'] = array(
         '#type' => 'item',
-        '#title' => t('Auto aliases'),
+        '#title' => t('Auto alias'),
         '#markup' => implode(', ', $links),
         '#weight' => 11,
       );
