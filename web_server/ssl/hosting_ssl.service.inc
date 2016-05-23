@@ -109,5 +109,3 @@ class hostingService_http_apache_ssl extends hostingService_http_ssl {
   }
 
 }
-
-
