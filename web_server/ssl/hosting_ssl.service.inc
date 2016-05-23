@@ -18,7 +18,7 @@ class hostingService_http_ssl extends hostingService_http_public {
       ->fields(array(
         'vid' => $this->server->vid,
         'nid' => $this->server->nid,
-        'ssl_port' => $this->ssl_port,
+        'ssl_port' => isset($this->ssl_port) ? $this->ssl_port : '443',
       ))
       ->execute();
   }
