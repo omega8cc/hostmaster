@@ -401,10 +401,9 @@ function hosting_server_form($node, &$form_state) {
     $options = array(
       'null' => t('None'),
     );
-    
     foreach ($service['types'] as $type => $class_name) {
-      $serviceClass = new $class_name($node);
-      $options[$type] = isset($serviceClass->name)? $serviceClass->name: $type;
+      $service_objects[$name][$type] = hosting_services_new_object($name, $type, $node);
+      $options[$type] = $service_objects[$name][$type]->getName();
     }
 
     $form['services'][$name]['type'] = array(
@@ -428,7 +427,7 @@ function hosting_server_form($node, &$form_state) {
         $node->services[$name]->form($form['services'][$name][$type]);
       }
       else {
-        $service_object = hosting_services_new_object($name, $type, $node);
+        $service_object = $service_objects[$name][$type];
         $service_object->form($form['services'][$name][$type]);
       }
     }
