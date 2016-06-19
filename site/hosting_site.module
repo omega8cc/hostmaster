@@ -776,3 +776,18 @@ function hosting_site_hosting_task_guarded_nodes() {
     hosting_get_hostmaster_site_nid()
   );
 }
+
+/**
+ * Confirmation form for site backups.
+ *
+ * @see hosting_task_confirm_form().
+ */
+function hosting_task_delete_form($node) {
+  $form['skip_backup'] = array(
+    '#title' => t('Skip site backup'),
+    '#type' => 'checkbox',
+    '#description' => t('Skip creating a backup file of this site and delete it. <em>You will not be able to recover your data if backups are skipped.</em>'),
+  );
+
+  return $form;
+}

@@ -93,6 +93,9 @@ function drush_hosting_site_pre_hosting_task($task) {
     $task->args[1] = implode(',', $backups);
   }
 
+  if ($task->task_type == 'delete') {
+    $task->options['skip-backup'] = $task->task_args['skip_backup'];
+  }
 }
 
 
