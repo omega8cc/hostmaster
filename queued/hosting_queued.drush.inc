@@ -67,7 +67,7 @@ function drush_hosting_queued() {
     try {
       // Should we terminate.
       if (time() > $end_time) {
-        // Restart the daemon to recycle leaked memory
+        // Restart the daemon to recycle leaked memory.
         hosting_queued_restart();
       }
 
@@ -226,7 +226,9 @@ function hosting_queued_db_close_all() {
   if (is_array($db_url)) {
     foreach ($db_url as $name => $url) {
       db_set_active($name);
-      mysqli_close($active_db);
+      if ($active_db) {
+        mysqli_close($active_db);
+      }
     }
   }
   else {
