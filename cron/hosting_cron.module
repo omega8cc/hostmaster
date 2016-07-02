@@ -88,14 +88,14 @@ function hosting_cron_queue($count) {
         $this_platform_root = $row->publish_path;
       }
       if (is_readable($this_platform_root . '/core')) {
-        $url = 'http://127.0.0.1/cron/';
+        $url = 'https://127.0.0.1/cron/';
         // Optionally add the cron_key query string key if the site has one.
         if (!empty($site->cron_key)) {
           $url .= rawurlencode($site->cron_key) . '?0%5Babsolute%5D=1';
         }
       }
       else {
-        $url = 'http://127.0.0.1/cron.php';
+        $url = 'https://127.0.0.1/cron.php';
         // Optionally add the cron_key query string key if the site has one.
         if (!empty($site->cron_key)) {
           $url .= '?cron_key=' . rawurlencode($site->cron_key);
