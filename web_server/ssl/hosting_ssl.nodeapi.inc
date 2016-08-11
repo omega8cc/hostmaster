@@ -28,6 +28,13 @@ function hosting_ssl_site_form(&$form, &$form_state, $form_id) {
       $ssl_available = TRUE;
     }
   }
+  elseif (count(hosting_ssl_get_servers('http')) > 0) {
+    $ssl_available = TRUE;
+  }
+
+  if (!$ssl_available) {
+    return;
+  }
 
   if (!$new_site) {
     _hosting_site_field($form, $node, 'hosting_ssl_wrapper', array(
