@@ -590,6 +590,7 @@ function hosting_queue_block() {
     $queues = hosting_get_queues();
     $output = '';
     foreach ($queues as $queue => $info) {
+      // Invoke hosting_TASK_SINGULAR_summary().
       $func = 'hosting_' . $info['singular'] . '_summary';
       if (function_exists($func)) {
         $output .= $func();
@@ -784,6 +785,7 @@ function hosting_queues($key = '') {
       $output .= "<h1>" . $queues[$key]['name'] . "</h1>";
     }
 
+    // Invoke hosting_TASK_SINGULAR_list().
     $func = 'hosting_' . $queues[$key]['singular'] . '_list';
     if (function_exists($func)) {
       $output .= $func();
