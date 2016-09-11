@@ -23,13 +23,21 @@ function hosting_migrate_platform($form, $form_state, $node) {
       return $form;
     }
 
-    $platforms = _hosting_get_platforms();
-    if (count($platforms) > 1) {
+    // TODO: hosting_get_enabled_platforms should be sufficient here, except
+    // that we haven't implemented node-level access control on platforms yet.
+    // See: http://drupal.org/node/725952.
+    if (function_exists('_hosting_get_allowed_platforms')) {
+      $platforms = _hosting_get_allowed_platforms();
+    }
+    else {
+      $platforms = _hosting_get_enabled_platforms();
+    }
+    if (sizeof($platforms) > 1) {
       unset($platforms[$node->nid]);
       $form['#current_platform'] = $node;
       $form['description'] = array(
         '#type' => 'item',
-        '#description' => 'You may want to read our <a href="https://omega8.cc/the-best-recipes-for-disaster-139" target=_blank><strong>best recipes for disaster</strong></a> before going further. You can perform a batch migration of sites from this source platform to a different target platform using this form, but if you wish to do that securely, always <i>Clone</i> one of them in its <strong>current</strong> platform, then test <i>Migrate</i> of the cloned copy first and check if the cloned copy works fine, before you will try that with your live sites. This seems tedious, but it is much easier and faster than recovering from some disaster.',
+        '#description' => 'Perform a batch migration of sites from this platform to a target platform.',
       );
       $form['target_platform'] = array(
         '#type' => 'radios',
@@ -59,7 +67,7 @@ function hosting_migrate_platform($form, $form_state, $node) {
     $header = array(t('Site'), t('Upgrades'), t('Warnings'), t('Errors'), t('Actions'));
     $options['attributes']['class'] = 'hosting-package-comparison-link';
     foreach (array('passed', 'failed') as $type) {
-      if (isset($form_state['storage'][$type]) && count($form_state['storage'][$type])) {
+      if (isset($form_state['storage'][$type]) && sizeof($form_state['storage'][$type])) {
 
         $rows = array();
 
@@ -92,7 +100,7 @@ function hosting_migrate_platform($form, $form_state, $node) {
 
       }
     }
-    if (count($form_state['storage']['passed'])) {
+    if (sizeof($form_state['storage']['passed'])) {
       $form['submit'] = array(
         '#type' => 'submit',
         '#value' => t('Submit'),
@@ -143,7 +151,7 @@ function hosting_migrate_platform_submit($form, &$form_state) {
           array($site->nid, $form_state['values']['target_platform'], $form_state),
         );
       }
-      if (count($operations)) {
+      if (sizeof($operations)) {
         $batch = array(
           'operations' => $operations,
           'finished' => 'hosting_migrate_platform_finished',
@@ -177,7 +185,7 @@ function hosting_migrate_platform_submit($form, &$form_state) {
         );
       }
 
-      if (count($operations)) {
+      if (sizeof($operations)) {
         $batch = array(
           'operations' => $operations,
           'finished' => 'hosting_migrate_platform_submit_finished',
@@ -207,9 +215,6 @@ function hosting_migrate_platform_submit($form, &$form_state) {
  */
 function hosting_migrate_platform_submit_batch($site_id, $target_platform, $url, $platform_task_vid) {
   $site = node_load($site_id);
-  if (function_exists('idna_convert_encode')) {
-    $url = idna_convert_encode($url);
-  }
   hosting_add_task($site_id, 'migrate', array(
     'target_platform' => $target_platform,
     'new_uri' => $url,
