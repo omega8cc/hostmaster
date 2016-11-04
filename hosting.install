@@ -38,6 +38,8 @@ function hosting_schema() {
  */
 function hosting_install() {
   hosting_create_roles();
+
+  variable_set('error_level', ERROR_REPORTING_HIDE);
 }
 
 /**
@@ -574,4 +576,11 @@ function hosting_update_7001() {
       ->condition('comment_body_format', '1')
       ->execute();
   }
+}
+
+/**
+ * Suppress error messages by default.
+ */
+function hosting_update_7002() {
+  variable_set('error_level', ERROR_REPORTING_HIDE);
 }
