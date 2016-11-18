@@ -96,7 +96,7 @@ function drush_hosting_queued() {
 
           // Execute the task in the backend
           drush_invoke_process('@self', 'hosting-task', array($task->nid), array('strict' => FALSE), array('interactive' => TRUE));
-          drush_log(dt('Finished executing task "@title" [node/@nid].', array(
+          drush_log(dt('Finished task "@title" [node/@nid].', array(
             '@title' => $task->title,
             '@nid' => $task->nid,
           )), 'ok');
