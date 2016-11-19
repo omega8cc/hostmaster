@@ -723,7 +723,7 @@ function hosting_task_set_title(&$node) {
 function hosting_tasks_queue($count = 20) {
   global $provision_errors;
 
-  drush_log(dt("Running tasks queue", "ok"));
+  drush_log(dt("Running tasks queue..."), "notice");
   $tasks = _hosting_get_new_tasks($count);
   foreach ($tasks as $task) {
 
