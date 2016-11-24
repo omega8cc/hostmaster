@@ -85,11 +85,11 @@ function drush_hosting_queued() {
           drush_log(dt('Found task to execute. Pausing before execution.'));
           sleep(1);
 
-          watchdog('hosting_task', 'Starting task "@title" [node/@nid]', array(
+          watchdog('hosting_task', 'Starting task "@title" [node/@nid].', array(
             '@title' => $task->title,
             '@nid' => $task->nid,
           ), WATCHDOG_NOTICE, url("node/$task->nid"));
-          drush_log(dt('Starting task "@title" [node/@nid]', array(
+          drush_log(dt('Starting task "@title" [node/@nid].', array(
             '@title' => $task->title,
             '@nid' => $task->nid,
           )), 'ok');
