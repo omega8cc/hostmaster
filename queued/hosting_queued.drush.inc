@@ -85,21 +85,12 @@ function drush_hosting_queued() {
           drush_log(dt('Found task to execute. Pausing before execution.'));
           sleep(1);
 
-          watchdog('hosting_task', 'Starting task "@title" [node/@nid].', array(
-            '@title' => $task->title,
-            '@nid' => $task->nid,
-          ), WATCHDOG_NOTICE, url("node/$task->nid"));
-          drush_log(dt('Starting task "@title" [node/@nid].', array(
-            '@title' => $task->title,
-            '@nid' => $task->nid,
-          )), 'ok');
+          hosting_task_log_start($task);
 
           // Execute the task in the backend
           drush_invoke_process('@self', 'hosting-task', array($task->nid), array('strict' => FALSE), array('interactive' => TRUE));
-          drush_log(dt('Finished task "@title" [node/@nid].', array(
-            '@title' => $task->title,
-            '@nid' => $task->nid,
-          )), 'ok');
+
+          hosting_task_log_finish($task);
 
           // Delay for a configurable amount of time.
           $delay = variable_get('hosting_queued_post_task_delay', 0);
