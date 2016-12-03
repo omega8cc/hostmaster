@@ -16,11 +16,16 @@ function drush_hosting_package_pre_hosting_task() {
         $instances = hosting_package_instances_load(array(
           'i.rid' => $task->ref->platform,
           'p.package_type' => 'profile',
-          'p.short_name' => $task->ref->platform_name,
+          'p.short_name' => $task->ref->profile_name,
         ));
         $task->ref->profile = current($instances)->package_id;
         $task->ref->no_verify = TRUE;
         node_save($task->ref);
+
+        drush_log(dt('Updated site node with install profile "!profile" with package ID !package_id.', array(
+          '!profile' => $task->ref->profile_name,
+          '!package_id' => $task->ref->profile,
+        )), 'notice');
       }
 
       $profile = node_load($task->ref->profile);
