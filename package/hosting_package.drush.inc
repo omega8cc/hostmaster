@@ -22,7 +22,8 @@ function drush_hosting_package_pre_hosting_task() {
         $task->ref->no_verify = TRUE;
         node_save($task->ref);
 
-        drush_log(dt('Updated site node with install profile "!profile" with package ID !package_id.', array(
+        drush_log(dt('Updated site node !nid with install profile "!profile" with package ID !package_id.', array(
+          '!nid' => $task->ref->nid,
           '!profile' => $task->ref->profile_name,
           '!package_id' => $task->ref->profile,
         )), 'notice');
