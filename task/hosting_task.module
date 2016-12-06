@@ -723,8 +723,18 @@ function hosting_task_set_title(&$node) {
 function hosting_tasks_queue($count = 20) {
   global $provision_errors;
 
-  drush_log(dt("Running tasks queue..."), "notice");
   $tasks = _hosting_get_new_tasks($count);
+
+  if (count($tasks)) {
+    drush_log(dt("Found @count tasks (max @max) in queue. Running...", array(
+      '@count' => count($tasks),
+      '@max' => $count,
+    )), "notice");
+  }
+  else {
+    drush_log(dt("Found no tasks in queue. Not running."), "notice");
+  }
+
   foreach ($tasks as $task) {
 
     hosting_task_log_start($task);
