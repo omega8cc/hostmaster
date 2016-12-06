@@ -90,12 +90,8 @@ function drush_hosting_queued() {
           drush_log(dt('Found task to execute. Pausing before execution.'));
           sleep(1);
 
-          hosting_task_log_start($task);
-
-          // Execute the task in the backend
-          drush_invoke_process('@self', 'hosting-task', array($task->nid), array('strict' => FALSE), array('interactive' => TRUE));
-
-          hosting_task_log_finish($task);
+          // Execute the task.
+          hosting_task_execute($task, FALSE);
 
           // Delay for a configurable amount of time.
           $delay = variable_get('hosting_queued_post_task_delay', 0);
