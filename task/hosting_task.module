@@ -760,11 +760,24 @@ function hosting_task_execute($task, $fork = TRUE) {
   // Execute in it's own process.
   drush_invoke_process('@self', "hosting-task", array($task->nid), array('strict' => FALSE), array('fork' => $fork));
 
-  drush_log(dt('Finished task "@title" [node/@nid].', array(
-    '@title' => $task->title,
-    '@nid' => $task->nid,
-  )), 'ok');
-
+  // Log a message, depending on forked process or not.
+  // If forked, the process may not have completed yet, so we should change the message.
+  if ($backend_options['fork']) {
+    drush_log(dt('Launched task "@title" in a forked process. [node/@nid]', array(
+      '@title' => $task->title,
+      '@nid' => $task->nid,
+    )), 'ok');
+  }
+  // If not forked, load and display the task status.
+  else {
+    $task = node_load($task->nid, NULL, TRUE);
+    drush_log(dt('Finished task "@title" with status "@status" in @duration [node/@nid].', array(
+      '@title' => $task->title,
+      '@nid' => $task->nid,
+      '@status' => _hosting_parse_error_code($task->task_status),
+      '@duration' => format_interval($task->duration, 1),
+    )), 'ok');
+  }
 }
 
 /**
