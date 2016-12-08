@@ -775,7 +775,7 @@ function hosting_task_execute($task, $backend_options = array()) {
       '@title' => $task->title,
       '@nid' => $task->nid,
       '@status' => _hosting_parse_error_code($task->task_status),
-      '@duration' => format_interval($task->duration, 1),
+      '@duration' => format_interval($task->delta, 1),
     )), 'ok');
   }
 }
