@@ -91,7 +91,7 @@ function drush_hosting_queued() {
           sleep(1);
 
           // Execute the task.
-          hosting_task_execute($task, FALSE);
+          hosting_task_execute($task, array('interactive' => TRUE));
 
           // Delay for a configurable amount of time.
           $delay = variable_get('hosting_queued_post_task_delay', 0);
