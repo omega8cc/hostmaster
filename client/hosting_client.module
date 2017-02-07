@@ -467,6 +467,8 @@ function hosting_client_register_user($node) {
       $to = $node->email;
     }
 
+    $from = variable_get('site_mail', ini_get('sendmail_from'));
+
     $params = array(
       '!username' => $user->name,
       '!site' => variable_get('site_name', 'Drupal'),
@@ -481,7 +483,7 @@ function hosting_client_register_user($node) {
     // No e-mail verification is required.
     // Create new user account, and login user immediately.
     $language = user_preferred_language($user);
-    drupal_mail('hosting_client', 'hosting-client-register-welcome', $to, $language, $params);
+    drupal_mail('hosting_client', 'hosting-client-register-welcome', $to, $language, $params, $from, TRUE);
   }
   return $user;
 }
