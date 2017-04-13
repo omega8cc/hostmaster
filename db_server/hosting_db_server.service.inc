@@ -20,7 +20,13 @@ class hostingService_db_mysql extends hostingService_db {
   public $has_port = TRUE;
 
   function default_port() {
-    return 3306;
+    $ctrlf = '/data/conf/' . $this->db_user . '_use_proxysql.txt';
+    if (is_file($ctrlf)) {
+      return 6033;
+    }
+    else {
+      return 3306;
+    }
   }
 
   function form(&$form) {
