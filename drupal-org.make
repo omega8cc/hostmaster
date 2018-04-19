@@ -32,13 +32,17 @@ projects[admin_menu][download][url] = "/opt/tmp/make_local/admin_menu"
 projects[betterlogin][download][type] = "copy"
 projects[betterlogin][download][url] = "/opt/tmp/make_local/betterlogin"
 
-; http://ftp.drupal.org/files/projects/ctools-7.x-1.10.tar.gz
+; http://ftp.drupal.org/files/projects/ctools-7.x-1.14.tar.gz
 projects[ctools][download][type] = "copy"
 projects[ctools][download][url] = "/opt/tmp/make_local/ctools"
 
-; http://ftp.drupal.org/files/projects/entity-7.x-1.7.tar.gz
+; http://ftp.drupal.org/files/projects/entity-7.x-1.9.tar.gz
 projects[entity][download][type] = "copy"
 projects[entity][download][url] = "/opt/tmp/make_local/entity"
+
+; http://ftp.drupal.org/files/projects/module_filter-7.x-2.1.tar.gz
+projects[entity][download][type] = "copy"
+projects[entity][download][url] = "/opt/tmp/make_local/module_filter"
 
 ; http://ftp.drupal.org/files/projects/openidadmin-7.x-1.0.tar.gz
 projects[openidadmin][download][type] = "copy"
@@ -52,13 +56,47 @@ projects[overlay_paths][download][url] = "/opt/tmp/make_local/overlay_paths"
 projects[r4032login][download][type] = "copy"
 projects[r4032login][download][url] = "/opt/tmp/make_local/r4032login"
 
-; http://ftp.drupal.org/files/projects/views-7.x-3.14.tar.gz
+; http://ftp.drupal.org/files/projects/views-7.x-3.20.tar.gz
 projects[views][download][type] = "copy"
 projects[views][download][url] = "/opt/tmp/make_local/views"
 
-; http://ftp.drupal.org/files/projects/views_bulk_operations-7.x-3.3.tar.gz
+; http://ftp.drupal.org/files/projects/views_bulk_operations-7.x-3.4.tar.gz
 projects[views_bulk_operations][download][type] = "copy"
 projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk_operations"
+
+; Two factor authentication
+
+; https://ftp.drupal.org/files/projects/libraries-7.x-2.3.tar.gz
+projects[libraries][download][type] = "copy"
+projects[libraries][download][url] = "/opt/tmp/make_local/libraries"
+
+; https://ftp.drupal.org/files/projects/tfa-7.x-2.0.tar.gz
+projects[tfa][download][type] = "copy"
+projects[tfa][download][url] = "/opt/tmp/make_local/tfa"
+
+; https://ftp.drupal.org/files/projects/tfa_basic-7.x-1.0.tar.gz
+projects[tfa_basic][download][type] = "copy"
+projects[tfa_basic][download][url] = "/opt/tmp/make_local/tfa_basic"
+projects[tfa_basic][patch][] = "https://www.drupal.org/files/issues/use_libraries_module-2807953-8.patch"
+
+libraries[qrcodejs][download][type] = git
+libraries[qrcodejs][download][url] = https://github.com/davidshimjs/qrcodejs.git
+libraries[qrcodejs][download][revision] = 04f46c6a0708418cb7b96fc563eacae0fbf77674
+
+; JQuery TimeAgo plugin
+
+; https://ftp.drupal.org/files/projects/timeago-7.x-2.3.tar.gz
+projects[timeago][download][type] = "copy"
+projects[timeago][download][url] = "/opt/tmp/make_local/timeago"
+
+libraries[timeago][download][type] = get
+libraries[timeago][download][url] = https://raw.githubusercontent.com/rmm5t/jquery-timeago/v1.6.1/jquery.timeago.js
+libraries[timeago][destination] = libraries
+
+; Vue.js
+libraries[vuejs][download][type] = get
+libraries[vuejs][download][url] = https://github.com/vuejs/vue/raw/v2.4.4/dist/vue.min.js
+libraries[vuejs][destination] = libraries
 
 ; BOA Drupal Contrib
 
