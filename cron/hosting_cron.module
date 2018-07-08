@@ -6,7 +6,7 @@
 
 // Define the default cron interval, if not specified
 // in hosting_cron_default_interval variable.
-define('ADV_CRON_DEFAULT', 86400);
+define('ADV_CRON_DEFAULT', 3600);
 
 // Define the interval interpreted as cron turned off.
 define('ADV_CRON_TURNED_OFF', 0);
@@ -411,7 +411,7 @@ function hosting_cron_form_site_node_form_alter(&$form, $form_state) {
 function hosting_cron_interval_options() {
   $options = array(
     ADV_CRON_TURNED_OFF => t('Disabled'),
-    ADV_CRON_DEFAULT => t('24h (default)'),
+    ADV_CRON_DEFAULT => t('1h (default)'),
   );
   $options += drupal_map_assoc(array(60, 180, 300, 600, 900, 1800, 3600, 10800, 21600, 43200, 86400, 604800), 'format_interval');
   return $options;
