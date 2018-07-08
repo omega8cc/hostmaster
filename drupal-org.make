@@ -74,7 +74,7 @@ projects[libraries][download][url] = "/opt/tmp/make_local/libraries"
 projects[tfa][download][type] = "copy"
 projects[tfa][download][url] = "/opt/tmp/make_local/tfa"
 
-; https://ftp.drupal.org/files/projects/tfa_basic-7.x-1.0.tar.gz
+; https://ftp.drupal.org/files/projects/tfa_basic-7.x-1.1.tar.gz
 projects[tfa_basic][download][type] = "copy"
 projects[tfa_basic][download][url] = "/opt/tmp/make_local/tfa_basic"
 projects[tfa_basic][patch][] = "https://www.drupal.org/files/issues/use_libraries_module-2807953-8.patch"
