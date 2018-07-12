@@ -1243,7 +1243,7 @@ function _hosting_task_log_table($node, $last_position = 0) {
 
   $query_args = array(':vid' => $node->vid, ':lid' => $last_position);
 
-  $types_string = variable_get('hosting_task_logs_types_display', 'error warning info message ok status success warning');
+  $types_string = variable_get('hosting_task_logs_types_display', 'ALL');
   if ($types_string == 'ALL') {
     $type_query = "";
   }
