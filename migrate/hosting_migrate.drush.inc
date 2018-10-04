@@ -22,7 +22,7 @@ function drush_hosting_migrate_pre_hosting_task($task) {
 
 
     $profile_instance = _hosting_migrate_get_target_profile_name($task);
-    if (is_array($profile_instance) && count($profile_instance)) {
+    if (is_object($profile_instance) && isset($profile_instance->short_name)) {
       $task->options['profile'] = $profile_instance->short_name;
     }
     else {
