@@ -92,15 +92,14 @@ function drush_hosting_queued() {
 
       continue;
     }
-    else {
-      // If was paused on last cycle, announce that it has been unpaused.
-      if ($is_paused) {
-        drush_log('Hosting Queued has been unpaused.', 'ok');
-      }
 
-      // Save current state for next cycle.
-      $is_paused = variable_get('hosting_queued_paused', 0);
+    // If was paused on last cycle, announce that it has been unpaused.
+    if ($is_paused) {
+      drush_log('Hosting Queued has been unpaused.', 'ok');
     }
+
+    // Save current state for next cycle.
+    $is_paused = variable_get('hosting_queued_paused', 0);
 
     try {
       // Should we terminate.
