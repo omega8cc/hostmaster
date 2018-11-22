@@ -1818,7 +1818,6 @@ function hosting_task_status_name($hosting_task_status = NULL) {
  * Return a css class from a hosting task status integer value.
  */
 function hosting_task_status_class($status = NULL) {
-  print $status;
   if (!is_null($status) && $name = hosting_task_status_name($status)) {
     return 'hosting-' . $name;
   }
