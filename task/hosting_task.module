@@ -1793,31 +1793,38 @@ function hosting_task_fetch_tasks($rid) {
 }
 
 /**
+ * Return a machine name for each state.
+ */
+function hosting_task_status_name($hosting_task_status = NULL) {
+  $codes = array(
+    HOSTING_TASK_SUCCESS    => 'success',
+    HOSTING_TASK_QUEUED     => 'queued',
+    HOSTING_TASK_ERROR      => 'error',
+    HOSTING_TASK_PROCESSING => 'processing',
+    HOSTING_TASK_WARNING    => 'warning',
+  );
+  if (!is_null($hosting_task_status) && isset($codes[$hosting_task_status])) {
+    return $codes[$hosting_task_status];
+  }
+  elseif (!is_null($hosting_task_status) && !isset($codes[$hosting_task_status])) {
+    return '';
+  }
+  else {
+    return $codes;
+  }
+}
+
+/**
  * Traslate a task status code into a css class.
  */
 function hosting_task_status_class($status = NULL) {
-  $class = NULL;
-  if (!is_null($status)) {
-    switch ($status) {
-      case HOSTING_TASK_SUCCESS:
-        $class = 'hosting-success';
-        break;
-      case HOSTING_TASK_ERROR:
-        $class = 'hosting-error';
-        break;
-      case HOSTING_TASK_QUEUED:
-        $class = 'hosting-queue';
-        break;
-      case HOSTING_TASK_PROCESSING:
-        $class = 'hosting-processing';
-        break;
-      case HOSTING_TASK_WARNING:
-        $class = 'hosting-warning';
-        break;
-    }
+  print $status;
+  if (!is_null($status) && $name = hosting_task_status_name($status)) {
+    return 'hosting-' . $name;
   }
-
-  return $class;
+  else {
+    return '';
+  }
 }
 
 /**
