@@ -945,6 +945,7 @@ function hosting_task_insert($node) {
         ->execute();
     }
   }
+  module_invoke_all('hosting_task_update_status', $node, $node->task_status);
   hosting_task_set_title($node);
 }
 
@@ -988,6 +989,7 @@ function hosting_task_update($node) {
           ->execute();
       }
     }
+    module_invoke_all('hosting_task_update_status', $node, $node->task_status);
   }
 }
 
