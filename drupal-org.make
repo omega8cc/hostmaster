@@ -28,7 +28,7 @@ projects[hosting_tasks_extra][subdir] = aegir
 projects[admin_menu][download][type] = "copy"
 projects[admin_menu][download][url] = "/opt/tmp/make_local/admin_menu"
 
-; http://ftp.drupal.org/files/projects/betterlogin-7.x-1.4.tar.gz
+; http://ftp.drupal.org/files/projects/betterlogin-7.x-1.5.tar.gz
 projects[betterlogin][download][type] = "copy"
 projects[betterlogin][download][url] = "/opt/tmp/make_local/betterlogin"
 
@@ -60,13 +60,13 @@ projects[r4032login][download][url] = "/opt/tmp/make_local/r4032login"
 projects[views][download][type] = "copy"
 projects[views][download][url] = "/opt/tmp/make_local/views"
 
-; http://ftp.drupal.org/files/projects/views_bulk_operations-7.x-3.4.tar.gz
+; http://ftp.drupal.org/files/projects/views_bulk_operations-7.x-3.5.tar.gz
 projects[views_bulk_operations][download][type] = "copy"
 projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk_operations"
 
 ; Two factor authentication
 
-; https://ftp.drupal.org/files/projects/libraries-7.x-2.3.tar.gz
+; https://ftp.drupal.org/files/projects/libraries-7.x-2.5.tar.gz
 projects[libraries][download][type] = "copy"
 projects[libraries][download][url] = "/opt/tmp/make_local/libraries"
 
@@ -77,7 +77,7 @@ projects[tfa][download][url] = "/opt/tmp/make_local/tfa"
 ; https://ftp.drupal.org/files/projects/tfa_basic-7.x-1.1.tar.gz
 projects[tfa_basic][download][type] = "copy"
 projects[tfa_basic][download][url] = "/opt/tmp/make_local/tfa_basic"
-projects[tfa_basic][patch][] = "https://www.drupal.org/files/issues/use_libraries_module-2807953-8.patch"
+; projects[tfa_basic][patch][] = "https://www.drupal.org/files/issues/use_libraries_module-2807953-8.patch"
 
 libraries[qrcodejs][download][type] = git
 libraries[qrcodejs][download][url] = https://github.com/davidshimjs/qrcodejs.git
