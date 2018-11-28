@@ -5,7 +5,7 @@
  */
 
 /**
- * Configuration form for backup schedules
+ * Configuration form for the queue daemon.
  */
 function hosting_queued_settings_form($form, &$form_state) {
 
