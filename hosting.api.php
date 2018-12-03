@@ -379,7 +379,8 @@ function hosting_TASK_SINGULAR_summary() {
 }
 
 /**
- * Reacts to tasks ending, with any status.
+ * Reacts any time a task has it's status updated, including when being run in
+ * the queue, ending, or being cancelled.
  *
  * @param object $task
  *   The task that has just completed.
