@@ -18,5 +18,14 @@ function hosting_queued_menu() {
     'type' => MENU_LOCAL_TASK,
     'file' => 'hosting_queued.admin.inc',
   );
+  $items['admin/hosting/queued/semaphore'] = array(
+    'title' => 'Unlock Hosting Queue',
+    'description' => 'Remove the semaphore lock.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('hosting_queued_remove_semaphore_form'),
+    'access arguments' => array('administer hosting queues'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'hosting_queued.admin.inc',
+  );
   return $items;
 }
