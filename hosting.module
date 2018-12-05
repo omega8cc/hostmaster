@@ -145,6 +145,7 @@ function hosting_menu() {
     'access callback' => TRUE,
     'menu_name' =>'main-menu',
     'type' => MENU_NORMAL_ITEM,
+    'weight' => 100,
   );
   return $items;
 }
