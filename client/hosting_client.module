@@ -377,6 +377,36 @@ function hosting_client_validate_suggest($name, $internal = FALSE) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function hosting_client_form_site_node_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
+  $node = $form['#node'];
+
+  $client_ids = hosting_get_client_from_user($user->uid);
+  if (empty($client_ids) && !user_access('administer clients') && variable_get('hosting_client_require_client_to_create_site', FALSE)) {
+    form_set_error('client', t('Your user is not associated with any clients so you are not allowed to create new sites'));
+    $form['#access'] = 0;
+    return $form;
+  }
+
+  $editable = ((!isset($node->client) || !isset($node->nid)) || user_access('administer sites')) && hosting_feature('client');
+  $add_client_text = '';
+  if (user_access('administer clients') || user_access('create client')) {
+    $add_client_text = t('Click !here to add a new client.', array('!here' => l(t('here'), 'node/add/client', array('attributes' => array('target' => '_blank')))));
+  }
+  _hosting_site_field($form, $node, 'client', array(
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#title' => t('Client'),
+    '#default_value' => _hosting_client_site_default($node),
+    '#description' => t('The client to whom this site belongs.') . ' ' . $add_client_text,
+    '#autocomplete_path' => 'hosting_client/autocomplete/client',
+  ), 'filter_xss', $editable);
+
+}
+
+/**
  * Implements hook_insert().
  */
 function hosting_client_insert($node) {
@@ -886,9 +916,6 @@ function _hosting_client_site_default($node) {
         $current_client_id = $client_id;
       }
     }
-    if (!$current_client_id && !user_access('administer clients')) {
-      form_set_error('client', t('Your user is not associated with any clients so you are not allowed to create new sites'));
-    }
   }
 
   if (!$current_client_id) {
@@ -991,7 +1018,12 @@ function hosting_client_configure($form, &$form_state) {
     '#description' => t('If this setting is on, any new client nodes will automatically have a system user account generated for them, and associated with the new client node. Users going through the signup form module have a user created regardless of this setting.'),
     '#default_value' => variable_get('hosting_client_register_user', FALSE),
   );
-
+  $form['hosting_client_require_client_to_create_site'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Require users to have a client to create a site.'),
+    '#description' => t('If this setting is on, users will not be able to create sites unless they are associated with a client.'),
+    '#default_value' => variable_get('hosting_client_require_client_to_create_site', FALSE),
+  );
   // User e-mail settings.
   $form['email'] = array(
     '#type' => 'fieldset',
