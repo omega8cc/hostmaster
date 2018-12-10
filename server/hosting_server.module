@@ -149,8 +149,8 @@ function hosting_server_hosting_tasks() {
  */
 function hosting_server_permission() {
   return array(
-    'administer server' => array(
-      'title' => t('administer server'),
+    'administer servers' => array(
+      'title' => t('administer servers'),
     ),
     'create server' => array(
       'title' => t('create server'),
