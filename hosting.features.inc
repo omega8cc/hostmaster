@@ -562,7 +562,14 @@ function hosting_add_permissions($module, $role_perms) {
       }
 
       if (array_key_exists($name, $role_perms)) {
-        user_role_grant_permissions($rid, $role_perms[$name]);
+
+        // Make sure the permission exists before adding it.
+        $modules = user_permission_get_modules();
+        foreach ($role_perms[$name] as $i => $permission) {
+          if (!isset($modules[$permission])) {
+            unset($role_perms[$i]);
+          }
+        }
         drupal_set_message(t("The '%role' role was assigned the following permission!plural: '%perms'.", array(
           '%role' => $name,
           '%perms' => implode('\', \'', $role_perms[$name]),
