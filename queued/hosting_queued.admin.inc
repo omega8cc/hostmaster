@@ -5,7 +5,7 @@
  */
 
 /**
- * Configuration form for backup schedules
+ * Configuration form for the queue daemon.
  */
 function hosting_queued_settings_form($form, &$form_state) {
 
@@ -14,6 +14,32 @@ function hosting_queued_settings_form($form, &$form_state) {
     '#value' => t('Note that the settings on this form will only apply to the daemon once it has been restarted, which by default happens as least once an hour.'),
     '#weight' => -100,
   );
+
+  $semaphore_status = db_select('semaphore', 's')
+    ->fields('s', array('name'))
+    ->condition('s.name', 'hosting_queue_tasks_running')
+    ->execute()
+    ->fetchField()
+  ;
+
+  $processing_tasks = db_select('hosting_task', 't')
+    ->fields('t', array('nid'))
+    ->condition('task_status', HOSTING_TASK_PROCESSING)
+    ->execute()
+    ->fetchField()
+  ;
+
+  $form['hosting_queue_tasks_running'] = array(
+    '#type' => 'item',
+    '#title' => t('Tasks Running'),
+    '#markup' => $processing_tasks? t('Yes'): t('No'),
+  );
+
+  if (!$processing_tasks && $semaphore_status) {
+    $form['hosting_queue_tasks_running']['#description'] = t('Warning: The task queue is locked but there are no tasks running. !link to remove the lock.', array(
+      '!link' => l(t('Click Here'), 'admin/hosting/queued/semaphore')
+    ));
+  }
 
   $last_seen = variable_get('hosting_queued_process_started', NULL);
   $form['hosting_queued_process_started'] = array(
@@ -67,4 +93,81 @@ function hosting_queued_settings_form($form, &$form_state) {
 
 function _hosting_queued_settings_form_delay_callback($value) {
   return format_plural($value, '1 second', '@count seconds');
+}
+
+/**
+ * Form for removing the hosting queue lock.
+ *
+ * @return mixed
+ */
+function hosting_queued_remove_semaphore_form() {
+
+  drupal_set_title(t('Unlock Hosting Queue'));
+
+  $processing_tasks = db_select('hosting_task', 't')
+    ->fields('t', array('nid'))
+    ->condition('task_status', HOSTING_TASK_PROCESSING)
+    ->execute()
+    ->fetchField()
+  ;
+  $semaphore_status = db_select('semaphore', 's')
+    ->fields('s', array('name'))
+    ->condition('s.name', 'hosting_queue_tasks_running')
+    ->execute()
+    ->fetchField()
+  ;
+
+
+  $form['hosting_queue_tasks_running'] = array(
+    '#type' => 'item',
+    '#title' => t('Tasks Running'),
+    '#markup' => $processing_tasks? t('Yes'): t('No'),
+  );
+
+  $form['hosting_queue_tasks_locked'] = array(
+    '#type' => 'item',
+    '#title' => t('Task Queue Locked'),
+    '#markup' => $semaphore_status? t('Yes'): t('No'),
+  );
+
+  $disabled = TRUE;
+  if ($semaphore_status && !$processing_tasks) {
+    $form['hosting_queue_tasks_locked']['#description'] = t('The task queue is locked but there are no tasks running. You should unlock the queue.');
+    $button_class = 'btn-success';
+    $disabled = FALSE;
+  }
+  else {
+    $form['hosting_queue_tasks_locked']['#description'] = t('The task queue is not locked.');
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Unlock Hosting Queue'),
+    '#disabled' => $disabled,
+    '#attributes' => array(
+      'class' => array($button_class)
+    )
+  );
+
+  return $form;
+}
+
+/**
+ * submit function for the form for removing the hosting queue lock.
+
+ */
+function hosting_queued_remove_semaphore_form_submit() {
+  global $locks;
+  unset($locks['hosting_queue_tasks_running']);
+  $success = db_delete('semaphore')
+    ->condition('name', 'hosting_queue_tasks_running')
+    ->execute();
+
+  if ($success) {
+    drupal_set_message(t('Hosting Queue unlocked.'));
+  }
+  else {
+    drupal_set_message(t('Hosting Queue was not unlocked. Something went wrong.'), 'error');
+
+  }
 }

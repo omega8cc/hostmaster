@@ -1322,6 +1322,12 @@ function hosting_settings($form, &$form_state) {
     '#description' => t("When verifying a new platform, set its initial state to 'Locked'. This can avoid having sites created on a new platform before there has been a chance to test it. Those users with the 'create sites on locked platforms' permission (e.g., with the 'platform manager' role) will still be able to build sites."),
     '#default_value' => variable_get('hosting_lock_platforms_by_default', FALSE),
   );
+  $form['hosting_platform_automatic_site_import'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Automatically import sites when verifying platforms'),
+    '#description' => t("When verifying a platform, if sites are found that do not yet exist in the front-end, automatically import them."),
+    '#default_value' => variable_get('hosting_platform_automatic_site_import', TRUE),
+  );
   $form['hosting_require_disable_before_delete'] = array(
     '#type' => 'checkbox',
     '#title' => t('Require site to be disabled before deletion'),

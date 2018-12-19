@@ -77,9 +77,6 @@ function hosting_drush_command() {
 
   $items['hosting-pause'] = array(
     'description' => dt('Prepare the hostmaster site to be migrated to a new platform.'),
-    'arguments' => array(
-      'example.com' => dt('The url of the site being migrated.'),
-    ),
   );
 
   $items['hosting-resume'] = array(
