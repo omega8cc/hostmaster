@@ -142,12 +142,20 @@ function hosting_menu() {
     'title' => 'Hostmaster',
     'description' => 'View and configure the Hostmaster site.',
     'page callback' => 'hosting_menu_hostmaster_redirect',
-    'access callback' => TRUE,
+    'access callback' => 'hosting_menu_hostmaster_access',
     'menu_name' =>'main-menu',
     'type' => MENU_NORMAL_ITEM,
     'weight' => 100,
   );
   return $items;
+}
+
+/**
+ * Access hook for /hostmaster callback page. Checks the access for hostmaster node page.
+ * @return bool
+ */
+function hosting_menu_hostmaster_access() {
+  return drupal_valid_path('hosting/c/hostmaster');
 }
 
 /**
