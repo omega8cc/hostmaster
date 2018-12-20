@@ -372,3 +372,11 @@ function hosting_client_update_7001(&$sandbox) {
     node_access_needs_rebuild(FALSE);
   }
 }
+
+/**
+ * Enable the setting to require users to have a client before creating a site.
+ * The new default is "disabled" but the existing behavior should be preserved.
+ */
+function hosting_client_update_7002() {
+  variable_set('hosting_client_require_client_to_create_site', 1);
+}
