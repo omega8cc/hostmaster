@@ -149,8 +149,8 @@ function hosting_server_hosting_tasks() {
  */
 function hosting_server_permission() {
   return array(
-    'administer server' => array(
-      'title' => t('administer server'),
+    'administer servers' => array(
+      'title' => t('administer servers'),
     ),
     'create server' => array(
       'title' => t('create server'),
@@ -171,7 +171,7 @@ function hosting_server_permission() {
  * Implements hook_node_access().
  */
 function hosting_server_node_access($node, $op, $account) {
-  if (hosting_feature('client') && $op != 'create') {
+  if (variable_get('hosting_server_use_hosting_client_access', TRUE) && hosting_feature('client') && $op != 'create') {
     // We rely on hosting_client_node_grants() instead of global configuration.
     return NODE_ACCESS_IGNORE;
   }
@@ -181,18 +181,23 @@ function hosting_server_node_access($node, $op, $account) {
     return NODE_ACCESS_IGNORE;
   }
 
+  // Permission "administer servers" allows all ops.
+  if (user_access('administer servers', $account)) {
+    return 'allow';
+  }
+
   switch ($op) {
     case 'create':
-      return user_access('create server', $account);
+      return user_access('create server', $account)? NODE_ACCESS_ALLOW: NODE_ACCESS_DENY;
 
     case 'update':
-      return user_access('edit server', $account);
+      return user_access('edit server', $account)? NODE_ACCESS_ALLOW: NODE_ACCESS_DENY;
 
     case 'delete':
-      return user_access('delete server', $account);
+      return user_access('delete server', $account)? NODE_ACCESS_ALLOW: NODE_ACCESS_DENY;
 
     case 'view':
-      return user_access('view server', $account);
+      return user_access('view server', $account)? NODE_ACCESS_ALLOW: NODE_ACCESS_DENY;
 
   }
 }

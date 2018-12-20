@@ -382,3 +382,13 @@ function hosting_server_update_7301() {
     'default' => 0,
   ));
 }
+
+/**
+ * Convert all roles with the 'administer server' permission to 'administer servers'.
+ */
+function hosting_server_update_7302() {
+  db_update('role_permission')
+    ->fields(array('permission' => 'administer servers'))
+    ->condition('permission', 'administer server')
+    ->execute();
+}
