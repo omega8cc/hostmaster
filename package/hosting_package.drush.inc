@@ -40,7 +40,7 @@ function drush_hosting_package_pre_hosting_task() {
             '!platform' => $task->ref->platform,
             '!site' => $task->ref->nid,
             '!profile' => $task->ref->profile_name,
-          )), 'warning');
+          )), 'notice');
         }
       }
 
