@@ -41,8 +41,8 @@ projects[entity][download][type] = "copy"
 projects[entity][download][url] = "/opt/tmp/make_local/entity"
 
 ; http://ftp.drupal.org/files/projects/module_filter-7.x-2.1.tar.gz
-projects[entity][download][type] = "copy"
-projects[entity][download][url] = "/opt/tmp/make_local/module_filter"
+projects[module_filter][download][type] = "copy"
+projects[module_filter][download][url] = "/opt/tmp/make_local/module_filter"
 
 ; http://ftp.drupal.org/files/projects/openidadmin-7.x-1.0.tar.gz
 projects[openidadmin][download][type] = "copy"
