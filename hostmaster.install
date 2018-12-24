@@ -12,6 +12,8 @@ function hostmaster_install() {
 // add support for nginx
   if (d()->platform->server->http_service_type === 'nginx') {
     module_enable(array('hosting_nginx'));
+    module_enable(array('hosting_ssl'));
+    module_enable(array('hosting_nginx_ssl'));
   }
 
   // Bootstrap and create all the initial nodes
