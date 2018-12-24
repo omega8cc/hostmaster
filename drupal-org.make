@@ -104,7 +104,7 @@ libraries[vuejs][destination] = libraries
 projects[features_extra][download][type] = "copy"
 projects[features_extra][download][url] = "/opt/tmp/make_local/features_extra"
 
-; http://ftp.drupal.org/files/projects/features-7.x-2.10.tar.gz
+; http://ftp.drupal.org/files/projects/features-7.x-2.11.tar.gz
 projects[features][download][type] = "copy"
 projects[features][download][url] = "/opt/tmp/make_local/features"
 
