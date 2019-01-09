@@ -90,7 +90,7 @@ projects[timeago][download][type] = "copy"
 projects[timeago][download][url] = "/opt/tmp/make_local/timeago"
 
 libraries[timeago][download][type] = get
-libraries[timeago][download][url] = https://raw.githubusercontent.com/rmm5t/jquery-timeago/v1.6.1/jquery.timeago.js
+libraries[timeago][download][url] = https://raw.githubusercontent.com/rmm5t/jquery-timeago/v1.6.3/jquery.timeago.js
 libraries[timeago][destination] = libraries
 
 ; Vue.js
