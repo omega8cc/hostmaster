@@ -376,6 +376,9 @@ function hosting_site_update(&$node) {
     if ($node->site_status == HOSTING_SITE_DELETED) {
       $node->no_verify = TRUE;
     }
+  }
+  $client = hosting_get_client($node->client);
+  $node->client = isset($client->nid) ? $client->nid : '1';
 
     db_update('hosting_site')
       ->fields(array(
