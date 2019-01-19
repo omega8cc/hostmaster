@@ -631,16 +631,16 @@ function hosting_supporting_aegir_block() {
   if (user_access('administer hosting')) {
     $output = "
 
-      <p>Aegir will always cost you nothing to use, but that doesn't mean it costs us nothing to make.</p>
-
-      <p><strong>Aegir needs your continued support to grow and thrive.</strong></p>
-
-      <p>If you feel that Aegir has added significant value to your business or endeavour, please consider donating!</p>
+      <footer style=\"font-size: smaller;\">
+      Aegir will always cost you nothing to use, but that doesn't mean it costs us nothing to make.
+      <strong> Aegir needs your continued support to grow and thrive. </strong>
+      If you feel that Aegir has added significant value to your business or endeavour, please consider donating!
       <p><strong>How much is Aegir worth to you?</strong></p>
       <a href=\"http://www.aegirproject.org/#support\" target=_blank>Donate Now ... </a>
       <a href=\"http://www.aegirproject.org/#support\" target=_blank>or get more info.</a>
 
-      <footer style=\"font-size: smaller;\">This block is only displayed to you, the superuser.</footer>
+      <i>This block is only displayed to you, the superuser.</i>
+      </footer>
       ";
     return $output;
   }
