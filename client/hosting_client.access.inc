@@ -191,13 +191,11 @@ function hosting_client_user_form_submit($edit, $user) {
   }
   if (array_key_exists('hosting_client', $edit) && $edit['hosting_client']) {
     $client = hosting_get_client($edit['hosting_client']);
-    $user_uid = isset($user->uid) ? $user->uid : 'octopus4you';
-    $contact_type = isset($client->contact_type) ? $client->contact_type : 'tech';
     $query = $id = db_insert('hosting_client_user')
       ->fields(array(
         'client' => $client->nid,
-        'user' => $user_uid,
-        'contact_type' => $contact_type,
+        'user' => $user->uid,
+        'contact_type' => '',
       ))
       ->execute();
   }
