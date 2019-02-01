@@ -354,3 +354,12 @@ function hosting_client_update_6004() {
   $ret[] = update_sql("UPDATE {hosting_site} SET client = %d WHERE client = 0", HOSTING_DEFAULT_CLIENT);
   return $ret;
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Re-build node access.
+ */
+function hosting_client_update_7001(&$sandbox) {
+  return array(); // never fail
+}
