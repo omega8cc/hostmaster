@@ -183,10 +183,10 @@ function hosting_site_wildcard_load($arg) {
 function _hosting_site_goto_link($node) {
   $cache = cache_get("hosting:site:" . $node->nid . ":login_link");
   if (user_access('create login-reset task') && $cache && (REQUEST_TIME < $cache->data['expire'])) {
-    $title = t("Log in to !url", array('!url' => $node->title));
+    $title = t("Log in to !url", array('!url' => _hosting_site_canonical_url($node)));
   }
   else {
-    $title = t("Go to !url", array('!url' => $node->title));
+    $title = t("Go to !url", array('!url' => _hosting_site_canonical_url($node)));
   }
   $url = "node/" . $node->nid . "/goto_site";
   return theme('hosting_site_goto_link', array('title' => $title, 'url' => $url));
@@ -239,7 +239,7 @@ function _hosting_site_url($node) {
   $schema = 'http';
   $port = NULL;
 
-  $url = strtolower(trim($node->title));
+  $url = _hosting_site_canonical_url($node);
 
   $platform = node_load($node->platform);
   $server = node_load($platform->web_server);
@@ -274,6 +274,17 @@ function _hosting_site_url($node) {
   }
 
   return "{$schema}://{$url}";
+}
+
+/**
+ * Get site's canonical URL.
+ */
+function _hosting_site_canonical_url($node) {
+  # Use the redirection target, if it's available.
+  # Default to the site title, otherwise.
+  $url = $node->redirection ?: $node->title;
+
+  return strtolower(trim($url));
 }
 
 /**
