@@ -888,6 +888,7 @@ function hosting_set_breadcrumb($node) {
       $breadcrumbs[] = l(t('Servers'), 'hosting/servers');
       break;
   }
+  $breadcrumbs[] = _hosting_node_link($node->nid);
   drupal_set_breadcrumb($breadcrumbs);
 }
 
