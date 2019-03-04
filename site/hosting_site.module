@@ -282,7 +282,7 @@ function _hosting_site_url($node) {
 function _hosting_site_canonical_url($node) {
   # Use the redirection target, if it's available.
   # Default to the site title, otherwise.
-  $url = $node->redirection ?: $node->title;
+  $url = isset($node->redirection) && $node->redirection ? $node->redirection : $node->title;
 
   return strtolower(trim($url));
 }
@@ -727,6 +727,15 @@ function theme_hosting_site_profile($variables) {
     return "{$variables['profile']->title} <em>({$variables['profile']->short_name})</em>";
   }
   return "{$variables['profile']->title} ({$variables['profile']->short_name})";
+}
+
+/**
+ * Theme function for site titles.
+ */
+function hosting_site_preprocess(&$variables) {
+  if (isset($variables['node'])) {
+    $variables['title'] = _hosting_site_canonical_url($variables['node']);
+  }
 }
 
 /**
