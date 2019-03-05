@@ -524,7 +524,21 @@ function hosting_alias_settings_validate($form, $form_state) {
  * Generate a default set of aliases for the site based on the global options.
  */
 function hosting_alias_automatic_aliases($url) {
-  $alias = array();
+  $aliases = module_invoke_all('hosting_automatic_aliases', $url);
+  $context = ['url' => $url];
+  drupal_alter('hosting_automatic_aliases', $aliases, $context);
+  return $aliases;
+}
+
+/**
+ * Implements hook_hosting_automatic_aliases().
+ *
+ * Generate automatic subdomain aliases.
+ *
+ * @see hosting_alias_hosting_automatic_aliases_alter().
+ */
+function hosting_alias_hosting_automatic_aliases($url) {
+  $aliases = [];
   if ($sub = variable_get('hosting_alias_subdomain', FALSE)) {
     if (!preg_match("/\." . preg_quote($sub, '/') . "$/", $url)) {
       if (variable_get('hosting_alias_subdomain_replace_dash', TRUE)) {
@@ -533,24 +547,34 @@ function hosting_alias_automatic_aliases($url) {
       }
       $find[] = '.';
       $replace[] = '-';
-      $alias[] = str_replace($find, $replace, $url) . "." . trim($sub, ".");
+      $aliases[] = str_replace($find, $replace, $url) . "." . trim($sub, ".");
     }
   }
+  return $aliases;
+}
+
+/**
+ * Implements hook_hosting_automatic_aliases_alter().
+ *
+ * Generate automatic 'www' or bare domain aliases.
+ *
+ * @see hosting_alias_hosting_automatic_aliases().
+ */
+function hosting_alias_hosting_automatic_aliases_alter(&$aliases, $context) {
   if (!preg_match('/^www\./', $url) && variable_get('hosting_alias_automatic_www', FALSE)) {
     $auto_alias = "www." . $url;
     // Lookup DNS, only add if we get an IP back.
     if (gethostbyname($auto_alias) != $auto_alias) {
-      $alias[] = $auto_alias;
+      $aliases[] = $auto_alias;
     }
   }
   elseif (preg_match('/^www\./', $url) && variable_get('hosting_alias_automatic_no_www', FALSE)) {
     $auto_alias = str_replace("www.", "", $url);
     // Lookup DNS, only add if we get an IP back.
     if (gethostbyname($auto_alias) != $auto_alias) {
-      $alias[] = $auto_alias;
+      $aliases[] = $auto_alias;
     }
   }
-  return $alias;
 }
 
 /**
