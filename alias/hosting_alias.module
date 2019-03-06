@@ -561,6 +561,7 @@ function hosting_alias_hosting_automatic_aliases($url) {
  * @see hosting_alias_hosting_automatic_aliases().
  */
 function hosting_alias_hosting_automatic_aliases_alter(&$aliases, $context) {
+  $url = $context['url'];
   if (!preg_match('/^www\./', $url) && variable_get('hosting_alias_automatic_www', FALSE)) {
     $auto_alias = "www." . $url;
     // Lookup DNS, only add if we get an IP back.
