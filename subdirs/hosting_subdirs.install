@@ -1,0 +1,32 @@
+<?php
+/**
+ * @file
+ *   Database schemas and update functions for the hosting_subdirs module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function hosting_subdirs_install() {
+  // Get the weight of the hosting_site module.
+  $result = db_select('system', 's')
+              ->fields('s', array('weight'))
+              ->condition('name', 'hosting_site', '=')
+              ->execute();
+  $weight = !empty($result) ? $result->fetchField() : 0;
+
+  // Set our module to run before hosting_site.
+  // @see: hosting_subdirs_node_presave().
+  db_update('system')
+    ->fields(array('weight' => $weight - 1))
+    ->condition('name', 'hosting_subdirs', '=')
+    ->execute();
+}
+
+/**
+ * Implements hook_update_N().
+ */
+function hosting_subdirs_update_7000() {
+  // Set module weight.
+  hosting_subdirs_install();
+}

@@ -9,7 +9,7 @@
  * Implements hook_form_alter().
  */
 function hosting_subdirs_form_alter(&$form, &$form_state, $form_id) {
-  if($form_id == 'site_node_form') {
+  if ($form_id == 'site_node_form') {
     $subdirs_text = 'Note: If the site is using a subdirectory, there should be at least one special alias with a subdirectory path (e.g., example.com/foo) below. <strong>Important: subdomain (foo) and subdirectory name (foo) must be identical</strong>. Redirection to this alias will also work, if enabled. This is useful if you do not want the site to be accessible from its subdomain (e.g., foo.example.com). You can also add more standard aliases (e.g., bar.example.com, green.example.com).';
     if (isset($form['aliases_wrapper']['#description'])) {
       $form['aliases_wrapper']['#description'] .= $subdirs_text;
@@ -17,14 +17,18 @@ function hosting_subdirs_form_alter(&$form, &$form_state, $form_id) {
     else {
       $form['aliases_wrapper']['#description'] = $subdirs_text;
     }
-  }
 
-  // Replace the normal alias validation with one that will accept subdirs.
-  $alias_validation = array_search('hosting_alias_site_form_validate', $form['#validate']);
-  if ($alias_validation) {
-    unset($form['#validate'][$alias_validation]);
+    if (isset($form_state['node']->redirection) && $form_state['node']->redirection) {
+      $form['info']['title']['#markup'] = $form_state['node']->redirection . ' (aka. ' . $form_state['node']->title . ')';
+    }
+
+    // Replace the normal alias validation with one that will accept subdirs.
+    $alias_validation = array_search('hosting_alias_site_form_validate', $form['#validate']);
+    if ($alias_validation) {
+      unset($form['#validate'][$alias_validation]);
+    }
+    $form['#validate'][] = 'hosting_subdirs_site_form_validate';
   }
-  $form['#validate'][] = 'hosting_subdirs_site_form_validate';
 }
 
 /**
@@ -65,6 +69,32 @@ function hosting_subdirs_validate_alias($site, $alias, $key) {
 }
 
 /**
+ * Implements hook_hosting_site_domain_alter().
+ */
+function hosting_subdirs_hosting_site_domain_alter(&$domain) {
+  if (hosting_subdirs_is_a_subdir($domain)) {
+    // Rewrite the subdirectory as a subdomain.
+    $domain = implode('.', array_reverse(explode('/', $domain)));
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * Handle subdir-specific configuration for a new site.
+ */
+function hosting_subdirs_node_presave($node) {
+  // Note that we set this module's weight to ensure that it runs before
+  // hosting_site. This is specifically so that $node->title here is still the
+  // subdir domain.
+  // @see: hosting_subdirs_install().
+  if ($node->type == 'site' && hosting_subdirs_is_a_subdir($node->title)) {
+    // Add an alias and redirection to the subdir URL.
+    $node->aliases[] = $node->redirection = $node->title;
+  }
+}
+
+/**
  * Validation handler for site form.
  *
  * Allow aliases with subdirectories.
@@ -76,6 +106,14 @@ function hosting_subdirs_site_form_validate($form, &$form_state) {
       hosting_subdirs_validate_alias($form_state['node'], $alias, $key);
     }
   }
+}
+
+/**
+ * Determine whether a URL is a subdirectory site.
+ */
+function hosting_subdirs_is_a_subdir($url) {
+  if (@strpos($url, '/') === FALSE) return FALSE;
+  return TRUE;
 }
 
 /**
