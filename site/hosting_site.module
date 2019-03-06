@@ -812,3 +812,20 @@ function hosting_site_hosting_task_guarded_nodes() {
     hosting_get_hostmaster_site_nid()
   );
 }
+
+/**
+ * Allow other modules to alter the domain.
+ */
+function hosting_site_get_domain($domain) {
+  drupal_alter('hosting_site_domain', $domain);
+  return $domain;
+}
+
+/**
+ * Implements hook_hosting_site_domain_alter().
+ */
+function hosting_site_hosting_site_domain_alter(&$domain) {
+  // Domain names are case-insensitive.
+  return strtolower(trim($domain));
+}
+

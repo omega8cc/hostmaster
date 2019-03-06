@@ -232,8 +232,7 @@ function hosting_site_delete($node) {
  * Implements hook_nodeapi().
  */
 function hosting_site_nodeapi_site_presave(&$node) {
-  // Domain names are case-insensitive.
-  $node->title = strtolower(trim($node->title));
+  $node->title = hosting_site_get_domain($node->title);
 }
 
 /**
