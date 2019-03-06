@@ -211,7 +211,7 @@ function hosting_site_form($node, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Domain name'),
     '#required' => TRUE,
-    '#default_value' => isset($node->title) ? strtolower(trim($node->title)) : '',
+    '#default_value' => isset($node->title) ? hosting_site_get_domain($node->title) : '',
     '#weight' => -10,
   ));
 

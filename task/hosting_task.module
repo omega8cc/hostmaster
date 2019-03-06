@@ -700,7 +700,7 @@ function hosting_task_set_title(&$node) {
   $ref = node_load($node->rid);
   $tasks = hosting_available_tasks($ref->type);
 
-  $ref_title = $ref->type == 'site' ? _hosting_site_canonical_url($ref) : $ref->title;
+  $ref_title = $ref->type == 'site' ? hosting_site_canonical_url($ref) : $ref->title;
   $node->title = drupal_ucfirst($tasks[$node->task_type]['title']) . ': ' . $ref_title;
   db_update('node')
     ->fields(array(

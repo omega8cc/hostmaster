@@ -28,7 +28,7 @@ function hosting_site_node_info() {
  */
 function hosting_site_view($node, $view_mode, $langcode = NULL) {
   hosting_set_breadcrumb($node);
-  drupal_set_title(_hosting_site_canonical_url($node));
+  drupal_set_title(hosting_site_canonical_url($node));
   $node->content['info']['#prefix'] = '<div id="hosting-site-info" class="hosting-info-list">';
   if ($node->site_status == HOSTING_SITE_ENABLED) {
     $node->content['info']['link'] = array(
