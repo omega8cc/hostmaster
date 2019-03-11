@@ -12,12 +12,7 @@ function drush_hosting_subdirs_pre_hosting_task($task) {
   if ($task->ref->type == 'site' && $task->task_type == 'migrate') {
     $site = $task->ref;
 
-    // If the site isn't using re-direction, then it isn't a subdir site.
-    if (!isset($site->redirection) || !$site->redirection) return;
-    // If the site isn't re-directing to a subdir, then it isn't a subdir site.
-    if (!hosting_subdirs_is_a_subdir($site->redirection)) return;
-    // If the site is re-directing to a custom alias, leave it alone.
-    if ($site->title != hosting_site_get_domain($site->redirection)) return;
+    if (!_hosting_subdirs_is_a_subdir_site($site)) return;
 
     // Clean up the automatic subdir alias and redirection, as they'll be
     // re-generated with the new domain.
@@ -25,5 +20,35 @@ function drush_hosting_subdirs_pre_hosting_task($task) {
     unset($site->aliases[$subdir_alias]);
     unset($site->redirection);
   }
+}
+
+/**
+ * Implements drush_HOOK_post_COMMAND().
+ */
+function drush_hosting_subdirs_post_hosting_task($task) {
+  $task = &drush_get_context('HOSTING_TASK');
+  if ($task->ref->type == 'site' && $task->task_type == 'migrate') {
+    $site = $task->ref;
+
+    if (!_hosting_subdirs_is_a_subdir_site($site)) return;
+
+    // Trigger a new verify to re-sync the front-end aliases into the back-end
+    // context, so that the subdir redirection works.
+    hosting_add_task($site->nid, 'verify');
+  }
+}
+
+/**
+ * Helper function to determine whether a hosted site is using a subdirectory URL.
+ */
+function _hosting_subdirs_is_a_subdir_site($site) {
+  // If the site isn't using re-direction, then it isn't a subdir site.
+  if (!isset($site->redirection) || !$site->redirection) return FALSE;
+  // If the site isn't re-directing to a subdir, then it isn't a subdir site.
+  if (!hosting_subdirs_is_a_subdir($site->redirection)) return FALSE;
+  // If the site is re-directing to a custom alias, leave it alone.
+  if ($site->title != hosting_site_get_domain($site->redirection)) return FALSE;
+
+  return TRUE;
 }
 
