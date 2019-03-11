@@ -10,25 +10,41 @@
  */
 function hosting_subdirs_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'site_node_form') {
-    $subdirs_text = 'Note: If the site is using a subdirectory, there should be at least one special alias with a subdirectory path (e.g., example.com/foo) below. <strong>Important: subdomain (foo) and subdirectory name (foo) must be identical</strong>. Redirection to this alias will also work, if enabled. This is useful if you do not want the site to be accessible from its subdomain (e.g., foo.example.com). You can also add more standard aliases (e.g., bar.example.com, green.example.com).';
-    if (isset($form['aliases_wrapper']['#description'])) {
-      $form['aliases_wrapper']['#description'] .= $subdirs_text;
-    }
-    else {
-      $form['aliases_wrapper']['#description'] = $subdirs_text;
-    }
-
-    if (isset($form_state['node']->redirection) && $form_state['node']->redirection) {
-      $form['info']['title']['#markup'] = $form_state['node']->redirection . ' (aka. ' . $form_state['node']->title . ')';
-    }
-
-    // Replace the normal alias validation with one that will accept subdirs.
-    $alias_validation = array_search('hosting_alias_site_form_validate', $form['#validate']);
-    if ($alias_validation) {
-      unset($form['#validate'][$alias_validation]);
-    }
-    $form['#validate'][] = 'hosting_subdirs_site_form_validate';
+    // Since our form changes should persist across failed validations, we need
+    // to use '#after_build' here.
+    // @see https://www.drupal.org/project/drupal/issues/671574#comment-3061880
+    $form['#after_build'][] = 'hosting_subdirs_alter_alias_documentation';
+    $form['#after_build'][] = 'hosting_subdirs_alter_alias_validation';
   }
+}
+
+/**
+ * Add inline documentation about subdirs.
+ */
+function hosting_subdirs_alter_alias_documentation($form, $form_state) {
+  $subdirs_text = 'Note: If the site is using a subdirectory, there should be at least one special alias with a subdirectory path (e.g., example.com/foo) below. <strong>Important: subdomain (foo) and subdirectory name (foo) must be identical</strong>. Redirection to this alias will also work, if enabled. This is useful if you do not want the site to be accessible from its subdomain (e.g., foo.example.com). You can also add more standard aliases (e.g., bar.example.com, green.example.com).';
+  if (isset($form['aliases_wrapper']['#description'])) {
+    $form['aliases_wrapper']['#description'] .= $subdirs_text;
+  }
+  else {
+    $form['aliases_wrapper']['#description'] = $subdirs_text;
+  }
+  if (isset($form_state['node']->redirection) && $form_state['node']->redirection) {
+    $form['info']['title']['#markup'] = $form_state['node']->redirection . ' (aka. ' . $form_state['node']->title . ')';
+  }
+  return $form;
+}
+
+/**
+ * Replace the normal alias validation with one that will accept subdirs.
+ */
+function hosting_subdirs_alter_alias_validation($form, $form_state) {
+  $alias_validation = array_search('hosting_alias_site_form_validate', $form['#validate']);
+  if ($alias_validation) {
+    unset($form['#validate'][$alias_validation]);
+  }
+  $form['#validate'][] = 'hosting_subdirs_site_form_validate';
+  return $form;
 }
 
 /**
