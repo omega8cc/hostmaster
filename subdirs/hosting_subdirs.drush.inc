@@ -38,17 +38,3 @@ function drush_hosting_subdirs_post_hosting_task($task) {
   }
 }
 
-/**
- * Helper function to determine whether a hosted site is using a subdirectory URL.
- */
-function _hosting_subdirs_is_a_subdir_site($site) {
-  // If the site isn't using re-direction, then it isn't a subdir site.
-  if (!isset($site->redirection) || !$site->redirection) return FALSE;
-  // If the site isn't re-directing to a subdir, then it isn't a subdir site.
-  if (!hosting_subdirs_is_a_subdir($site->redirection)) return FALSE;
-  // If the site is re-directing to a custom alias, leave it alone.
-  if ($site->title != hosting_site_get_domain($site->redirection)) return FALSE;
-
-  return TRUE;
-}
-

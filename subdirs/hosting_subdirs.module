@@ -108,6 +108,14 @@ function hosting_subdirs_node_presave($node) {
     // Add an alias and redirection to the subdir URL.
     $node->aliases[] = $node->redirection = $node->title;
   }
+  // After cloning a site, we lose our alias and redirection during the import
+  // task, since they are blank on the back-end at that point. So we preserve
+  // them from the original cloned site node, and re-instate them here.
+  // @see hosting_subdirs_post_hosting_import_task().
+  elseif (isset($node->subdir_aliases) && isset($node->subdir_redirection)) {
+    $node->aliases = $node->subdir_aliases;
+    $node->redirection = $node->subdir_redirection;
+  }
 }
 
 /**
@@ -144,3 +152,37 @@ function hosting_subdirs_valid_fqdn_subdir($fqdn) {
   return preg_match("/^([a-z0-9]([a-z0-9-\/]*[a-z0-9])?\.?)+$/i", $fqdn) &&
          preg_match("/\//", $fqdn) && !preg_match("/\/\//", $fqdn);
 }
+
+/**
+ * Helper function to determine whether a hosted site is using a subdirectory URL.
+ */
+function _hosting_subdirs_is_a_subdir_site($site) {
+  // If the site isn't using re-direction, then it isn't a subdir site.
+  if (!isset($site->redirection) || !$site->redirection) return FALSE;
+  // If the site isn't re-directing to a subdir, then it isn't a subdir site.
+  if (!hosting_subdirs_is_a_subdir($site->redirection)) return FALSE;
+  // If the site is re-directing to a custom alias, leave it alone.
+  if ($site->title != hosting_site_get_domain($site->redirection)) return FALSE;
+
+  return TRUE;
+}
+
+/**
+ * Implements hook_post_hosting_import_task().
+ */
+function hosting_subdirs_post_hosting_import_task($task, $data) {
+  // This is only relevant to sites.
+  if ($task->ref_type != 'site') return;
+
+  // This is only relevant to sites using a subdir.
+  if (!_hosting_subdirs_is_a_subdir_site($task->ref)) return;
+
+  // After cloning a site, we lose our alias and redirection during the import
+  // task, since they are blank on the back-end at that point. So we preserve
+  // them here from the original cloned site node, and re-instate them when the
+  // node gets re-saved.
+  // @see hosting_subdirs_node_presave().
+  $task->ref->subdir_redirection = $task->ref->redirection;
+  $task->ref->subdir_aliases = $task->ref->aliases;
+}
+
