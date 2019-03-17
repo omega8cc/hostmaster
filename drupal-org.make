@@ -56,7 +56,7 @@ projects[overlay_paths][download][url] = "/opt/tmp/make_local/overlay_paths"
 projects[r4032login][download][type] = "copy"
 projects[r4032login][download][url] = "/opt/tmp/make_local/r4032login"
 
-; http://ftp.drupal.org/files/projects/views-7.x-3.20.tar.gz
+; http://ftp.drupal.org/files/projects/views-7.x-3.21.tar.gz
 projects[views][download][type] = "copy"
 projects[views][download][url] = "/opt/tmp/make_local/views"
 
