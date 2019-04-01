@@ -183,10 +183,10 @@ function hosting_site_wildcard_load($arg) {
 function _hosting_site_goto_link($node) {
   $cache = cache_get("hosting:site:" . $node->nid . ":login_link");
   if (user_access('create login-reset task') && $cache && (REQUEST_TIME < $cache->data['expire'])) {
-    $title = t("Log in to !url", array('!url' => $node->title));
+    $title = t("Log in to !url", array('!url' => hosting_site_canonical_url($node)));
   }
   else {
-    $title = t("Go to !url", array('!url' => $node->title));
+    $title = t("Go to !url", array('!url' => hosting_site_canonical_url($node)));
   }
   $url = "node/" . $node->nid . "/goto_site";
   return theme('hosting_site_goto_link', array('title' => $title, 'url' => $url));
@@ -239,7 +239,7 @@ function _hosting_site_url($node) {
   $schema = 'http';
   $port = NULL;
 
-  $url = strtolower(trim($node->title));
+  $url = hosting_site_canonical_url($node);
 
   $platform = node_load($node->platform);
   $server = node_load($platform->web_server);
@@ -274,6 +274,17 @@ function _hosting_site_url($node) {
   }
 
   return "{$schema}://{$url}";
+}
+
+/**
+ * Get a site's canonical URL.
+ */
+function hosting_site_canonical_url($node) {
+  # Use the redirection target, if it's available.
+  # Default to the site title, otherwise.
+  $url = isset($node->redirection) && $node->redirection ? $node->redirection : $node->title;
+
+  return hosting_site_clean_domain($url);
 }
 
 /**
@@ -719,6 +730,15 @@ function theme_hosting_site_profile($variables) {
 }
 
 /**
+ * Theme function for site titles.
+ */
+function hosting_site_preprocess(&$variables) {
+  if (isset($variables['node'])) {
+    $variables['title'] = hosting_site_canonical_url($variables['node']);
+  }
+}
+
+/**
  * Control block visibility.
  */
 function hosting_site_client_list_block_visibility() {
@@ -792,3 +812,27 @@ function hosting_site_hosting_task_guarded_nodes() {
     hosting_get_hostmaster_site_nid()
   );
 }
+
+/**
+ * Allow other modules to alter the domain.
+ */
+function hosting_site_get_domain($domain) {
+  drupal_alter('hosting_site_domain', $domain);
+  return $domain;
+}
+
+/**
+ * Implements hook_hosting_site_domain_alter().
+ */
+function hosting_site_hosting_site_domain_alter(&$domain) {
+  $domain = hosting_site_clean_domain($domain);
+}
+
+/**
+ * Ensure domains are properly formatted.
+ */
+function hosting_site_clean_domain($domain) {
+  // Domain names are case-insensitive.
+  return strtolower(trim($domain));
+}
+

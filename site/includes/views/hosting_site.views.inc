@@ -15,7 +15,7 @@ function hosting_site_views_data() {
     'join' => array(
       'node' => array(
         'left_field' => 'vid',
-         'field' => 'vid',
+        'field' => 'vid',
       ),
     ),
   );

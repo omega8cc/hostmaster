@@ -28,6 +28,7 @@ function hosting_site_node_info() {
  */
 function hosting_site_view($node, $view_mode, $langcode = NULL) {
   hosting_set_breadcrumb($node);
+  drupal_set_title(hosting_site_canonical_url($node));
   $node->content['info']['#prefix'] = '<div id="hosting-site-info" class="hosting-info-list">';
   if ($node->site_status == HOSTING_SITE_ENABLED) {
     $node->content['info']['link'] = array(
@@ -231,8 +232,7 @@ function hosting_site_delete($node) {
  * Implements hook_nodeapi().
  */
 function hosting_site_nodeapi_site_presave(&$node) {
-  // Domain names are case-insensitive.
-  $node->title = strtolower(trim($node->title));
+  $node->title = hosting_site_get_domain($node->title);
 }
 
 /**

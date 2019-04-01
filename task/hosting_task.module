@@ -697,10 +697,11 @@ function hosting_task_confirm_form_submit($form, &$form_state) {
  * Tasks should always be named 'task_type node_title'.
  */
 function hosting_task_set_title(&$node) {
-  $ref = db_query("SELECT vid, nid, title, type FROM {node} WHERE nid = :nid", array(':nid' => $node->rid))->fetch();
+  $ref = node_load($node->rid);
   $tasks = hosting_available_tasks($ref->type);
 
-  $node->title = drupal_ucfirst($tasks[$node->task_type]['title']) . ': ' . $ref->title;
+  $ref_title = $ref->type == 'site' ? hosting_site_canonical_url($ref) : $ref->title;
+  $node->title = drupal_ucfirst($tasks[$node->task_type]['title']) . ': ' . $ref_title;
   db_update('node')
     ->fields(array(
       'title' => $node->title,

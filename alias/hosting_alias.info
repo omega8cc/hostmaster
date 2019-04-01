@@ -4,3 +4,5 @@ package = Hosting
 dependencies[] = hosting_site
 
 core = 7.x
+
+files[] = includes/views/handlers/hosting_alias_handler_field_canonical.inc
