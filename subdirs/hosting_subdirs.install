@@ -24,7 +24,7 @@ function hosting_subdirs_install() {
 }
 
 /**
- * Implements hook_update_N().
+ * Set hosting_subdirs module to run before hosting_site.
  */
 function hosting_subdirs_update_7000() {
   // Set module weight.
@@ -32,10 +32,9 @@ function hosting_subdirs_update_7000() {
 }
 
 /**
- * Implements hook_update_N().
+ * Verify all nginx servers, to re-generate server-wide vhosts.
  */
 function hosting_subdirs_update_7001() {
-  // Verify all nginx servers, to re-generate server-wide vhosts.
   $servers = hosting_get_servers('http');
   $nodes = node_load_multiple(array_keys($servers));
   foreach ($nodes as $nid => $node) {
