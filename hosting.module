@@ -1293,6 +1293,25 @@ function hosting_views_api() {
 }
 
 /**
+ * Return a list of log entry types.
+ */
+function hosting_log_types() {
+  $known_types = [
+    'error',
+    'info',
+    'message',
+    'notice',
+    'ok',
+    'status',
+    'success',
+    'warning',
+  ];
+  $types_from_logs = db_query('SELECT DISTINCT type FROM {hosting_task_log}')->fetchCol();
+  $types = array_unique(array_merge($known_types, $types_from_logs));
+  return array_combine($types, $types);
+}
+
+/**
  * General settings form.
  */
 function hosting_settings($form, &$form_state) {
@@ -1361,18 +1380,14 @@ function hosting_settings($form, &$form_state) {
     );
   }
 
-  $types = implode(' ', db_query('SELECT type FROM {hosting_task_log} GROUP BY type ORDER BY type')->fetchCol());
-  if (empty($types)) {
-    $types = 'error warning info message notice ok status success warning';
-  }
+  $types = hosting_log_types();
+
   $form['hosting_task_logs_types_display'] = array(
-    '#type' => 'textarea',
+    '#type' => 'checkboxes',
     '#title' => t('Task Logs to Display'),
-    '#description' => t('Enter the types of logs you wish to show to the user, separated by spaces. Use the special type "ALL" to get any type. Available log types are: %types', array(
-      '%types' => $types,
-    )),
-    '#rows' => 2,
-    '#default_value' => variable_get('hosting_task_logs_types_display', 'ALL'),
+    '#description' => t('Select the types of logs you wish to show to the user.'),
+    '#options' => $types,
+    '#default_value' => variable_get('hosting_task_logs_types_display', $types),
   );
   return system_settings_form($form);
 }
