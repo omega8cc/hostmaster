@@ -30,3 +30,17 @@ function hosting_subdirs_update_7000() {
   // Set module weight.
   hosting_subdirs_install();
 }
+
+/**
+ * Implements hook_update_N().
+ */
+function hosting_subdirs_update_7001() {
+  // Verify all nginx servers, to re-generate server-wide vhosts.
+  $servers = hosting_get_servers('http');
+  $nodes = node_load_multiple(array_keys($servers));
+  foreach ($nodes as $nid => $node) {
+    if ($node->services['http']->type == 'nginx') {
+      hosting_add_task($nid, 'verify');
+    }
+  }
+}
