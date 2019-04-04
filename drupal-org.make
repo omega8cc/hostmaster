@@ -68,7 +68,7 @@ projects[aegir_objects][download][tag] = 7.x-3.1
 
 projects[admin_menu][version] = 3.0-rc6
 projects[betterlogin][version] = 1.5
-projects[ctools][version] = 1.14
+projects[ctools][version] = 1.15
 projects[entity][version] = 1.9
 projects[module_filter][version] = 2.2
 projects[openidadmin][version] = 1.0
