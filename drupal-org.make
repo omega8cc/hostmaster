@@ -52,6 +52,18 @@ projects[hosting_https][download][type] = git
 projects[hosting_https][subdir] = aegir
 projects[hosting_https][download][tag] = 7.x-3.171
 
+projects[hosting_deploy][download][type] = git
+projects[hosting_deploy][subdir] = aegir
+projects[hosting_deploy][download][tag] = 7.x-3.2
+; Dependency
+projects[features][download][type] = git
+projects[features][subdir] = aegir
+projects[features][download][tag] = 7.x-2.11
+; Dependency
+projects[aegir_objects][download][type] = git
+projects[aegir_objects][subdir] = aegir
+projects[aegir_objects][download][tag] = 7.x-3.1
+
 ; Modules - contrib
 
 projects[admin_menu][version] = 3.0-rc6
