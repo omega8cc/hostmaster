@@ -101,13 +101,27 @@ function hosting_task_views_default_views() {
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['relationship'] = 'rid';
   $handler->display->display_options['fields']['title']['exclude'] = TRUE;
+  /* Field: Content: Path */
+  $handler->display->display_options['fields']['path']['id'] = 'path';
+  $handler->display->display_options['fields']['path']['table'] = 'node';
+  $handler->display->display_options['fields']['path']['field'] = 'path';
+  $handler->display->display_options['fields']['path']['relationship'] = 'rid';
+  $handler->display->display_options['fields']['path']['exclude'] = TRUE;
+  /* Field: Hosting Site Aliases: Canonical URL */
+  $handler->display->display_options['fields']['canonical']['id'] = 'canonical';
+  $handler->display->display_options['fields']['canonical']['table'] = 'hosting_site_alias';
+  $handler->display->display_options['fields']['canonical']['field'] = 'canonical';
+  $handler->display->display_options['fields']['canonical']['relationship'] = 'rid';
+  $handler->display->display_options['fields']['canonical']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['canonical']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['canonical']['alter']['path'] = '[path]';
   /* Field: Hosting Task: Type */
   $handler->display->display_options['fields']['task_type']['id'] = 'task_type';
   $handler->display->display_options['fields']['task_type']['table'] = 'hosting_task';
   $handler->display->display_options['fields']['task_type']['field'] = 'task_type';
   $handler->display->display_options['fields']['task_type']['label'] = 'Task';
   $handler->display->display_options['fields']['task_type']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['task_type']['alter']['text'] = '[task_type]: [title]';
+  $handler->display->display_options['fields']['task_type']['alter']['text'] = '[task_type]: [canonical]';
   $handler->display->display_options['fields']['task_type']['element_class'] = 'hosting-status';
   /* Field: Content: Nid */
   $handler->display->display_options['fields']['nid']['id'] = 'nid';
@@ -258,13 +272,27 @@ function hosting_task_views_default_views() {
   $handler->display->display_options['fields']['title']['relationship'] = 'rid';
   $handler->display->display_options['fields']['title']['exclude'] = TRUE;
   $handler->display->display_options['fields']['title']['element_class'] = 'hosting-status';
+  /* Field: Content: Path */
+  $handler->display->display_options['fields']['path']['id'] = 'path';
+  $handler->display->display_options['fields']['path']['table'] = 'node';
+  $handler->display->display_options['fields']['path']['field'] = 'path';
+  $handler->display->display_options['fields']['path']['relationship'] = 'rid';
+  $handler->display->display_options['fields']['path']['exclude'] = TRUE;
+  /* Field: Hosting Site Aliases: Canonical URL */
+  $handler->display->display_options['fields']['canonical']['id'] = 'canonical';
+  $handler->display->display_options['fields']['canonical']['table'] = 'hosting_site_alias';
+  $handler->display->display_options['fields']['canonical']['field'] = 'canonical';
+  $handler->display->display_options['fields']['canonical']['relationship'] = 'rid';
+  $handler->display->display_options['fields']['canonical']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['canonical']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['canonical']['alter']['path'] = '[path]';
   /* Field: Hosting Task: Type */
   $handler->display->display_options['fields']['task_type']['id'] = 'task_type';
   $handler->display->display_options['fields']['task_type']['table'] = 'hosting_task';
   $handler->display->display_options['fields']['task_type']['field'] = 'task_type';
   $handler->display->display_options['fields']['task_type']['label'] = 'Task';
   $handler->display->display_options['fields']['task_type']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['task_type']['alter']['text'] = '[task_type]: [title]';
+  $handler->display->display_options['fields']['task_type']['alter']['text'] = '[task_type]: [canonical]';
   $handler->display->display_options['fields']['task_type']['element_class'] = 'hosting-status';
   /* Field: Content: Post date */
   $handler->display->display_options['fields']['created']['id'] = 'created';
@@ -394,13 +422,27 @@ function hosting_task_views_default_views() {
   $handler->display->display_options['fields']['title']['relationship'] = 'rid';
   $handler->display->display_options['fields']['title']['exclude'] = TRUE;
   $handler->display->display_options['fields']['title']['element_class'] = 'hosting-status';
+  /* Field: Content: Path */
+  $handler->display->display_options['fields']['path']['id'] = 'path';
+  $handler->display->display_options['fields']['path']['table'] = 'node';
+  $handler->display->display_options['fields']['path']['field'] = 'path';
+  $handler->display->display_options['fields']['path']['relationship'] = 'rid';
+  $handler->display->display_options['fields']['path']['exclude'] = TRUE;
+  /* Field: Hosting Site Aliases: Canonical URL */
+  $handler->display->display_options['fields']['canonical']['id'] = 'canonical';
+  $handler->display->display_options['fields']['canonical']['table'] = 'hosting_site_alias';
+  $handler->display->display_options['fields']['canonical']['field'] = 'canonical';
+  $handler->display->display_options['fields']['canonical']['relationship'] = 'rid';
+  $handler->display->display_options['fields']['canonical']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['canonical']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['canonical']['alter']['path'] = 'path';
   /* Field: Hosting Task: Type */
   $handler->display->display_options['fields']['task_type']['id'] = 'task_type';
   $handler->display->display_options['fields']['task_type']['table'] = 'hosting_task';
   $handler->display->display_options['fields']['task_type']['field'] = 'task_type';
   $handler->display->display_options['fields']['task_type']['label'] = 'Task';
   $handler->display->display_options['fields']['task_type']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['task_type']['alter']['text'] = '[task_type]: [title]';
+  $handler->display->display_options['fields']['task_type']['alter']['text'] = '[task_type]: [canonical]';
   $handler->display->display_options['fields']['task_type']['element_class'] = 'hosting-status';
   /* Field: Content: Post date */
   $handler->display->display_options['fields']['created']['id'] = 'created';
@@ -428,7 +470,7 @@ function hosting_task_views_default_views() {
   $handler->display->display_options['fields']['nid']['alter']['make_link'] = TRUE;
   $handler->display->display_options['fields']['nid']['alter']['path'] = 'hosting/task/[nid]';
   $handler->display->display_options['fields']['nid']['alter']['link_class'] = 'hosting-button-enabled hosting-button-log hosting-button-dialog';
-  $handler->display->display_options['fields']['nid']['element_class'] = 'hosting-actions';
+  $handler->display->isplay_options['fields']['nid']['element_class'] = 'hosting-actions';
   /* Field: Content: Type */
   $handler->display->display_options['fields']['type']['id'] = 'type';
   $handler->display->display_options['fields']['type']['table'] = 'node';
