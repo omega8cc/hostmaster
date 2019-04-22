@@ -27,18 +27,6 @@ function hosting_alias_views_data() {
       'click sortable' => TRUE,
     ],
   ];
-  $data['hosting_site_alias']['canonical'] = [
-    'title' => t('Canonical URL'),
-    'help' => t('The canonical URL for this site.'),
-    // This field value is based on the 'redirection' field.
-    'real field' => 'redirection',
-    'field' => [
-      'handler' => 'hosting_alias_handler_field_canonical',
-      'click sortable' => TRUE,
-    ],
-  ];
-
-
   return $data;
 }
 
