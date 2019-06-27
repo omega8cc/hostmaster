@@ -22,7 +22,7 @@ projects[hosting][download][tag] = 7.x-3.170
 
 projects[hosting_git][download][type] = git
 projects[hosting_git][subdir] = aegir
-projects[hosting_git][download][tag] = 7.x-3.171
+projects[hosting_git][download][tag] = 7.x-3.170
 
 projects[hosting_remote_import][download][type] = git
 projects[hosting_remote_import][subdir] = aegir
@@ -50,7 +50,7 @@ projects[hosting_dns][download][branch] = 7.x-3.x
 
 projects[hosting_https][download][type] = git
 projects[hosting_https][subdir] = aegir
-projects[hosting_https][download][tag] = 7.x-3.171
+projects[hosting_https][download][tag] = 7.x-3.170
 
 projects[hosting_deploy][download][type] = git
 projects[hosting_deploy][subdir] = aegir
