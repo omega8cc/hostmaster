@@ -55,11 +55,7 @@ projects[hosting_https][download][tag] = 7.x-3.171
 projects[hosting_deploy][download][type] = git
 projects[hosting_deploy][subdir] = aegir
 projects[hosting_deploy][download][tag] = 7.x-3.2
-; Dependency
-projects[features][download][type] = git
-projects[features][subdir] = aegir
-projects[features][download][tag] = 7.x-2.11
-; Dependency
+; Dependency of hosting_deploy
 projects[aegir_objects][download][type] = git
 projects[aegir_objects][subdir] = aegir
 projects[aegir_objects][download][tag] = 7.x-3.1
@@ -70,6 +66,8 @@ projects[admin_menu][version] = 3.0-rc6
 projects[betterlogin][version] = 1.5
 projects[ctools][version] = 1.15
 projects[entity][version] = 1.9
+; Dependency of hosting_deploy
+projects[features][version] = 2.11
 projects[module_filter][version] = 2.2
 projects[openidadmin][version] = 1.0
 projects[overlay_paths][version] = 1.3
