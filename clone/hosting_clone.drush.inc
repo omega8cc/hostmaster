@@ -12,8 +12,7 @@ function drush_hosting_clone_pre_hosting_task($task) {
     $task->args[3] = hosting_context_name($platform->nid);
 
     $profile_instance = _hosting_migrate_get_target_profile_name($task);
-
-    if (sizeof($profile_instance)) {
+    if (is_object($profile_instance) && isset($profile_instance->short_name)) {
       $task->options['profile'] = $profile_instance->short_name;
     }
     else {
