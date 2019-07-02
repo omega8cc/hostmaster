@@ -38,6 +38,10 @@ dependencies[] = hosting_task
 dependencies[] = hosting_tasks_extra
 dependencies[] = hosting_web_server
 
+;; Aegir golden contrib ;;
+dependencies[] = hosting_platform_composer_git
+dependencies[] = hosting_platform_git
+
 ;; Drupal contrib ;;
 dependencies[] = actions_permissions
 dependencies[] = admin_menu
