@@ -183,7 +183,7 @@ function hosting_site_views_default_views() {
   $handler->display->display_options['fields']['path']['exclude'] = TRUE;
   /* Field: Hosting Site Aliases: Canonical URL */
   $handler->display->display_options['fields']['canonical']['id'] = 'canonical';
-  $handler->display->display_options['fields']['canonical']['table'] = 'hosting_site_alias';
+  $handler->display->display_options['fields']['canonical']['table'] = 'hosting_site';
   $handler->display->display_options['fields']['canonical']['field'] = 'canonical';
   $handler->display->display_options['fields']['canonical']['label'] = 'Site';
   $handler->display->display_options['fields']['canonical']['alter']['make_link'] = TRUE;

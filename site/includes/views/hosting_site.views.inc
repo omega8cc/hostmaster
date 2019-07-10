@@ -246,6 +246,17 @@ function hosting_site_views_data() {
     ),
   );
 
+  $data['hosting_site']['canonical'] = [
+    'title' => t('Canonical URL'),
+    'help' => t('The canonical URL for this site.'),
+    // This field value is based on the site NID.
+    'real field' => 'nid',
+    'field' => [
+      'handler' => 'hosting_site_field_handler_canonical',
+      'click sortable' => TRUE,
+    ],
+  ];
+
   return $data;
 }
 

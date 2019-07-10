@@ -25,7 +25,28 @@ function hosting_queued_drush_command() {
     ),
   );
 
+  $items['hosting-release-lock'] = array(
+    'description' => 'Releases any stale locks on the tasks queue',
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
+    'drupal dependencies' => array(
+      'hosting_queued',
+    ),
+  );
+
   return $items;
+}
+
+/**
+ * Drush command to release the lock on the task queue.
+ */
+function drush_hosting_queued_hosting_release_lock() {
+  drush_log('Clearing any stale locks on task queue.');
+  $name = 'hosting_queue_tasks_running';
+  global $locks;
+  unset($locks[$name]);
+  db_delete('semaphore')
+    ->condition('name', $name)
+    ->execute();
 }
 
 /**

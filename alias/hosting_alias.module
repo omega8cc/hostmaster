@@ -609,9 +609,9 @@ function hosting_alias_allow_domain($url, $params = array()) {
  * Views integration.
  */
 function hosting_alias_views_api() {
-  return array(
+  return [
     'api' => 3,
     'path' => drupal_get_path('module', 'hosting_alias') . '/includes/views',
-  );
+  ];
 }
 

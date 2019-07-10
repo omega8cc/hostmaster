@@ -532,10 +532,15 @@ function hosting_task_retry($task_id) {
   if ($node->task_status != HOSTING_TASK_QUEUED) {
     drupal_set_message(t("The task is being retried and has been added to the hosting queue again"));
     hosting_task_log($node->vid, 'queue', t("The task is being retried and has been added to the hosting queue again"));
+    $node->nid = NULL;
+    $node->vid = NULL;
+    $node->original = NULL;
     $node->revision = TRUE;
+    $node->created = REQUEST_TIME;
     $node->changed = REQUEST_TIME;
     $node->task_status = HOSTING_TASK_QUEUED;
     node_save($node);
+    drupal_goto("node/{$node->nid}");
   }
 }
 
