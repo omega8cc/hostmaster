@@ -1194,11 +1194,20 @@ function hosting_task_view($node, $view_mode, $langcode = NULL) {
   }
   $node->content['info']['#suffix'] = '</div>';
 
-  if (user_access('retry failed tasks') && ($node->task_status == HOSTING_TASK_ERROR)) {
+  if (user_access('retry failed tasks') && (
+      $node->task_status == HOSTING_TASK_ERROR ||
+      $node->task_status == HOSTING_TASK_WARNING ||
+      $node->task_status == HOSTING_TASK_SUCCESS
+    )) {
     $node->content['retry'] = array(
       'form' => drupal_get_form('hosting_task_retry_form', $node->nid),
       '#weight' => 5,
     );
+
+    // Change the name of the form button to "Run Again" if the task ended ok.
+    if ($node->task_status == HOSTING_TASK_WARNING || $node->task_status == HOSTING_TASK_SUCCESS) {
+      $node->content['retry']['form']['retry']['#value'] = t('Run Again');
+    }
   }
 
   if (user_access('update status of tasks') && ($node->task_status == HOSTING_TASK_PROCESSING)) {
