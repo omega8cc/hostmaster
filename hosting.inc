@@ -116,3 +116,12 @@ function hosting_get_hostmaster_platform_nid() {
   $hostmaster_site = node_load(hosting_get_hostmaster_site_nid());
   return $hostmaster_site->platform;
 }
+
+/**
+ * Load the URI of the hostmaster site.
+ * @return string
+ */
+function hosting_get_hostmaster_uri() {
+  $hostmaster_site = node_load(hosting_get_hostmaster_nid());
+  return $hostmaster_site->title;
+}
