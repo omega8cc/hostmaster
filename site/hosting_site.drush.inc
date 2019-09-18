@@ -30,6 +30,11 @@ function hosting_hosting_site_context_options(&$task) {
   if (isset($task->ref->install_method) && !empty($task->ref->install_method)) {
     $task->context_options['install_method'] = $task->ref->install_method;
   }
+
+  // Set File directories if they exist
+  $task->context_options['file_public_path'] = $task->ref->file_public_path;
+  $task->context_options['file_private_path'] = $task->ref->file_private_path;
+  $task->context_options['file_temporary_path'] = $task->ref->file_temporary_path;
 }
 
 /**

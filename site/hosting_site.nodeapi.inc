@@ -381,7 +381,7 @@ function hosting_site_update(&$node) {
       ))
       ->condition('vid', $node->vid)
       ->execute();
-    
+
     // If platform_node is passed in the site node, save it.
     if (isset($node->platform_node->nid)) {
       node_save($node->platform_node);
@@ -422,4 +422,8 @@ function hosting_site_load($nodes) {
   // Create a "servers" array based on our two base servers.
   $node->servers['web'] = node_load($node->web_server);
   $node->servers['db'] = node_load($node->db_server);
+
+  $node->file_public_path = 'sites/' . $node->title . '/files';
+  $node->file_private_path = 'sites/' . $node->title . '/private/files';
+  $node->file_temporary_path = 'sites/' . $node->title . '/private/temp';
 }
