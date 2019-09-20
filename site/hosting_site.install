@@ -76,6 +76,27 @@ function hosting_site_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
+      'file_public_path' => array(
+        'description' => 'The path to the public site files."',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'file_private_path' => array(
+        'description' => 'The path to the private site files."',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'file_temporary_path' => array(
+        'description' => 'The path to the temporary site files."',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => FALSE,
+        'default' => '',
+      ),
     ),
     'primary key' => array('vid'),
   );
@@ -157,7 +178,7 @@ function hosting_site_update_3() {
   $ret = array();
   $ret[] = update_sql("ALTER TABLE {hosting_site} CHANGE COLUMN status status int(11) NOT NULL default '0'");
 
-  $ret[] = update_sql("CREATE TEMPORARY TABLE {hosting_site_statuses} SELECT nid, 
+  $ret[] = update_sql("CREATE TEMPORARY TABLE {hosting_site_statuses} SELECT nid,
     (status&4) as deleted, NOT (status&2) AS disabled, status&1 AS installed FROM {hosting_site}");
 
 
@@ -507,4 +528,34 @@ function hosting_site_update_7301() {
   db_change_field('hosting_site_backups', 'size', 'size',
     array('type' => 'int', 'size' => 'big')
   );
+}
+
+/**
+ * Add 'file_public_path', 'file_private_path', 'file_temporary_path' columns
+ * to 'hosting_site' table.
+ */
+function hosting_site_update_7302() {
+  $ret = array();
+  db_add_field('hosting_site', 'file_public_path', array(
+    'description' => 'The path to the public site files."',
+    'type' => 'varchar',
+    'length' => 64,
+    'not null' => TRUE,
+    'default' => '',
+  ));
+  db_add_field('hosting_site', 'file_private_path', array(
+    'description' => 'The path to the private site files."',
+    'type' => 'varchar',
+    'length' => 64,
+    'not null' => TRUE,
+    'default' => '',
+  ));
+  db_add_field('hosting_site', 'file_temporary_path', array(
+    'description' => 'The path to the temporary site files."',
+    'type' => 'varchar',
+    'length' => 64,
+    'not null' => TRUE,
+    'default' => '',
+  ));
+  return $ret;
 }
