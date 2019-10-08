@@ -50,7 +50,7 @@ projects[hosting_dns][download][branch] = 7.x-3.x
 
 projects[hosting_https][download][type] = git
 projects[hosting_https][subdir] = aegir
-projects[hosting_https][download][tag] = 7.x-3.180
+projects[hosting_https][download][tag] = 7.x-3.182
 
 projects[hosting_deploy][download][type] = git
 projects[hosting_deploy][subdir] = aegir
