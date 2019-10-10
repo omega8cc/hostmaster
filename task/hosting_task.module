@@ -217,16 +217,28 @@ function hosting_task_ajax_queue() {
  * Cancel a task before it's started.
  */
 function hosting_task_cancel($node) {
-  if ($node->type == 'task' && $node->task_status == HOSTING_TASK_QUEUED) {
-    $node->task_status = HOSTING_TASK_WARNING;
-    node_save($node);
+  if ($node->type == 'task') {
+    if ($node->task_status == HOSTING_TASK_QUEUED || $node->task_status == HOSTING_TASK_PROCESSING) {
+      $node->task_status = HOSTING_TASK_WARNING;
+      node_save($node);
+      if (module_exists('hosting_queued')) {
+        // Release the hosting_queued lock.
+        // Cannot use lock release because it uses semaphore value, which only works in a single request.
+        global $locks;
+        unset($locks['hosting_queue_tasks_running']);
+        db_delete('semaphore')
+          ->condition('name', 'hosting_queue_tasks_running')
+          ->execute();
+      }
 
-    // Log the cancellation.
-    hosting_task_log($node->vid, 'warning', t("Task was cancelled."));
-    drupal_goto('node/' . $node->rid);
+      // Log the cancellation.
+      hosting_task_log($node->vid, 'warning', t("Task was cancelled."));
+      drupal_goto('node/' . $node->rid);
+    } else {
+      drupal_set_message(t('This task is not running or queued. It cannot be cancelled.'), 'warning');
+      drupal_goto('node/' . $node->nid);
+    }
   }
-
-  drupal_access_denied();
 }
 
 /**
