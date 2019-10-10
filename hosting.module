@@ -1370,6 +1370,12 @@ function hosting_settings($form, &$form_state) {
     '#description' => t('If something goes wrong when deleting a site, platform, or server, the task will fail. Check this box to force contexts to be removed when Delete tasks are run.'),
     '#default_value' => variable_get('hosting_delete_force', FALSE),
   );
+  $form['hosting_site_allow_custom_file_paths'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Allow sites to have custom file paths for public, private, and temporary files.'),
+    '#description' => t('When creating or editing a site, show a field for changing the default files paths.'),
+    '#default_value' => variable_get('hosting_site_allow_custom_file_paths', FALSE),
+  );
   if (hosting_feature('cron')) {
     $form['hosting_cron_use_backend'] = array(
       '#type' => 'radios',

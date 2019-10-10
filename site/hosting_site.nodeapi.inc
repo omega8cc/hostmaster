@@ -115,6 +115,14 @@ function hosting_site_view($node, $view_mode, $langcode = NULL) {
 
     drupal_add_js(drupal_get_path('module', 'hosting_task') . '/hosting_task.js');
   }
+
+  // Show files directory.
+  $node->content['info']['file_public_path'] = array(
+    '#type' => 'item',
+    '#title' => t('Public Files'),
+    '#markup' => check_plain($node->file_public_path),
+  );
+
   return $node;
 }
 
@@ -199,6 +207,21 @@ function hosting_site_entity_property_info() {
       'label' => t('Last verification time'),
       'description' => t('The date of the time the site was verified.'),
       'type' => 'date',
+    ),
+    'file_public_path' => array(
+      'label' => t('Site public files path'),
+      'description' => t('The path used for the file_public_path setting in the site.'),
+      'type' => 'text',
+    ),
+    'file_private_path' => array(
+      'label' => t('Site private files path'),
+      'description' => t('The path used for the file_private_path setting in the site.'),
+      'type' => 'text',
+    ),
+    'file_temporary_path' => array(
+      'label' => t('Site temporary files path'),
+      'description' => t('The path used for the file_temporary_path setting in the site.'),
+      'type' => 'text',
     ),
   );
 
@@ -329,6 +352,9 @@ function hosting_site_insert(&$node) {
       'cron_key' => $node->cron_key,
       'status' => isset($node->site_status) ? $node->site_status : HOSTING_SITE_QUEUED,
       'verified' => isset($node->verified) ? $node->verified : 0,
+      'file_public_path' => $node->file_public_path ?: '',
+      'file_private_path' => $node->file_private_path ?: '',
+      'file_temporary_path' => $node->file_temporary_path ?: '',
     ))
     ->execute();
 
@@ -378,10 +404,13 @@ function hosting_site_update(&$node) {
         'profile' => $node->profile,
         'language' => $node->site_language,
         'verified' => $node->verified,
+        'file_public_path' => $node->file_public_path,
+        'file_private_path' => $node->file_private_path,
+        'file_temporary_path' => $node->file_temporary_path,
       ))
       ->condition('vid', $node->vid)
       ->execute();
-    
+
     // If platform_node is passed in the site node, save it.
     if (isset($node->platform_node->nid)) {
       node_save($node->platform_node);
@@ -408,6 +437,7 @@ function hosting_site_load($nodes) {
     $additions = db_query(
       'SELECT  client, db_server, db_name, platform, profile, web_server, publish_path,
         language AS site_language, last_cron, cron_key, s.status AS site_status,
+        file_public_path, file_private_path, file_temporary_path,
         p.status AS platform_status, s.verified, p.verified as platform_verified
       FROM {hosting_site} s
         LEFT JOIN {hosting_platform} p ON s.platform = p.nid
@@ -422,4 +452,9 @@ function hosting_site_load($nodes) {
   // Create a "servers" array based on our two base servers.
   $node->servers['web'] = node_load($node->web_server);
   $node->servers['db'] = node_load($node->db_server);
+
+  // Set default files paths if they are empty.
+  $node->file_public_path = $node->file_public_path ?: 'sites/' . $node->title . '/files';
+  $node->file_private_path = $node->file_private_path ?: 'sites/' . $node->title . '/private/files';
+  $node->file_temporary_path = $node->file_temporary_path ?: 'sites/' . $node->title . '/private/temp';
 }

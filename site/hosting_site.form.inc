@@ -333,6 +333,43 @@ function hosting_site_form($node, &$form_state) {
     );
   }
 
+  // Files Paths
+  if (variable_get('hosting_site_allow_custom_file_paths', FALSE)) {
+    $form['file_paths'] = array(
+      '#title' => t('Site Files Settings'),
+      '#description' => t('Paths may be relative to the Drupal index, or absolute on the server. Use caution when customizing the file paths. These paths will be created and will be made writable by the web server.'),
+      '#type' => 'fieldset',
+      '#collapsed' => TRUE,
+      '#collapsible' => TRUE,
+      '#weight' => 10,
+    );
+
+    $form['file_paths']['file_public_path'] = array(
+      '#title' => t('Public Files Path'),
+      '#description' => t('Leave blank to use the default path: %path', array(
+        "%path" => $node->title? "sites/{$node->title}/files": "sites/DOMAIN/files",
+      )),
+      '#type' => 'textfield',
+      '#default_value' => $node->file_public_path,
+    );
+    $form['file_paths']['file_private_path'] = array(
+      '#title' => t('Private Files Path'),
+      '#description' => t('Leave blank to use the default path: %path', array(
+        "%path" => $node->title? "sites/{$node->title}/files/private": "sites/DOMAIN/files/private",
+      )),
+      '#type' => 'textfield',
+      '#default_value' => $node->file_private_path,
+    );
+    $form['file_paths']['file_temporary_path'] = array(
+      '#title' => t('Temporary Files Path'),
+      '#description' => t('Leave blank to use the default path: %path', array(
+        "%path" => $node->title? "sites/{$node->title}/files/private/temp": "sites/DOMAIN/files/temp",
+      )),
+      '#type' => 'textfield',
+      '#default_value' => $node->file_temporary_path,
+    );
+  }
+
   return $form;
 }
 
