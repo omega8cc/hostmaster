@@ -1052,6 +1052,7 @@ function hosting_task_load($nodes) {
     $additions = db_query('SELECT task_type, executed, delta, rid, task_status, r.type as ref_type FROM {hosting_task} t LEFT JOIN {node} r ON t.rid = r.nid WHERE t.vid = :vid', array(':vid' => $node->vid))->fetch();
     $result = db_query("SELECT name, value FROM {hosting_task_arguments} WHERE vid = :vid", array(':vid' => $node->vid));
     if ($result) {
+      $additions->task_args = array();
       while ($arg = $result->fetch()) {
         $additions->task_args[$arg->name] = $arg->value;
       }
