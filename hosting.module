@@ -155,7 +155,7 @@ function hosting_menu() {
  * @return bool
  */
 function hosting_menu_hostmaster_access() {
-  return drupal_valid_path('hosting/c/hostmaster');
+  return drupal_valid_path('node/' . hosting_get_hostmaster_nid());
 }
 
 /**
