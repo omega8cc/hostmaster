@@ -2,7 +2,7 @@
 
 /**
  * @file
- *   Drush include for the Hosting module's hosting resume command.
+ * Drush include for the Hosting module's hosting resume command.
  */
 
 include_once 'hosting.inc';
@@ -19,8 +19,11 @@ function drush_hosting_resume() {
 
   $node = hosting_context_load(d()->name);
 
-  // fix the old platform first
-  $platform_id = db_query('SELECT nid FROM {hosting_platform} WHERE publish_path = :publish_path', array(':publish_path' => d($old_platform)->root))->fetchField();
+  // Fix the old platform first.
+  $platform_id = db_query('SELECT nid FROM {hosting_platform} WHERE publish_path = :publish_path AND status = :status', array(
+    ':publish_path' => d($old_platform)->root,
+    ':status' => HOSTING_PLATFORM_ENABLED,
+  ))->fetchField();
   if ($platform_id) {
     hosting_context_register($platform_id, ltrim($old_platform, '@'));
   }
@@ -28,11 +31,11 @@ function drush_hosting_resume() {
     drush_log(dt('Old platform not found in path %path, not setting context %context', array('%path' => d($old_platform)->root, '%context' => ltrim($old_platform, '@'))), 'warning');
   }
 
-  // if the new platform doesn't exist, create it.
+  // If the new platform doesn't exist, create it.
   $platform_root = d()->root;
   if (!($platform_id = db_query('SELECT nid FROM {hosting_platform} WHERE publish_path = :publish_path', array(':publish_path' => $platform_root))->fetchField())) {
     drush_log(dt('Platform not found for path %path, adding platform node', array('%path' => $platform_root)));
-    // inherit settings from current platform node
+    // Inherit settings from current platform node.
     $platform = node_load($node->platform);
     $platform->type = 'platform';
     unset($platform->nid);

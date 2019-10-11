@@ -35,14 +35,13 @@ function hosting_client_user_XXX($edit, $account) {
  * Implements hook_user_presave().
  */
 function hosting_client_user_presave(&$edit, $account, $category) {
-  return hosting_client_user_form_validate($edit);
+  hosting_client_user_form_submit($edit, $account);
 }
 
 /**
  * Implements hook_user_insert().
  */
 function hosting_client_user_insert(&$edit, $account, $category) {
-  hosting_client_user_form_submit($edit, $account);
   $edit['hosting_client'] = NULL;
 }
 
@@ -79,47 +78,58 @@ function hosting_client_view_user($user) {
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
  * Add items to the user forms when editing or registering.
  *
  * @see hosting_client_user()
  */
-function hosting_client_user_form($edit, $user, $category) {
+function hosting_client_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+  if ($form['#user_category'] == 'account') {
+    $user = $form['#user'];
 
-  $clients = array();
-  if ($user->client_id) {
-    foreach ($user->client_id as $client => $type) {
-      $clients[$client] = '';
-      $fields[$category]['name'][$client] = array(
-        '#type' => 'markup',
-        '#value' => _hosting_node_link($client),
+    // In Aegir 3.x the admin account does not have the client_id array and sometimes a normal user
+    // is missing it, as well.  If it isn't on the user object, add it.
+    if (!is_array($user->client_id)) {
+      $user->client_id = hosting_get_client_from_user($user->uid);
+    }
+
+    $clients = array();
+    if ($user->client_id) {
+      foreach ($user->client_id as $client => $type) {
+        $clients[$client] = '';
+        $form['client_edit']['name'][$client] = array(
+          '#type' => 'markup',
+          '#value' => _hosting_node_link($client),
+        );
+      }
+    }
+    if (user_access('edit client users')) {
+      $form['client_edit']['clients'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $clients,
       );
     }
-  }
-  if (user_access('edit client users')) {
-    $fields[$category]['clients'] = array(
-      '#type' => 'checkboxes',
-      '#options' => $clients,
+
+    $form['client_edit']['header'] = array(
+      '#type' => 'value',
+      '#value' => array(array('data' => t('Accessible clients')), array('data' => t('Remove'))),
     );
-  }
 
-  $fields[$category]['header'] = array(
-    '#type' => 'value',
-    '#value' => array(array('data' => t('Accessible clients')), array('data' => t('Remove'))),
-  );
-
-  if (user_access('edit client users')) {
-    $fields[$category]['hosting_client'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Associate a client to this user'),
-      '#weight' => 2,
-      '#autocomplete_path' => 'hosting_client/autocomplete/client',
-      '#description' => t('This field allows you to associate an existing client to a user.
+    if (user_access('edit client users')) {
+      $form['client_edit']['hosting_client'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Associate a client to this user'),
+        '#weight' => 2,
+        '#autocomplete_path' => 'hosting_client/autocomplete/client',
+        '#description' => t('This field allows you to associate an existing client to a user.
                              It does not create a new client, but allows this user
                              to manage sites belonging to the given client.'),
-    );
+      );
+    }
+    $form['client_edit']['#theme'] = 'hosting_client_user_form';
+    $form['#validate'][] = 'hosting_client_user_form_validate';
   }
-  $fields[$category]['#theme'] = 'hosting_client_user_form';
-  return $fields;
 }
 
 /**
@@ -133,14 +143,19 @@ function theme_hosting_client_user_form($variables) {
   else {
     $edit_name = '';
   }
-  foreach (element_children($form['name']) as $client) {
-    $row = array();
-    $row['data'][] = drupal_render($form['name'][$client]);
-    if (user_access('edit client users')) {
-      $row['data'][] = drupal_render($form['clients'][$client]);
+
+  $rows = array();
+  if (isset($form['name'])) {
+    foreach (element_children($form['name'], TRUE) as $client) {
+      $row = array();
+      $row['data'][] = $form['name'][$client]['#value'];
+      if (user_access('edit client users')) {
+        $row['data'][] = drupal_render($form['clients'][$client]);
+      }
+      $rows[] = $row;
     }
-    $rows[] = $row;
   }
+
   $output = drupal_render_children($form);
   $output .= theme('table', array('header' => $form['header']['#value'], 'rows' => $rows));
   $output .= $edit_name;
@@ -152,8 +167,10 @@ function theme_hosting_client_user_form($variables) {
  *
  * @see hosting_client_user()
  */
-function hosting_client_user_form_validate($edit) {
-  if (array_key_exists('hosting_client', $edit) && $edit['hosting_client'] && (!$client = hosting_get_client($edit['hosting_client']))) {
+function hosting_client_user_form_validate($form, &$form_state) {
+  if (array_key_exists('hosting_client', $form_state['values']) &&
+      $form_state['values']['hosting_client'] &&
+      (!$client = hosting_get_client($form_state['values']['hosting_client']))) {
     form_set_error('hosting_client', 'Please fill in a valid client');
   }
 }
@@ -219,6 +236,9 @@ function hosting_client_node_grants($account, $op) {
       elseif ($op == 'update' && user_access('edit ' . $type, $account)) {
         $grants[$cache_id]['hosting ' . $type] = array_keys($account->client_id);
       }
+      elseif ($op == 'view' && !user_access('view ' . $type, $account)) {
+        $grants[$cache_id]['hosting ' . $type] = array_keys($account->client_id);
+      }
     }
   }
   return isset($grants[$cache_id]) ? $grants[$cache_id] : array();
@@ -282,9 +302,18 @@ function hosting_client_node_access_records($node) {
             }
           }
         }
+        else {
+          // When $node->clients isn't set on a platform, all clients have access.
+          $results = db_query("select nid from {hosting_client} c");
+          foreach ($results as $row) {
+            if ($row->nid != HOSTING_ADMIN_CLIENT) {
+              $gids[] = $row->nid;
+            }
+          }
+        }
       }
 
-      // Lookup databaaes hosted on this server.
+      // Lookup databases hosted on this server.
       $databases = hosting_get_sites_on_db_server($node->nid);
       foreach ($databases as $nid => $dbname) {
         $node = node_load($nid);
@@ -308,6 +337,15 @@ function hosting_client_node_access_records($node) {
         foreach ($node->clients as $cid => $client) {
           if ($cid != HOSTING_ADMIN_CLIENT) {
             $grants[] = array_merge($base_grant, array('gid' => $cid, 'grant_update' => 0));
+          }
+        }
+      }
+      else {
+        // When $node->clients isn't set, all clients have access.
+        $results = db_query("select nid from {hosting_client} c");
+        foreach ($results as $row) {
+          if ($row->nid != HOSTING_ADMIN_CLIENT) {
+            $grants[] = array_merge($base_grant, array('gid' => $row->nid, 'grant_update' => 0));
           }
         }
       }

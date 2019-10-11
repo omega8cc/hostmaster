@@ -23,7 +23,15 @@ function hosting_migrate_platform($form, $form_state, $node) {
       return $form;
     }
 
-    $platforms = _hosting_get_platforms();
+    // TODO: hosting_get_enabled_platforms should be sufficient here, except
+    // that we haven't implemented node-level access control on platforms yet.
+    // See: http://drupal.org/node/725952.
+    if (function_exists('_hosting_get_allowed_platforms')) {
+      $platforms = _hosting_get_allowed_platforms();
+    }
+    else {
+      $platforms = _hosting_get_enabled_platforms();
+    }
     if (sizeof($platforms) > 1) {
       unset($platforms[$node->nid]);
       $form['#current_platform'] = $node;
@@ -255,7 +263,7 @@ function hosting_migrate_platform_batch($site_id, $target_platform, $context) {
     $batch['form_state']['storage']['instance'][$site->nid] = $profile_instance->iid;
     // If there were no errors, this site passes and can be migrated
     if (!$status['error'] && $profile->short_name != 'hostmaster') { // The hostmaster site can not be upgraded via the interface.
-      $batch['form_state']['storage']['passed'][$site->nid] = strtolower(trim($site->title));
+      $batch['form_state']['storage']['passed'][$site->nid] = hosting_site_get_domain($site->title);
       return TRUE;
     }
   }
@@ -266,5 +274,5 @@ function hosting_migrate_platform_batch($site_id, $target_platform, $context) {
       'upgrade' => 0,
     );
   }
-  $batch['form_state']['storage']['failed'][$site->nid] = strtolower(trim($site->title));
+  $batch['form_state']['storage']['failed'][$site->nid] = hosting_site_get_domain($site->title);
 }

@@ -13,7 +13,7 @@
 function hosting_hosting_server_context_options(&$task) {
   $task->context_options['remote_host'] = $task->ref->title;
   $ip_list = $task->ref->ip_addresses;
-  $task->context_options['ip_addresses'] = sizeof($ip_list) ? implode(',', $ip_list) : 'null';
+  $task->context_options['ip_addresses'] = count($ip_list) ? implode(',', $ip_list) : 'null';
 
   foreach (hosting_server_services() as $type => $info) {
     if (isset($task->ref->services[$type])) {
@@ -23,14 +23,22 @@ function hosting_hosting_server_context_options(&$task) {
       }
     }
     else {
-      $task->context_options["{$type}_service_type"] = '0';
+      // If we're here, there is no enabled service of this type on this server.
+      // If such a service had previously been enabled, that fact, along with
+      // any subscribed properties would be recorded in the server context.
+      // Since we persist values in contexts, we cannot just leave this unset.
+      // Similarly, in Provision_Context::__get(), we filter out falsy values,
+      // so we cannot set this to NULL. 0 or the like. Therefore, we explicitely
+      // set it to value that we check for in
+      // Provision_Context_server::spawn_service().
+      $task->context_options["{$type}_service_type"] = 'NONE';
     }
   }
 }
 
+
 /**
- * @todo Please document this function.
- * @see http://drupal.org/node/1354
+ * Implements hook_drush_context_import().
  */
 function hosting_server_drush_context_import($context, &$node) {
   if ($context->type == 'server') {
@@ -47,7 +55,7 @@ function hosting_server_drush_context_import($context, &$node) {
           }
         }
         if (!isset($node->services[$type])) {
-          // only support the base configuration things for now.
+          // Only support the base configuration things for now.
           hosting_services_add($node, $type, $service_type, $values);
         }
 
@@ -63,15 +71,12 @@ function hosting_server_drush_context_import($context, &$node) {
 function hosting_server_post_hosting_verify_task($task, $data) {
   if ($task->ref->type == 'server') {
     $task->ref->no_verify = TRUE;
-    $task->ref->verified = REQUEST_TIME; // set verified flag on server, to let it know it has been checked.
+
+    // Set verified flag on server, to let it know it has been checked.
+    $task->ref->verified = REQUEST_TIME;
+
     $task->ref->server_status = HOSTING_SERVER_ENABLED;
     node_save($task->ref);
-
-    // Verify the platforms on this server
-    $query = db_query("SELECT nid FROM {hosting_platform} WHERE status <> :status AND web_server = :web_server", array(':status' => HOSTING_PLATFORM_DELETED, ':web_server' => $task->ref->nid));
-    while ($nid = $query->fetch()) {
-      hosting_add_task($nid->nid, 'verify');
-    }
   }
 }
 

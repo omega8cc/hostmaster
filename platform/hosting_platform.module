@@ -46,6 +46,19 @@ function hosting_platform_menu() {
     'access arguments' => array('create', 'platform'),
   );
 
+  $items['node/%node/platform-edit'] = array(
+    'title' => 'Edit Platform',
+    'page callback' => 'hosting_platform_edit_form_on_site_page',
+    'page arguments' => array(1),
+    'access callback' => 'hosting_platform_edit_form_on_site_page_access',
+    'access arguments' => array('update', 1),
+    'weight' => 0,
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+    'file' => 'node.pages.inc',
+    'file path' => drupal_get_path('module', 'node'),
+  );
+
   return $items;
 }
 
@@ -69,18 +82,38 @@ function hosting_platform_node_info() {
 }
 
 /**
+ * Page callback for node/%node/platform-edit
+ *
+ * Wrapper for node_page_edit, for the "Edit Platform" tab.
+ */
+function hosting_platform_edit_form_on_site_page($site) {
+  $platform = node_load($site->platform);
+  return node_page_edit($platform);
+}
+
+/**
+ * Wrapper for node_page_edit, for the "Edit Platform" tab.
+ */
+function hosting_platform_edit_form_on_site_page_access($op, $site) {
+  if ($site->type == 'site') {
+    $platform = node_load($site->platform);
+    return node_access($op, $platform);
+  }
+}
+
+/**
  * Implements hook_hosting_tasks().
  */
 function hosting_platform_hosting_tasks() {
   $tasks = array();
   $tasks['platform']['verify'] = array(
-    'title' => t('Verify'),
+    'title' => t('Verify Platform'),
     'description' => t('Verify that the platform is correctly installed and working.'),
     'weight' => 10,
     'provision_save' => TRUE,
   );
   $tasks['platform']['delete'] = array(
-    'title' => t('Delete'),
+    'title' => t('Delete Platform'),
     'description' => t('Deleting this platform will completely remove it from the hosting system.
         This process can not be undone. It can not be performed if you have sites currently
         running on this platform.
@@ -139,12 +172,16 @@ function hosting_platform_permission() {
 
 /**
  * Implements hook_node_access().
- * @todo: switch to node access constants
  */
 function hosting_platform_node_access($node, $op, $account) {
-  if ($op != 'create' && hosting_feature('client')) {
+  if (hosting_feature('client') && $op != 'create') {
     // We rely on hosting_client_node_grants() instead of global configuration.
-    return NULL;
+    return NODE_ACCESS_IGNORE;
+  }
+
+  $type = is_string($node) ? $node : $node->type;
+  if ($type != 'platform' ) {
+    return NODE_ACCESS_IGNORE;
   }
 
   switch ($op) {
@@ -153,6 +190,9 @@ function hosting_platform_node_access($node, $op, $account) {
 
     case 'update':
       return user_access('edit platform', $account);
+
+    case 'delete':
+      return user_access('delete platform', $account);
 
     case 'view':
       return user_access('view platform', $account);
@@ -325,22 +365,29 @@ function hosting_platform_form(&$node) {
     '#maxlength' => 255,
   );
 
-  // Allow edition if the node is in creation, or if wasn't verified correctly
-  // *and* we're not using a makefile. The reason while we don't allow editing
+  // Allow editing if the node is in creation, or if wasn't verified correctly
+  // *and* we're not using a makefile. The reason why we don't allow editing
   // the path if the makefile was specified is that there's the possibility
   // that the platform path was actually created when the node was saved the
   // first time and we have cruft lying around to cleanup.
-  if (!isset($node->nid) || (!$node->verified && !isset($node->makefile))) {
+  if (!isset($node->nid) || (!$node->verified && empty($node->makefile))) {
     $base_path = variable_get('hosting_platform_base_path', '/var/aegir/platforms/');
     $default_path = '';
+    $field_prefix = $base_path;
     if (isset($node->publish_path)) {
       // Strip the $base_path, since we prepend it in a validation handler.
       // This enforces platform publishing under the defined base path, even if
       // an error allows the path to be edited again.
-      if (substr($node->publish_path, 0, strlen($base_path)) == $base_path) {
+      if (strpos($node->publish_path, $base_path) === 0) {
         $default_path = substr($node->publish_path, strlen($base_path));
       }
+      else {
+        // If publish path is not inside /var/aegir/platforms, use that as the default path and remove the field prefix.
+        $default_path = $node->publish_path;
+        $field_prefix = '';
+      }
     }
+
     $form['publish_path'] = array(
       '#type' => 'machine_name',
       '#machine_name' =>  array(
@@ -358,7 +405,10 @@ function hosting_platform_form(&$node) {
       '#size' => 40,
       '#default_value' => $default_path,
       '#maxlength' => 255,
-      '#field_prefix' => $base_path,
+      '#field_prefix' => $field_prefix,
+      '#element_validate' => array(
+        'hosting_platform_form_publish_path_validate',
+      ),
     );
   }
   else {
@@ -371,7 +421,7 @@ function hosting_platform_form(&$node) {
     // Send it on form submission.
     $form['publish_path'] = array(
       '#type' => 'hidden',
-      '#value' => $node->publish_path,
+      '#value' => hosting_path_normalize($node->publish_path),
     );
   }
 
@@ -430,8 +480,6 @@ function hosting_platform_form(&$node) {
     );
   }
 
-  $form['#submit'][] = 'hosting_platform_form_validate';
-
   return $form;
 }
 
@@ -483,7 +531,7 @@ function hosting_platform_insert($node) {
     ->fields(array(
       'vid' => $node->vid,
       'nid' => $node->nid,
-      'publish_path' => $node->publish_path,
+      'publish_path' => hosting_path_normalize($node->publish_path),
       'makefile' => isset($node->makefile) ? $node->makefile : (isset($node->frommakefile['makefile']) ? $node->frommakefile['makefile'] : ''),
       'verified' => isset($node->verified) ? $node->verified : 0,
       'web_server' => $node->web_server,
@@ -513,7 +561,7 @@ function hosting_platform_update($node) {
     }
     db_update('hosting_platform')
       ->fields(array(
-        'publish_path' => $node->publish_path,
+        'publish_path' => hosting_path_normalize($node->publish_path),
         'makefile' => isset($node->makefile) ? $node->makefile : (isset($node->frommakefile['makefile']) ? $node->frommakefile['makefile'] : ''),
         'web_server' => $node->web_server,
         'verified' => $node->verified,
@@ -557,13 +605,16 @@ function hosting_platform_delete($node) {
 }
 
 /**
- * Form validation for platforms.
+ * Element validator for publish_path. Only run when field is editable.
+ * (New node or failed validation and no makefile.)
  */
-function hosting_platform_form_validate(&$form, &$form_state) {
-  // Prepend our platform base path, if this is a new platform.
-  $node = $form['#node'];
-  if (!isset($node->nid)) {
-    $form_state['values']['publish_path'] = variable_get('hosting_platform_base_path', '/var/aegir/platforms/') . $form_state['values']['publish_path'];
+function hosting_platform_form_publish_path_validate($element, &$form_state, &$form) {
+  $platform_base_path = variable_get('hosting_platform_base_path', '/var/aegir/platforms/');
+  
+  // If platform path doesn't already begin with the basepath and does not begin with a "/", append default base path.
+  if (strpos($element['#value'], $platform_base_path) !== 0 && strpos($element['#value'], '/') !== 0) {
+    $full_path = hosting_path_normalize($platform_base_path . '/' . $element['#value']);
+    form_set_value($element, $full_path, $form_state);
   }
 }
 
@@ -671,7 +722,7 @@ function hosting_platform_load($nodes) {
     }
 
     foreach ($additions as $property => &$value) {
-      $node->$property = $value;
+      $node->$property = is_numeric($value) ? (int) $value : $value;
     }
   }
 }
@@ -704,6 +755,7 @@ function hosting_platform_wildcard_load($arg) {
  * Implements hook_view().
  */
 function hosting_platform_view($node, $view_mode, $langcode = NULL) {
+  hosting_set_breadcrumb($node);
 
   $node->content['info'] = array(
     '#prefix' => '<div id="hosting-platform-info" class="hosting-info-list">',
@@ -797,6 +849,56 @@ function hosting_platform_field_extra_fields() {
 }
 
 /**
+ * Implements hook_entity_property_info().
+ */
+function hosting_platform_entity_property_info() {
+  $info['node']['bundles']['platform']['properties'] = array(
+    'publish_path' => array(
+      'label' => t('Publish path'),
+      'description' => t('The location on disk of the platform.'),
+      'type' => 'text',
+    ),
+    'makefile' => array(
+      'label' => t('Makefile'),
+      'description' => t('The makefile used to generate this platform (if any).'),
+      'type' => 'text',
+    ),
+    'verified' => array(
+      'label' => t('Last verification time'),
+      'description' => t('The date and time of the last verification of the platform.'),
+      'type' =>  'date',
+    ),
+    'web_server' => array(
+      'label' => t('Web server'),
+      'description' => t('The server the platform is on.'),
+      'type' => 'node',
+      'bundle' => 'server',
+    ),
+    'platform_status' => array(
+      'label' => t('Platform status'),
+      'description' => t('The status of the platform. E.g. enabled, deleted, etc.'),
+      'type' => 'integer',
+      'options list' => '_hosting_platform_status_codes_labels',
+    ),
+    'make_working_copy' => array(
+      'label' => t('Drush make - Working copy'),
+      'description' => t('Determines if the working-copy option is used when using Drush make to generate the codebase for the platform.'),
+      'type' => 'boolean',
+    ),
+  );
+  if (hosting_feature('client')) {
+    $info['node']['bundles']['platform']['properties']['clients'] = array(
+      'label' => t('Clients with access'),
+      'description' => t('An array of clients with access to this platform.'),
+      'type' => 'list<node>',
+      'bundle' => 'client',
+    );
+  }
+
+  return $info;
+}
+
+/**
  * Implements hook_hosting_site_site_list_filters().
  */
 function hosting_platform_hosting_site_site_list_filters() {
@@ -826,6 +928,17 @@ function _hosting_platform_status_codes() {
     ),
   );
   return $codes;
+}
+
+/**
+ * Platform status codes to human-readable label map.
+ */
+function _hosting_platform_status_codes_labels() {
+  $labels = array();
+  foreach (_hosting_platform_status_codes() as $code => $info) {
+    $labels[$code] = $info['label'];
+  }
+  return $labels;
 }
 
 /**

@@ -295,6 +295,9 @@ function hosting_get_features($refresh = FALSE) {
     $module_cache = system_rebuild_module_data();
     $modules = array();
     foreach ($features as $feature => $info) {
+      if (isset($module_cache[$info['module']]->info['required']) && $module_cache[$info['module']]->info['required']) {
+        $features[$feature]['status'] = HOSTING_FEATURE_REQUIRED;
+      }
       $features[$feature]['enabled'] = $module_cache[$info['module']]->status;
       $features[$feature]['package'] = $module_cache[$info['module']]->info['package'];
       $features[$feature]['dependencies']['modules'] = $module_cache[$info['module']]->info['dependencies'];
@@ -526,13 +529,7 @@ function hosting_feature_rebuild_caches($features = array()) {
 
   // Record enabled features in the Hosting features registry (in
   // /var/aegir/.drush/drushrc.php)
-  $all_features = hosting_get_features();
-  foreach ($features as $feature) {
-    // Don't add a verify task during install of hostmaster site.
-    if ($all_features[$feature]['status'] == HOSTING_FEATURE_REQUIRED) {
-      return;
-    }
-  }
+
   // Allow scripts to skip automatic verify tasks by passing '--no-verify'
   if (function_exists('drush_get_option') &&
       drush_get_option('no-verify', FALSE)) {

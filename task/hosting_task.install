@@ -2,7 +2,6 @@
 /**
  * @file
  * Define the database schema and update functions for the hosting_task module.
- *
  */
 
 /**
@@ -46,6 +45,9 @@ function hosting_task_schema() {
         'not null' => FALSE,
       ),
     ),
+    'indexes' => array(
+      'nid' => array('nid'),
+    ),
     'primary key' => array('vid'),
   );
 
@@ -73,6 +75,10 @@ function hosting_task_schema() {
         'size' => 'big',
         'not null' => FALSE,
       ),
+    ),
+    'indexes' => array(
+      'vid' => array('vid'),
+      'nid' => array('nid'),
     ),
   );
 
@@ -173,7 +179,7 @@ function hosting_task_update_6000() {
 
   $ret = hosting_package_update_6002();
 
-  // this update needs to be run before tasks can be added, in other update functions. 
+  // This update needs to be run before tasks can be added, in other update functions.
   if (!variable_get('hosting_task_update_6000_run', FALSE)) {
     db_add_field($ret, 'hosting_task', 'delta', array('type' => 'int', 'not null' => TRUE, 'default' => 0));
     variable_set('hosting_task_update_6000_run', TRUE);
@@ -325,4 +331,29 @@ function hosting_task_update_6200() {
  */
 function hosting_task_update_7000() {
   drupal_flush_all_caches();
+}
+
+/**
+ * Grant aegir clients 'create login-reset task' permission.
+ */
+function hosting_task_update_7001() {
+  $role = user_role_load_by_name('aegir client');
+  if ($role) {
+    user_role_grant_permissions($role->rid, array('create login-reset task'));
+  }
+}
+
+/**
+ * Add indexes to the hosting_task and hosting_task_arguments tables.
+ */
+function hosting_task_update_7301() {
+  if (!db_index_exists('hosting_task', 'hosting_task_nid_idx')) {
+    db_add_index('hosting_task', 'hosting_task_nid_idx', array('nid'));
+  }
+  if (!db_index_exists('hosting_task_arguments', 'hosting_task_arguments_nid_idx')) {
+    db_add_index('hosting_task_arguments', 'hosting_task_arguments_nid_idx', array('nid'));
+  }
+  if (!db_index_exists('hosting_task_arguments', 'hosting_task_arguments_vid_idx')) {
+    db_add_index('hosting_task_arguments', 'hosting_task_arguments_vid_idx', array('vid'));
+  }
 }

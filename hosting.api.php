@@ -132,10 +132,55 @@ function hook_hosting_feature() {
 /**
  * Define hosting queues.
  *
- * @see hosting_get_queues()
+ * @return array
+ *   An array with the queue specification. @see hosting_get_queues for an example
  */
 function hook_hosting_queues() {
 
+}
+
+/**
+ * Alter module defined queue definitions before they are processed.
+ *
+ * This hook is invoked before hosting calculates the number of items to
+ * process when processing queues, so, for example, you could alter the number of apparent
+ * items in the queue.
+ *
+ * @param array $queues
+ *   The array of queue definitions of queues provided by modules.
+ *
+ * @see hosting_get_queues
+ * @see hook_hosting_queues
+ * @see hook_hosting_processed_queues_alter
+ */
+function hook_hosting_queues_alter(&$queues) {
+  if (isset($queues['cron'])) {
+    // Do not execute the cron queue at weekends.
+    if (date('N', REQUEST_TIME) > 5) {
+      $queues['cron']['total_items'] = 0;
+    }
+  }
+}
+
+/**
+ * Alter module defined queue definitions after they are processed.
+ *
+ * This hook is invoked after hosting module calculates the number of items to
+ * process when processing queues, and after the configurable information has
+ * been merged in.
+ *
+ * @param array $queues
+ *   The processed array of queue definitions of queues provided by modules.
+ *
+ * @see hosting_get_queues
+ * @see hook_hosting_queues
+ * @see hook_hosting_queues_alter
+ */
+function hook_hosting_processed_queues_alter(&$queues) {
+  if (isset($queues['cron'])) {
+    // Force the cron queue to always be disabled.
+    $queues['cron']['enabled'] = FALSE;
+  }
 }
 
 /**
@@ -312,7 +357,7 @@ function hosting_QUEUE_TYPE_queue($count = 5) {
   global $provision_errors;
 
   drush_log(dt("Running tasks queue"));
-  $tasks = _hosting_get_new_tasks($count);
+  $tasks = hosting_get_new_tasks($count);
   foreach ($tasks as $task) {
     drush_invoke_process('@self', "hosting-task", array($task->nid), array(), array('fork' => TRUE));
   }
@@ -326,6 +371,7 @@ function hosting_TASK_SINGULAR_list() {
 }
 
 /**
+ * @return string
  * @see hosting_queue_block()
  */
 function hosting_TASK_SINGULAR_summary() {
@@ -333,12 +379,15 @@ function hosting_TASK_SINGULAR_summary() {
 }
 
 /**
- * Reacts to tasks ending, with any status.
+ * Reacts any time a task has it's status updated, including when being run in
+ * the queue, ending, or being cancelled.
  *
- * @param $task
+ * @param object $task
  *   The task that has just completed.
- * @param $status
- *   The status of that task.  Can be HOSTING_TASK_SUCCESS, etc.
+ *   Note that $task->task_status has the old value, $status has the new value.
+ *   The database will just have been updated before this hook is called.
+ * @param int $status
+ *   The new status of that task. Can be HOSTING_TASK_SUCCESS, etc.
  */
 function hook_hosting_task_update_status($task, $status) {
 
@@ -413,3 +462,42 @@ function hook_hosting_task_dangerous_tasks_alter(&$tasks) {}
 /**
  * @} End of "addtogroup hostinghooks".
  */
+
+/**
+ * Easily create a new site and a platform by passing just a name and a makefile URL.
+ *
+ * To get a new website running from a new codebase in Aegir, you need to create
+ * a platform, and then a site node. With the latest version, you can use code
+ * to do both at once.
+ *
+ * This function will create a platform node for /var/aegir/mywebservice/$name
+ * using the $makefile specified, and will then create a site node with the URL
+ * $name.mywebservice.com.
+ */
+function example_create_site($name, $makefile) {
+
+  // Create site node.
+  $site = new stdClass();
+  $site->type = 'site';
+  $site->title = "{$name}.mywebservice.com";
+  $site->status = 1;
+  $site->uid = 1;
+  $site->client = HOSTING_DEFAULT_CLIENT;
+  $site->site_status = HOSTING_SITE_QUEUED;
+
+  // Create a platform node.
+  $platform_node = new stdClass();
+  $platform_node->type = 'platform';
+  $platform_node->title = "mywebservice_{$name}";
+  $platform_node->publish_path = "/var/aegir/mywebservice/{$name}";
+  $platform_node->makefile = $makefile;
+
+  // Attach platform node to site node:
+  $site->platform_node = $platform_node;
+
+  // Save the site node, along with the platform.
+  // This is possible thanks to the patch in https://www.drupal.org/node/2824731
+  if ($site = node_submit($site)) {
+    node_save($site);
+  }
+}

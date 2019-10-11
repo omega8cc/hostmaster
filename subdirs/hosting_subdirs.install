@@ -1,0 +1,45 @@
+<?php
+/**
+ * @file
+ *   Database schemas and update functions for the hosting_subdirs module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function hosting_subdirs_install() {
+  // Get the weight of the hosting_site module.
+  $result = db_select('system', 's')
+              ->fields('s', array('weight'))
+              ->condition('name', 'hosting_site', '=')
+              ->execute();
+  $weight = !empty($result) ? $result->fetchField() : 0;
+
+  // Set our module to run before hosting_site.
+  // @see: hosting_subdirs_node_presave().
+  db_update('system')
+    ->fields(array('weight' => $weight - 1))
+    ->condition('name', 'hosting_subdirs', '=')
+    ->execute();
+}
+
+/**
+ * Set hosting_subdirs module to run before hosting_site.
+ */
+function hosting_subdirs_update_7000() {
+  // Set module weight.
+  hosting_subdirs_install();
+}
+
+/**
+ * Verify all nginx servers, to re-generate server-wide vhosts.
+ */
+function hosting_subdirs_update_7001() {
+  $servers = hosting_get_servers('http');
+  $nodes = node_load_multiple(array_keys($servers));
+  foreach ($nodes as $nid => $node) {
+    if ($node->services['http']->type == 'nginx') {
+      hosting_add_task($nid, 'verify');
+    }
+  }
+}

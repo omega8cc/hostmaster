@@ -53,9 +53,16 @@ function hosting_drush_command() {
     'arguments' => array(
       '@context_name' => 'Context to work on',
       'command' => 'provision-[command] to invoke',
+      'task_args' => 'If triggering tasks by context_name, any additional command arguments are passed as task_args. Specify the needed task_args in the format name=value.',
     ),
     'options' => array(
-      'force' => "Force the specified task to execute even if it's not queued to run.",
+      'force' => array(
+        'description' => 'Force the specified task to execute even if it is not queued to run.',
+      ),
+    ),
+    'examples' => array(
+      'drush @hostmaster hosting-task @sitename.com backup "description=backup description"' => 'Run backup task on sitename.com with the description "backup description".',
+      'drush @hostmaster hosting-task 42 --verbose --force' => 'Run the task with ID 42.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_FULL,
   );
@@ -70,9 +77,6 @@ function hosting_drush_command() {
 
   $items['hosting-pause'] = array(
     'description' => dt('Prepare the hostmaster site to be migrated to a new platform.'),
-    'arguments' => array(
-      'example.com' => dt('The url of the site being migrated.'),
-    ),
   );
 
   $items['hosting-resume'] = array(

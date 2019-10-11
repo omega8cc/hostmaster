@@ -7,6 +7,20 @@
 class hostingService {
 
   public $server;
+
+  // The full server node attached to this service.
+  public $server_node;
+
+  // The service this class represents. ie 'http', 'db'
+  public $service = '';
+
+  // The service type for this class.  ie 'mysql', 'apache'
+  public $type = '';
+
+  // The human readable name for this service type.  ie 'MySQL', 'Apache'
+  public $name = '';
+
+  // Whether or not the service is available.
   public $available = 0;
 
   protected $has_restart_cmd = FALSE;
@@ -15,6 +29,18 @@ class hostingService {
   function __construct($node, $values = NULL) {
     self::save($node);
     self::setValues($values);
+  }
+
+  /**
+   * Returns human readable name for this service.
+   */
+  public function getName() {
+    if (empty($this->name)) {
+      return $this->type;
+    }
+    else {
+      return $this->name;
+    }
   }
 
   public function has_port() {
@@ -48,6 +74,7 @@ class hostingService {
 
   public function save($node) {
     if (isset($node->nid)) {
+      $this->server_node = $node;
       $this->server = new stdClass();
       $this->server->nid = $node->nid;
       $this->server->vid = $node->vid;

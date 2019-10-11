@@ -183,10 +183,10 @@ function hosting_site_wildcard_load($arg) {
 function _hosting_site_goto_link($node) {
   $cache = cache_get("hosting:site:" . $node->nid . ":login_link");
   if (user_access('create login-reset task') && $cache && (REQUEST_TIME < $cache->data['expire'])) {
-    $title = t("Log in to !url", array('!url' => $node->title));
+    $title = t("Log in to !url", array('!url' => hosting_site_canonical_url($node)));
   }
   else {
-    $title = t("Go to !url", array('!url' => $node->title));
+    $title = t("Go to !url", array('!url' => hosting_site_canonical_url($node)));
   }
   $url = "node/" . $node->nid . "/goto_site";
   return theme('hosting_site_goto_link', array('title' => $title, 'url' => $url));
@@ -239,7 +239,7 @@ function _hosting_site_url($node) {
   $schema = 'http';
   $port = NULL;
 
-  $url = strtolower(trim($node->title));
+  $url = _hosting_site_canonical_url($node);
 
   $platform = node_load($node->platform);
   $server = node_load($platform->web_server);
@@ -252,12 +252,13 @@ function _hosting_site_url($node) {
     }
   }
 
-  /**
-   * This is part of the ssl feature, but is better to implement here.
-   */
-  if (isset($node->ssl_enabled) && ($node->ssl_enabled == 2)) {
-    // this is a bit of a magic number, because we cant rely on the constant being available yet.
-    // 2 == Only SSL is enabled.
+  // This is part of the ssl feature, but is better to implement here.
+  // The 2 is a bit of a magic number, because we cant rely on the constants being available yet.
+  // 2 == Only SSL is required, corresponding to HOSTING_SSL_REQUIRED and HOSTING_HTTPS_REQUIRED.
+  $hosting_ssl_required = (isset($node->ssl_enabled) && $node->ssl_enabled == 2);
+  $hosting_https_required = (isset($node->https_enabled) && $node->https_enabled == 2);
+
+  if ($hosting_ssl_required || $hosting_https_required) {
     $schema = 'https';
 
     if ($server->services['http']->has_port()) {
@@ -273,6 +274,17 @@ function _hosting_site_url($node) {
   }
 
   return "{$schema}://{$url}";
+}
+
+/**
+ * Get a site's canonical URL.
+ */
+function hosting_site_canonical_url($node) {
+  # Use the redirection target, if it's available.
+  # Default to the site title, otherwise.
+  $url = isset($node->redirection) && $node->redirection ? $node->redirection : $node->title;
+
+  return hosting_site_clean_domain($url);
 }
 
 /**
@@ -294,7 +306,7 @@ function hosting_site_hosting_tasks() {
   );
 
   $tasks['site']['verify'] = array(
-    'title' => t('Verify'),
+    'title' => t('Verify Site'),
     'description' => t('Confirm that the site has been correctly installed and regenerate all configuration files to match the hosting front end.'),
     'provision_save' => TRUE,
   );
@@ -311,7 +323,7 @@ function hosting_site_hosting_tasks() {
          It may be disabled again if needed.'),
   );
   $tasks['site']['delete'] = array(
-    'title' => t('Delete'),
+    'title' => t('Delete Site'),
     'description' => t('Deleting this site will completely remove it from the hosting system,
         but will keep the last backup available. This process can not be undone.
         Are you really sure you want to delete this site?'),
@@ -372,10 +384,16 @@ function hosting_site_permission() {
  * Implements hook_node_access().
  */
 function hosting_site_node_access($node, $op, $account) {
-  if ($op != 'create' && hosting_feature('client')) {
-    // we rely on hosting_client_node_grants() instead of global configuration
-    return NULL; //@todo check this return value -> NODE_ACCESS_IGNORE?
+  if (hosting_feature('client') && $op != 'create') {
+    // We rely on hosting_client_node_grants() instead of global configuration.
+    return NODE_ACCESS_IGNORE;
   }
+
+  $type = is_string($node) ? $node : $node->type;
+  if ($type != 'site' ) {
+    return NODE_ACCESS_IGNORE;
+  }
+
   if ($op == 'create' && user_access('create site', $account)) {
     return NODE_ACCESS_ALLOW;
   }
@@ -597,6 +615,15 @@ function _hosting_site_status($node) {
 }
 
 /**
+ * Site status codes to human readable label mappings.
+ *
+ * @see hosting_site_status_codes
+ */
+function hosting_site_status_codes_labels() {
+  return hosting_site_status_codes('label');
+}
+
+/**
  * Define the status type labels and classes.
  *
  * @param $type
@@ -703,6 +730,15 @@ function theme_hosting_site_profile($variables) {
 }
 
 /**
+ * Theme function for site titles.
+ */
+function hosting_site_preprocess(&$variables) {
+  if (isset($variables['node'])) {
+    $variables['title'] = hosting_site_canonical_url($variables['node']);
+  }
+}
+
+/**
  * Control block visibility.
  */
 function hosting_site_client_list_block_visibility() {
@@ -790,4 +826,27 @@ function hosting_task_delete_form($node) {
   );
 
   return $form;
+}
+
+/**
+ * Allow other modules to alter the domain.
+ */
+function hosting_site_get_domain($domain) {
+  drupal_alter('hosting_site_domain', $domain);
+  return $domain;
+}
+
+/**
+ * Implements hook_hosting_site_domain_alter().
+ */
+function hosting_site_hosting_site_domain_alter(&$domain) {
+  $domain = hosting_site_clean_domain($domain);
+}
+
+/**
+ * Ensure domains are properly formatted.
+ */
+function hosting_site_clean_domain($domain) {
+  // Domain names are case-insensitive.
+  return strtolower(trim($domain));
 }

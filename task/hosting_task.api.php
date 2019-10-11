@@ -20,6 +20,7 @@
  *   should be an array of tasks keyed by task type, the value should be an
  *   array that defines the task. Valid keys for defining tasks are:
  *   - 'title': (required) The human readable name of the task.
+ *   - 'command': (optional) The drush command to run. If not included, will assume "provision-TASKTYPE".
  *   - 'description': (optional) The human readable description of the task.
  *   - 'weight': (optional) The weight of the task when displayed in lists.
  *   - 'dialog' (optional) Set to TRUE to indicate that this task requires a
@@ -47,6 +48,7 @@ function hook_hosting_tasks() {
     'description' => t('Make a copy of a site.'),
     'weight' => 5,
     'dialog' => TRUE,
+    'command' => 'provision-clone',
   );
   return $options;
 }
@@ -93,14 +95,32 @@ function hosting_task_TASK_TYPE_form_validate($form, &$form_state) {
   // From hosting_task_clone_form_validate()
   $site = $form['parameters']['#node'];
 
-  $url = strtolower(trim($form_state['values']['parameters']['new_uri'])); // domain names are case-insensitive
-  if ($url == strtolower(trim($site->title))) {
+  $url = hosting_site_get_domain($form_state['values']['parameters']['new_uri']);
+  if ($url == hosting_site_get_domain($site->title)) {
     form_set_error('new_uri', t("To clone a site you need to specify a new Domain name to clone it to."));
   }
   else {
     hosting_task_migrate_form_validate($form, $form_state);
   }
 
+}
+
+/**
+ * Alter the query that selects the next tasks to run.
+ *
+ * You may use this hook to prioritise one type of task over another, or to
+ * prefer one client over another etc.
+ *
+ * @see hosting_get_new_tasks
+ *
+ * @param QueryAlterableInterface $query
+ *   The structured query that will select the next tasks to run.
+ */
+function hook_query_hosting_get_new_tasks_alter(QueryAlterableInterface $query) {
+  // Change the sort ordering so that newer tasks are preferred to older ones.
+  $order_by = &$query->getOrderBy();
+  $order_by['n.changed'] = 'DESC';
+  $order_by['n.nid'] = 'DESC';
 }
 
 

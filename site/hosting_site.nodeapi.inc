@@ -28,6 +28,7 @@ function hosting_site_node_info() {
  */
 function hosting_site_view($node, $view_mode, $langcode = NULL) {
   hosting_set_breadcrumb($node);
+  drupal_set_title(hosting_site_canonical_url($node));
   $node->content['info']['#prefix'] = '<div id="hosting-site-info" class="hosting-info-list">';
   if ($node->site_status == HOSTING_SITE_ENABLED) {
     $node->content['info']['link'] = array(
@@ -118,7 +119,7 @@ function hosting_site_view($node, $view_mode, $langcode = NULL) {
 }
 
 /**
- * Implements hook_field_extra_fields()
+ * Implements hook_field_extra_fields().
  */
 function hosting_site_field_extra_fields() {
   $return['node']['site'] = array(
@@ -137,6 +138,71 @@ function hosting_site_field_extra_fields() {
   );
 
   return $return;
+}
+
+/**
+ * Implements hook_entity_property_info().
+ */
+function hosting_site_entity_property_info() {
+  $info['node']['bundles']['site']['properties'] = array(
+    'client' => array(
+      'label' => t('Client'),
+      'description' => t('The client that owns the site.'),
+      'type' => 'node',
+      'bundle' => 'client',
+    ),
+    'db_server' => array(
+      'label' => t('Database server'),
+      'description' => t('The database server for the site.'),
+      'type' => 'node',
+      'bundle' => 'server',
+    ),
+    'db_name' => array(
+      'label' => t('Database name'),
+      'description' => t('The name of the database on the database server for the site.'),
+      'type' => 'text',
+    ),
+    'platform' => array(
+      'label' => t('Platform'),
+      'description' => t('The platform the site is on.'),
+      'type' => 'node',
+      'bundle' => 'platform',
+    ),
+    'profile' => array(
+      'label' => t('Profile'),
+      'description' => t('The install profile used to install the site.'),
+      'type' => 'node',
+      'bundle' => 'package',
+    ),
+    'site_language' => array(
+      'label' => t('Site language'),
+      'description' => t('The language of the site.'),
+      'type' => 'text',
+    ),
+    'last_cron' => array(
+      'label' => t('Last cron run time'),
+      'description' => t('The date of the last cron run time for the site.'),
+      'type' => 'date',
+    ),
+    'cron_key' => array(
+      'label' => t('Cron key'),
+      'description' => t('The cron key for the site.'),
+      'type' => 'text',
+    ),
+    'site_status' => array(
+      'label' => t('Site status'),
+      'description' => t('The status of the site, e.g. enabled, deleted etc.'),
+      'type' => 'integer',
+      'options list' => 'hosting_site_status_codes_labels',
+    ),
+    'verified' => array(
+      'label' => t('Last verification time'),
+      'description' => t('The date of the time the site was verified.'),
+      'type' => 'date',
+    ),
+  );
+
+  return $info;
 }
 
 /**
@@ -166,8 +232,7 @@ function hosting_site_delete($node) {
  * Implements hook_nodeapi().
  */
 function hosting_site_nodeapi_site_presave(&$node) {
-  // Domain names are case-insensitive.
-  $node->title = strtolower(trim($node->title));
+  $node->title = hosting_site_get_domain($node->title);
 }
 
 /**
@@ -183,6 +248,72 @@ function hosting_site_insert(&$node) {
   $node->last_cron = isset($node->last_cron) ? $node->last_cron : 0;
   // Provide a dummy profile, e.g. for hosting-import.
   $node->profile = isset($node->profile) ? $node->profile : 0;
+
+  // If platform NID is not defined, but platform data is available,
+  // create the platform.
+  if (empty($node->platform)
+    && !empty($node->platform_node)
+    && !empty($node->platform_node->publish_path)
+  ) {
+
+    // If a platform exists for the given path, use that.
+    $existing_platform_nid = db_select('hosting_platform', 'p')
+      ->condition('publish_path', $node->platform_node->publish_path)
+      ->condition('status', HOSTING_PLATFORM_ENABLED)
+      ->fields('p', array('nid'))
+      ->execute()
+      ->fetchField();
+
+    // Use the existing platform NID.
+    if ($existing_platform_nid) {
+      $node->platform = $existing_platform_nid;
+    }
+    // Or prepare a new one.
+    else {
+
+      // If platform_status hasn't been explicitly set,
+      // assume platform status matches site status:
+      // If developer creates a site node that's disabled,
+      // the platform should be too.
+      if (!isset($node->platform_node->platform_status) && isset($node->site_status)) {
+        $node->platform_node->platform_status = $node->site_status;
+      }
+
+      // If web_server hasn't been explicity set, use hostmaster's web server.
+      if (!isset($node->platform_node->web_server)) {
+        $hostmaster = hosting_context_load('hostmaster');
+        $hostmaster_platform = node_load($hostmaster->platform);
+        $node->platform_node->web_server = $hostmaster_platform->web_server;
+      }
+
+      // If platform title has not been set, generate one from the site title.
+      if (empty($node->platform_node->title)) {
+        $node->platform_node->title = 'platform_' . preg_replace("/[!\W]/", "", $node->title);
+      }
+
+      // If platform UID has not been set, use site UID.
+      if (empty($node->platform_node->uid)) {
+        $node->platform_node->uid = $node->uid;
+      }
+
+      $node->platform_node->type = 'platform';
+      if ($node->platform_node = node_submit($node->platform_node)) {
+        node_save($node->platform_node);
+      }
+      $node->platform = $node->platform_node->nid;
+    }
+
+    // If db_server hasn't been explicity set, use hostmaster's web server.
+    if (!isset($node->db_server)) {
+      $hostmaster = hosting_context_load('hostmaster');
+      $node->db_server = $hostmaster->db_server;
+    }
+  }
+
+  // If there is no platform NID and no publish path, throw an exception.
+  if (empty($node->platform) && empty($node->platform_node->publish_path)) {
+    throw new Exception('Site nodes require either platform or platform_node->publish_path property');
+  }
 
   $id = db_insert('hosting_site')
     ->fields(array(
@@ -250,6 +381,11 @@ function hosting_site_update(&$node) {
       ))
       ->condition('vid', $node->vid)
       ->execute();
+    
+    // If platform_node is passed in the site node, save it.
+    if (isset($node->platform_node->nid)) {
+      node_save($node->platform_node);
+    }
   }
 }
 
@@ -269,9 +405,21 @@ function hosting_site_node_update($node) {
  */
 function hosting_site_load($nodes) {
   foreach ($nodes as $nid => &$node) {
-    $additions = db_query('SELECT  client, db_server, db_name, platform, profile, language as site_language, last_cron, cron_key, status AS site_status, verified FROM {hosting_site} WHERE vid = :vid', array(':vid' => $node->vid))->fetch();
+    $additions = db_query(
+      'SELECT  client, db_server, db_name, platform, profile, web_server, publish_path,
+        language AS site_language, last_cron, cron_key, s.status AS site_status,
+        p.status AS platform_status, s.verified, p.verified as platform_verified
+      FROM {hosting_site} s
+        LEFT JOIN {hosting_platform} p ON s.platform = p.nid
+      WHERE s.vid = :vid',
+      array(':vid' => $node->vid)
+    )->fetch();
     foreach ($additions as $property => &$value) {
-      $node->$property = $value;
+      $node->$property = is_numeric($value) ? (int) $value : $value;
     }
   }
+
+  // Create a "servers" array based on our two base servers.
+  $node->servers['web'] = node_load($node->web_server);
+  $node->servers['db'] = node_load($node->db_server);
 }
