@@ -755,6 +755,7 @@ function hosting_platform_wildcard_load($arg) {
  * Implements hook_view().
  */
 function hosting_platform_view($node, $view_mode, $langcode = NULL) {
+  hosting_set_breadcrumb($node);
 
   $node->content['info'] = array(
     '#prefix' => '<div id="hosting-platform-info" class="hosting-info-list">',

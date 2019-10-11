@@ -12,7 +12,7 @@ function hosting_hosting_site_context_options(&$task) {
   $task->context_options['db_server'] = hosting_context_name($task->ref->db_server);
   $task->context_options['platform'] = hosting_context_name($task->ref->platform);
 
-  $task->context_options['uri'] = strtolower(trim($task->ref->title));
+  $task->context_options['uri'] = hosting_site_get_domain($task->ref->title);
   $task->context_options['language'] = $task->ref->site_language;
 
   $profile = node_load($task->ref->profile);
@@ -38,7 +38,7 @@ function hosting_hosting_site_context_options(&$task) {
 function hosting_site_drush_context_import($context, &$node) {
   if ($context->type == 'site') {
     if (!isset($node->title)) {
-      $node->title = strtolower(trim($context->uri)); // force lowercase for existing uri
+      $node->title = hosting_site_get_domain($context->uri); // force lowercase for existing uri
     }
     $node->site_language = $context->language;
     $node->cron_key = $context->cron_key;
