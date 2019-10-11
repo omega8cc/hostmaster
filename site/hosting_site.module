@@ -814,6 +814,21 @@ function hosting_site_hosting_task_guarded_nodes() {
 }
 
 /**
+ * Confirmation form for site backups.
+ *
+ * @see hosting_task_confirm_form().
+ */
+function hosting_task_delete_form($node) {
+  $form['skip_backup'] = array(
+    '#title' => t('Skip site backup'),
+    '#type' => 'checkbox',
+    '#description' => t('Skip creating a backup file of this site and delete it. <em>You will not be able to recover your data if backups are skipped.</em>'),
+  );
+
+  return $form;
+}
+
+/**
  * Allow other modules to alter the domain.
  */
 function hosting_site_get_domain($domain) {
@@ -834,19 +849,4 @@ function hosting_site_hosting_site_domain_alter(&$domain) {
 function hosting_site_clean_domain($domain) {
   // Domain names are case-insensitive.
   return strtolower(trim($domain));
-}
-
-/**
- * Confirmation form for site backups.
- *
- * @see hosting_task_confirm_form().
- */
-function hosting_task_delete_form($node) {
-  $form['skip_backup'] = array(
-    '#title' => t('Skip site backup'),
-    '#type' => 'checkbox',
-    '#description' => t('Skip creating a backup file of this site and delete it. <em>You will not be able to recover your data if backups are skipped.</em>'),
-  );
-
-  return $form;
 }
