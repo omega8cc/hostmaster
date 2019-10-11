@@ -8,6 +8,9 @@ class hostingService {
 
   public $server;
 
+  // The full server node attached to this service.
+  public $server_node;
+
   // The service this class represents. ie 'http', 'db'
   public $service = '';
 
@@ -71,6 +74,7 @@ class hostingService {
 
   public function save($node) {
     if (isset($node->nid)) {
+      $this->server_node = $node;
       $this->server = new stdClass();
       $this->server->nid = $node->nid;
       $this->server->vid = $node->vid;

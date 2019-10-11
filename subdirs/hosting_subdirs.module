@@ -9,29 +9,53 @@
  * Implements hook_form_alter().
  */
 function hosting_subdirs_form_alter(&$form, &$form_state, $form_id) {
-  if($form_id == 'site_node_form') {
-    $subdirs_text = 'Note: If the site is using a subdirectory, there should be at least one special alias with a subdirectory path (e.g., example.com/foo) below. <strong>Important: subdomain (foo) and subdirectory name (foo) must be identical</strong>. Redirection to this alias will also work, if enabled. This is useful if you do not want the site to be accessible from its subdomain (e.g., foo.example.com). You can also add more standard aliases (e.g., bar.example.com, green.example.com).';
-    if (isset($form['aliases_wrapper']['#description'])) {
-      $form['aliases_wrapper']['#description'] .= $subdirs_text;
-    }
-    else {
-      $form['aliases_wrapper']['#description'] = $subdirs_text;
-    }
+  if ($form_id == 'site_node_form') {
+    // Since our form changes should persist across failed validations, we need
+    // to use '#after_build' here.
+    // @see https://www.drupal.org/project/drupal/issues/671574#comment-3061880
+    $form['#after_build'][] = 'hosting_subdirs_alter_alias_documentation';
+    $form['#after_build'][] = 'hosting_subdirs_alter_alias_validation';
+  }
+}
+
+/**
+ * Add inline documentation about subdirs.
+ */
+function hosting_subdirs_alter_alias_documentation($form, $form_state) {
+  // Explain about base URLS in the context of subdirectories.
+  $domain_help = 'Hint: If you plan to use a subdomain (e.g., example.com/site1, and also use the root domain (e.g., example.com), you must create a site with the root domain *before* adding sites in its subdirectories. Note: Once the first site in a subdirectory is created and the parent site also exists, the parent site must be re-verified (just once) to turn on the web server configuration for the first (and any future) sites in its subdirectory.';
+  if (isset($form['title']['#description'])) {
+    $form['title']['#description'] .= $domain_help;
+  }
+  else {
+    $form['title']['#description'] = $domain_help;
   }
 
-  // Replace the normal alias validation with one that will accept subdirs.
+  // Explain what we're doing with aliases and redirection.
+  $alias_help = 'Note: If the site is installed in a subdirectory (e.g., example.com/site1), it gets renamed internally (e.g., site1.example.com), and an alias added for the subdirectory path (e.g., example.com/foo). In addition, redirection will be setup up to point to the subdirectory domain. You can still add more standard aliases (e.g., bar.example.com, green.example.com).';
+  if (isset($form['aliases_wrapper']['#description'])) {
+    $form['aliases_wrapper']['#description'] .= $alias_help;
+  }
+  else {
+    $form['aliases_wrapper']['#description'] = $alias_help;
+  }
+  // Indicate the internal URL.
+  if (isset($form_state['node']->redirection) && $form_state['node']->redirection) {
+    $form['info']['title']['#markup'] = $form_state['node']->redirection . ' (Internal URL: ' . $form_state['node']->title . ')';
+  }
+  return $form;
+}
+
+/**
+ * Replace the normal alias validation with one that will accept subdirs.
+ */
+function hosting_subdirs_alter_alias_validation($form, $form_state) {
   $alias_validation = array_search('hosting_alias_site_form_validate', $form['#validate']);
   if ($alias_validation) {
     unset($form['#validate'][$alias_validation]);
   }
   $form['#validate'][] = 'hosting_subdirs_site_form_validate';
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function hosting_subdirs_form_site_node_form_alter(&$form, &$form_state) {
-  $form['title']['#description'] = 'Hint: To create a site using a subdirectory, name it using a subdomain (e.g., foo.example.com), and then enter an alias below for the desired subdirectory (e.g., example.com/foo). <strong>Important: subdomain (foo) and subdirectory name (foo) must be identical</strong>. If you plan to also use the root domain (e.g., example.com), you must create a site with the root domain *before* adding sites in its subdirectories. Note: Once the first site in a subdirectory is created and the parent site also exists, the parent site must be re-verified (just once) to turn on the web server configuration for the first (and any future) sites in its subdirectory. All sites sharing the same parent URL can use any profile, on any platform, and can be freely migrated, cloned, etc.';
+  return $form;
 }
 
 /**
@@ -44,23 +68,55 @@ function hosting_subdirs_form_site_node_form_alter(&$form, &$form_state) {
  * @param string $key
  */
 function hosting_subdirs_validate_alias($site, $alias, $key) {
-  if ($alias = strtolower(trim($alias))) {
-    $alias = strtolower(trim($alias));
-    // If we're adding a subdirectory alias, it can't begin with '/'.
-    if (@strpos($alias, '/', 1)) {
-      $subdir = explode('/', $alias, 2);
-    }
-    else {
-      // No subdirectory in use, so validate normally.
-      return hosting_alias_validate_alias($site, $alias, $key);
-    }
+  $alias = hosting_site_clean_domain($alias);
+  // If we're adding a subdirectory alias, it can't begin with '/'.
+  if (@strpos($alias, '/', 1)) {
+    $subdir = explode('/', $alias, 2);
+  }
+  else {
+    // No subdirectory in use, so validate normally.
+    return hosting_alias_validate_alias($site, $alias, $key);
+  }
 
-    if (!hosting_alias_allow_domain($alias, array('nid' => $site->nid)) || $alias == $site->title) {
-      form_set_error("aliases][$key", t('The domain name @alias is already in use', array('@alias' => $alias)));
-    }
-    if (!hosting_subdirs_valid_fqdn_subdir($alias)) {
-      form_set_error("aliases][$key", t('The domain name @alias is not a valid subdir url', array('@alias' => $alias)));
-    }
+  if (!hosting_alias_allow_domain($alias, array('nid' => $site->nid)) || $alias == $site->title) {
+    form_set_error("aliases][$key", t('The domain name @alias is already in use', array('@alias' => $alias)));
+  }
+  if (!hosting_subdirs_valid_fqdn_subdir($alias)) {
+    form_set_error("aliases][$key", t('The domain name @alias is not a valid subdir url', array('@alias' => $alias)));
+  }
+}
+
+/**
+ * Implements hook_hosting_site_domain_alter().
+ */
+function hosting_subdirs_hosting_site_domain_alter(&$domain) {
+  if (hosting_subdirs_is_a_subdir($domain)) {
+    // Rewrite the subdirectory as a subdomain.
+    $domain = implode('.', array_reverse(explode('/', $domain)));
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * Handle subdir-specific configuration for a new site.
+ */
+function hosting_subdirs_node_presave($node) {
+  // Note that we set this module's weight to ensure that it runs before
+  // hosting_site. This is specifically so that $node->title here is still the
+  // subdir domain.
+  // @see: hosting_subdirs_install().
+  if ($node->type == 'site' && hosting_subdirs_is_a_subdir($node->title)) {
+    // Add an alias and redirection to the subdir URL.
+    $node->aliases[] = $node->redirection = $node->title;
+  }
+  // After cloning a site, we lose our alias and redirection during the import
+  // task, since they are blank on the back-end at that point. So we preserve
+  // them from the original cloned site node, and re-instate them here.
+  // @see hosting_subdirs_post_hosting_import_task().
+  elseif (isset($node->subdir_aliases) && isset($node->subdir_redirection)) {
+    $node->aliases = $node->subdir_aliases;
+    $node->redirection = $node->subdir_redirection;
   }
 }
 
@@ -79,6 +135,14 @@ function hosting_subdirs_site_form_validate($form, &$form_state) {
 }
 
 /**
+ * Determine whether a URL is a subdirectory site.
+ */
+function hosting_subdirs_is_a_subdir($url) {
+  if (@strpos($url, '/') === FALSE) return FALSE;
+  return TRUE;
+}
+
+/**
  * Check if the FQDN provided is valid for subdir alias.
  *
  * @param string $fqdn
@@ -90,3 +154,37 @@ function hosting_subdirs_valid_fqdn_subdir($fqdn) {
   return preg_match("/^([a-z0-9]([a-z0-9-\/]*[a-z0-9])?\.?)+$/i", $fqdn) &&
          preg_match("/\//", $fqdn) && !preg_match("/\/\//", $fqdn);
 }
+
+/**
+ * Helper function to determine whether a hosted site is using a subdirectory URL.
+ */
+function _hosting_subdirs_is_a_subdir_site($site) {
+  // If the site isn't using re-direction, then it isn't a subdir site.
+  if (!isset($site->redirection) || !$site->redirection) return FALSE;
+  // If the site isn't re-directing to a subdir, then it isn't a subdir site.
+  if (!hosting_subdirs_is_a_subdir($site->redirection)) return FALSE;
+  // If the site is re-directing to a custom alias, leave it alone.
+  if ($site->title != hosting_site_get_domain($site->redirection)) return FALSE;
+
+  return TRUE;
+}
+
+/**
+ * Implements hook_post_hosting_import_task().
+ */
+function hosting_subdirs_post_hosting_import_task($task, $data) {
+  // This is only relevant to sites.
+  if ($task->ref_type != 'site') return;
+
+  // This is only relevant to sites using a subdir.
+  if (!_hosting_subdirs_is_a_subdir_site($task->ref)) return;
+
+  // After cloning a site, we lose our alias and redirection during the import
+  // task, since they are blank on the back-end at that point. So we preserve
+  // them here from the original cloned site node, and re-instate them when the
+  // node gets re-saved.
+  // @see hosting_subdirs_node_presave().
+  $task->ref->subdir_redirection = $task->ref->redirection;
+  $task->ref->subdir_aliases = $task->ref->aliases;
+}
+

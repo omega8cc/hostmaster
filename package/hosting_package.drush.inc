@@ -33,7 +33,7 @@ function drush_hosting_package_pre_hosting_task() {
             '!nid' => $task->ref->nid,
             '!profile' => $task->ref->profile_name,
             '!package_id' => $task->ref->profile,
-          )), 'notice');
+          )), 'success');
         }
         else {
           drush_log(dt('Package for install profile "!profile" not found in platform !platform. Unable to update site profile field for site !site', array(

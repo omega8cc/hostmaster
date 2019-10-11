@@ -15,7 +15,7 @@ function hosting_site_views_data() {
     'join' => array(
       'node' => array(
         'left_field' => 'vid',
-         'field' => 'vid',
+        'field' => 'vid',
       ),
     ),
   );
@@ -245,6 +245,17 @@ function hosting_site_views_data() {
       'handler' => 'views_handler_filter_date',
     ),
   );
+
+  $data['hosting_site']['canonical'] = [
+    'title' => t('Canonical URL'),
+    'help' => t('The canonical URL for this site.'),
+    // This field value is based on the site NID.
+    'real field' => 'nid',
+    'field' => [
+      'handler' => 'hosting_site_field_handler_canonical',
+      'click sortable' => TRUE,
+    ],
+  ];
 
   return $data;
 }

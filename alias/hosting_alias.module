@@ -239,44 +239,48 @@ function hosting_alias_get_aliases($node, $type = NULL) {
  *   The node of the site containing the aliases to save.
  */
 function hosting_alias_insert($node) {
-  $automatic = hosting_alias_automatic_aliases(strtolower(trim($node->title)));
+  $node->aliases = isset($node->aliases) ? $node->aliases : array();
+  $aliases = (is_array($node->aliases)) ? $node->aliases : explode("\n", str_replace(",", "\n", $node->aliases));
+  $automatic = hosting_alias_automatic_aliases(hosting_site_clean_domain($node->title));
 
-  if (!isset($node->aliases)) {
-    $node->aliases = array();
+  if (empty($aliases) && empty($automatic)) return;
+
+  if (count($aliases)) {
+    $aliases = array_unique($aliases);
+    foreach ($aliases as $alias) {
+      $alias = hosting_site_clean_domain($alias);
+
+      // Only flag custom aliases that aren't automatically generated
+      if (in_array($alias, $automatic)) continue;
+
+      $id = db_insert('hosting_site_alias')
+        ->fields(array(
+          'vid' => $node->vid,
+          'nid' => $node->nid,
+          'alias' => $alias,
+          'automatic' => HOSTING_ALIAS_CUSTOM,
+          'redirection' => isset($node->redirection) ? $node->redirection : 0,
+        ))
+        ->execute();
+    }
   }
 
-  if (!empty($node->aliases) || count($automatic)) {
-    $aliases = (is_array($node->aliases)) ? $node->aliases : explode("\n", str_replace(",", "\n", $node->aliases));
-    if (is_array($aliases)) {
-      $aliases = array_unique($aliases);
-      foreach ($aliases as $alias) {
-        if (($alias = strtolower(trim($alias))) && !in_array($alias, $automatic)) {
-          $id = db_insert('hosting_site_alias')
-            ->fields(array(
-              'vid' => $node->vid,
-              'nid' => $node->nid,
-              'alias' => $alias,
-              'automatic' => HOSTING_ALIAS_CUSTOM,
-              'redirection' => isset($node->redirection) ? $node->redirection : 0,
-            ))
-            ->execute();
-        }
-      }
-    }
-    if (count($automatic)) {
-      foreach ($automatic as $alias) {
-        if (($alias = strtolower(trim($alias))) && _hosting_valid_fqdn_wildcard($alias)) {
-          $id = db_insert('hosting_site_alias')
-            ->fields(array(
-              'vid' => $node->vid,
-              'nid' => $node->nid,
-              'alias' => $alias,
-              'automatic' => HOSTING_ALIAS_AUTOMATIC,
-              'redirection' => isset($node->redirection) ? $node->redirection : 0,
-            ))
-            ->execute();
-        }
-      }
+  if (count($automatic)) {
+    foreach ($automatic as $alias) {
+      $alias = hosting_site_clean_domain($alias);
+
+      // Only insert valid FQDNs.
+      if (!_hosting_valid_fqdn_wildcard($alias)) continue;
+
+      $id = db_insert('hosting_site_alias')
+        ->fields(array(
+          'vid' => $node->vid,
+          'nid' => $node->nid,
+          'alias' => $alias,
+          'automatic' => HOSTING_ALIAS_AUTOMATIC,
+          'redirection' => isset($node->redirection) ? $node->redirection : 0,
+        ))
+        ->execute();
     }
   }
 }
@@ -368,21 +372,19 @@ function hosting_alias_node_revision_delete($node) {
  *   The array index of this alias, to set any error on the proper sub-field.
  */
 function hosting_alias_validate_alias($site, $alias, $key) {
-  if ($alias = strtolower(trim($alias))) {
-    $alias = strtolower(trim($alias));
-    $params = isset($site->nid) ? array('nid' => $site->nid) : array();
-    if (!hosting_domain_allowed($alias, $params) || $alias == $site->title) {
-      form_set_error("aliases][$key", t('The domain name @alias is already in use', array('@alias' => $alias)));
-    }
-    if (!_hosting_valid_fqdn_wildcard($alias)) {
-      form_set_error("aliases][$key", t('The domain name @alias is not a valid url', array('@alias' => $alias)));
-    }
-    $length = strlen($alias);
-    if ($length > HOSTING_MAX_ALIAS_LENGTH) {
-      $long = $length - HOSTING_MAX_ALIAS_LENGTH;
-      form_set_error("aliases][$key", t('The domain name @alias is @long character(s) too long. Please shorten.', array('@alias' => $alias, '@long' => $long)));
-    }
+  $alias = hosting_site_clean_domain($alias);
+  $params = isset($site->nid) ? array('nid' => $site->nid) : array();
+  $length = strlen($alias);
 
+  if (!hosting_domain_allowed($alias, $params) || $alias == $site->title) {
+    form_set_error("aliases][$key", t('The domain name @alias is already in use', array('@alias' => $alias)));
+  }
+  if (!_hosting_valid_fqdn_wildcard($alias)) {
+    form_set_error("aliases][$key", t('The domain name @alias is not a valid url', array('@alias' => $alias)));
+  }
+  if ($length > HOSTING_MAX_ALIAS_LENGTH) {
+    $long = $length - HOSTING_MAX_ALIAS_LENGTH;
+    form_set_error("aliases][$key", t('The domain name @alias is @long character(s) too long. Please shorten.', array('@alias' => $alias, '@long' => $long)));
   }
 }
 
@@ -524,7 +526,21 @@ function hosting_alias_settings_validate($form, $form_state) {
  * Generate a default set of aliases for the site based on the global options.
  */
 function hosting_alias_automatic_aliases($url) {
-  $alias = array();
+  $aliases = module_invoke_all('hosting_automatic_aliases', $url);
+  $context = ['url' => $url];
+  drupal_alter('hosting_automatic_aliases', $aliases, $context);
+  return $aliases;
+}
+
+/**
+ * Implements hook_hosting_automatic_aliases().
+ *
+ * Generate automatic subdomain aliases.
+ *
+ * @see hosting_alias_hosting_automatic_aliases_alter().
+ */
+function hosting_alias_hosting_automatic_aliases($url) {
+  $aliases = [];
   if ($sub = variable_get('hosting_alias_subdomain', FALSE)) {
     if (!preg_match("/\." . preg_quote($sub, '/') . "$/", $url)) {
       if (variable_get('hosting_alias_subdomain_replace_dash', TRUE)) {
@@ -533,24 +549,35 @@ function hosting_alias_automatic_aliases($url) {
       }
       $find[] = '.';
       $replace[] = '-';
-      $alias[] = str_replace($find, $replace, $url) . "." . trim($sub, ".");
+      $aliases[] = str_replace($find, $replace, $url) . "." . trim($sub, ".");
     }
   }
+  return $aliases;
+}
+
+/**
+ * Implements hook_hosting_automatic_aliases_alter().
+ *
+ * Generate automatic 'www' or bare domain aliases.
+ *
+ * @see hosting_alias_hosting_automatic_aliases().
+ */
+function hosting_alias_hosting_automatic_aliases_alter(&$aliases, $context) {
+  $url = $context['url'];
   if (!preg_match('/^www\./', $url) && variable_get('hosting_alias_automatic_www', FALSE)) {
     $auto_alias = "www." . $url;
     // Lookup DNS, only add if we get an IP back.
     if (gethostbyname($auto_alias) != $auto_alias) {
-      $alias[] = $auto_alias;
+      $aliases[] = $auto_alias;
     }
   }
   elseif (preg_match('/^www\./', $url) && variable_get('hosting_alias_automatic_no_www', FALSE)) {
     $auto_alias = str_replace("www.", "", $url);
     // Lookup DNS, only add if we get an IP back.
     if (gethostbyname($auto_alias) != $auto_alias) {
-      $alias[] = $auto_alias;
+      $aliases[] = $auto_alias;
     }
   }
-  return $alias;
 }
 
 /**
@@ -577,3 +604,14 @@ function hosting_alias_allow_domain($url, $params = array()) {
   return !$query->countQuery()->execute()->fetchField();
 
 }
+
+/**
+ * Views integration.
+ */
+function hosting_alias_views_api() {
+  return [
+    'api' => 3,
+    'path' => drupal_get_path('module', 'hosting_alias') . '/includes/views',
+  ];
+}
+

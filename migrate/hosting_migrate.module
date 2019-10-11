@@ -74,8 +74,8 @@ function hosting_task_migrate_form_validate($form, &$form_state) {
 
   $site = $form['parameters']['#node'];
 
-  $url = strtolower(trim($form_state['values']['parameters']['new_uri'])); // domain names are case-insensitive
-  if ($url != strtolower(trim($site->title))) {
+  $url = hosting_site_get_domain($form_state['values']['parameters']['new_uri']);
+  if ($url != hosting_site_get_domain($site->title)) {
     $migrate_possible = TRUE;
     if (!_hosting_valid_fqdn($url)) {
       form_set_error('title', t("You have not specified a valid url for this site."));
@@ -129,7 +129,7 @@ function hosting_task_migrate_form($node) {
     '#type' => 'textfield',
     '#required' => TRUE,
     '#weight' => '-1',
-    '#default_value' => strtolower(trim($node->title)),
+    '#default_value' => hosting_site_canonical_url($node),
   );
 
   $db_servers = hosting_get_servers('db');
