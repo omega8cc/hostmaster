@@ -544,10 +544,15 @@ function hosting_task_retry($task_id) {
   if ($node->task_status != HOSTING_TASK_QUEUED) {
     drupal_set_message(t("The task is being retried and has been added to the hosting queue again"));
     hosting_task_log($node->vid, 'queue', t("The task is being retried and has been added to the hosting queue again"));
+    $node->nid = NULL;
+    $node->vid = NULL;
+    $node->original = NULL;
     $node->revision = TRUE;
+    $node->created = REQUEST_TIME;
     $node->changed = REQUEST_TIME;
     $node->task_status = HOSTING_TASK_QUEUED;
     node_save($node);
+    drupal_goto("node/{$node->nid}");
   }
 }
 
@@ -709,10 +714,11 @@ function hosting_task_confirm_form_submit($form, &$form_state) {
  * Tasks should always be named 'task_type node_title'.
  */
 function hosting_task_set_title(&$node) {
-  $ref = db_query("SELECT vid, nid, title, type FROM {node} WHERE nid = :nid", array(':nid' => $node->rid))->fetch();
+  $ref = node_load($node->rid);
   $tasks = hosting_available_tasks($ref->type);
 
-  $node->title = drupal_ucfirst($tasks[$node->task_type]['title']) . ': ' . $ref->title;
+  $ref_title = $ref->type == 'site' ? hosting_site_canonical_url($ref) : $ref->title;
+  $node->title = drupal_ucfirst($tasks[$node->task_type]['title']) . ': ' . $ref_title;
   db_update('node')
     ->fields(array(
       'title' => $node->title,
@@ -1058,6 +1064,7 @@ function hosting_task_load($nodes) {
     $additions = db_query('SELECT task_type, executed, delta, rid, task_status, r.type as ref_type FROM {hosting_task} t LEFT JOIN {node} r ON t.rid = r.nid WHERE t.vid = :vid', array(':vid' => $node->vid))->fetch();
     $result = db_query("SELECT name, value FROM {hosting_task_arguments} WHERE vid = :vid", array(':vid' => $node->vid));
     if ($result) {
+      $additions->task_args = array();
       while ($arg = $result->fetch()) {
         $additions->task_args[$arg->name] = $arg->value;
       }
@@ -1200,11 +1207,20 @@ function hosting_task_view($node, $view_mode, $langcode = NULL) {
   }
   $node->content['info']['#suffix'] = '</div>';
 
-  if (user_access('retry failed tasks') && ($node->task_status == HOSTING_TASK_ERROR)) {
+  if (user_access('retry failed tasks') && (
+      $node->task_status == HOSTING_TASK_ERROR ||
+      $node->task_status == HOSTING_TASK_WARNING ||
+      $node->task_status == HOSTING_TASK_SUCCESS
+    )) {
     $node->content['retry'] = array(
       'form' => drupal_get_form('hosting_task_retry_form', $node->nid),
       '#weight' => 5,
     );
+
+    // Change the name of the form button to "Run Again" if the task ended ok.
+    if ($node->task_status == HOSTING_TASK_WARNING || $node->task_status == HOSTING_TASK_SUCCESS) {
+      $node->content['retry']['form']['retry']['#value'] = t('Run Again');
+    }
   }
 
   if (user_access('update status of tasks') && ($node->task_status == HOSTING_TASK_PROCESSING)) {
@@ -1255,18 +1271,10 @@ function hosting_task_view($node, $view_mode, $langcode = NULL) {
  */
 function _hosting_task_log_table($node, $last_position = 0) {
 
-  $query_args = array(':vid' => $node->vid, ':lid' => $last_position);
+  $types = variable_get('hosting_task_logs_types_display', hosting_log_types());
+  $query_args = array(':vid' => $node->vid, ':lid' => $last_position, ':types' => $types);
 
-  $types_string = variable_get('hosting_task_logs_types_display', 'ALL');
-  if ($types_string == 'ALL') {
-    $type_query = "";
-  }
-  else {
-    $type_query = "AND type IN (:types)";
-    $query_args[':types'] = explode(' ', $types_string);
-  }
-
-  $result = db_query("SELECT * FROM {hosting_task_log} WHERE vid = :vid AND lid > :lid $type_query ORDER BY lid", $query_args);
+  $result = db_query("SELECT * FROM {hosting_task_log} WHERE vid = :vid AND lid > :lid AND type IN (:types) ORDER BY lid", $query_args);
   if ($result) {
     $headers = array('data' => 'Log message', 'execution_time' => 'Execution time', '');
     $rows = array();
