@@ -239,7 +239,7 @@ function _hosting_site_url($node) {
   $schema = 'http';
   $port = NULL;
 
-  $url = _hosting_site_canonical_url($node);
+  $url = hosting_site_canonical_url($node);
 
   $platform = node_load($node->platform);
   $server = node_load($platform->web_server);
