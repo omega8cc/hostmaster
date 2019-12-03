@@ -428,6 +428,17 @@ function hosting_features_enable($features, $rebuild = TRUE, $enable = TRUE) {
         $callback();
       }
       $role_perms = isset($all_features[$feature]['role_permissions']) ? $all_features[$feature]['role_permissions'] : array();
+
+      // Make sure the permission exists before adding it.
+      $modules = user_permission_get_modules();
+      foreach ($role_perms as $role => &$perms) {
+        foreach ($perms as $i => $permission) {
+          if (!isset($modules[$permission])) {
+            unset($perms[$i]);
+          }
+        }
+      }
+
       hosting_add_permissions($module, $role_perms);
     }
 
@@ -551,25 +562,21 @@ function hosting_feature_rebuild_caches($features = array()) {
  */
 function hosting_add_permissions($module, $role_perms) {
   $perm_hook = $module . '_permission';
+  // @TODO: This doesn't make sense. Aegir's "hook_hosting_features" modules include permissions from other modules. It may not have it's own permission hook.
   if (function_exists($perm_hook)) {
     $roles = user_roles();
     foreach ($roles as $rid => $name) {
 
       // The Aegir admin role gets all hosting module permissions.
       if ($name == 'aegir administrator') {
+        // @TODO: This doesn't make sense. Aegir's "hook_hosting_features" modules include permissions from other modules.
+        // This only grants full access to the "aegir administrator" role to the parent module's hook_permissions implementation,
+        // not the list of permissions included in the hook_hosting_feature implementations.
         $perms = call_user_func($module . '_permission');
         user_role_grant_permissions($rid, array_keys($perms));
       }
 
       if (array_key_exists($name, $role_perms)) {
-
-        // Make sure the permission exists before adding it.
-        $modules = user_permission_get_modules();
-        foreach ($role_perms[$name] as $i => $permission) {
-          if (!isset($modules[$permission])) {
-            unset($role_perms[$i]);
-          }
-        }
         drupal_set_message(t("The '%role' role was assigned the following permission!plural: '%perms'.", array(
           '%role' => $name,
           '%perms' => implode('\', \'', $role_perms[$name]),
