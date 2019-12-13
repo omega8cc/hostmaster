@@ -114,7 +114,7 @@ projects[features][download][url] = "/opt/tmp/make_local/features"
 projects[idna_convert][download][type] = "copy"
 projects[idna_convert][download][url] = "/opt/tmp/make_local/idna_convert"
 
-; https://ftp.drupal.org/files/projects/revision_deletion-7.x-1.0.tar.gz
+; https://ftp.drupal.org/files/projects/revision_deletion-7.x-1.3.tar.gz
 projects[revision_deletion][download][type] = "copy"
 projects[revision_deletion][download][url] = "/opt/tmp/make_local/revision_deletion"
 
