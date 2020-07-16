@@ -122,7 +122,7 @@ projects[revision_deletion][download][url] = "/opt/tmp/make_local/revision_delet
 projects[strongarm][download][type] = "copy"
 projects[strongarm][download][url] = "/opt/tmp/make_local/strongarm"
 
-; https://ftp.drupal.org/files/projects/userprotect-7.x-1.2.tar.gz
+; https://ftp.drupal.org/files/projects/userprotect-7.x-1.3.tar.gz
 projects[userprotect][download][type] = "copy"
 projects[userprotect][download][url] = "/opt/tmp/make_local/userprotect"
 
