@@ -34,7 +34,7 @@ projects[admin_menu][download][url] = "/opt/tmp/make_local/admin_menu"
 projects[betterlogin][download][type] = "copy"
 projects[betterlogin][download][url] = "/opt/tmp/make_local/betterlogin"
 
-; https://ftp.drupal.org/files/projects/ctools-7.x-1.15.tar.gz
+; https://ftp.drupal.org/files/projects/ctools-7.x-1.19.tar.gz
 projects[ctools][download][type] = "copy"
 projects[ctools][download][url] = "/opt/tmp/make_local/ctools"
 
@@ -72,7 +72,7 @@ projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk
 projects[libraries][download][type] = "copy"
 projects[libraries][download][url] = "/opt/tmp/make_local/libraries"
 
-; https://ftp.drupal.org/files/projects/tfa-7.x-2.0.tar.gz
+; https://ftp.drupal.org/files/projects/tfa-7.x-2.1.tar.gz
 projects[tfa][download][type] = "copy"
 projects[tfa][download][url] = "/opt/tmp/make_local/tfa"
 
@@ -106,7 +106,7 @@ libraries[vuejs][destination] = libraries
 projects[features_extra][download][type] = "copy"
 projects[features_extra][download][url] = "/opt/tmp/make_local/features_extra"
 
-; https://ftp.drupal.org/files/projects/features-7.x-2.11.tar.gz
+; https://ftp.drupal.org/files/projects/features-7.x-2.13.tar.gz
 projects[features][download][type] = "copy"
 projects[features][download][url] = "/opt/tmp/make_local/features"
 
