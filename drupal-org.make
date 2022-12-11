@@ -58,11 +58,11 @@ projects[overlay_paths][download][url] = "/opt/tmp/make_local/overlay_paths"
 projects[r4032login][download][type] = "copy"
 projects[r4032login][download][url] = "/opt/tmp/make_local/r4032login"
 
-; https://ftp.drupal.org/files/projects/views-7.x-3.25.tar.gz
+; https://ftp.drupal.org/files/projects/views-7.x-3.27.tar.gz
 projects[views][download][type] = "copy"
 projects[views][download][url] = "/opt/tmp/make_local/views"
 
-; https://ftp.drupal.org/files/projects/views_bulk_operations-7.x-3.6.tar.gz
+; https://ftp.drupal.org/files/projects/views_bulk_operations-7.x-3.7.tar.gz
 projects[views_bulk_operations][download][type] = "copy"
 projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk_operations"
 
