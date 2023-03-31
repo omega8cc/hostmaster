@@ -34,7 +34,7 @@ projects[admin_menu][download][url] = "/opt/tmp/make_local/admin_menu"
 projects[betterlogin][download][type] = "copy"
 projects[betterlogin][download][url] = "/opt/tmp/make_local/betterlogin"
 
-; https://ftp.drupal.org/files/projects/ctools-7.x-1.20.tar.gz
+; https://ftp.drupal.org/files/projects/ctools-7.x-1.21.tar.gz
 projects[ctools][download][type] = "copy"
 projects[ctools][download][url] = "/opt/tmp/make_local/ctools"
 
