@@ -26,7 +26,7 @@ projects[hosting_tasks_extra][subdir] = aegir
 
 ; Aegir Drupal Contrib
 
-; https://ftp.drupal.org/files/projects/admin_menu-7.x-3.0-rc6.tar.gz
+; https://ftp.drupal.org/files/projects/admin_menu-7.x-3.0-rc7.tar.gz
 projects[admin_menu][download][type] = "copy"
 projects[admin_menu][download][url] = "/opt/tmp/make_local/admin_menu"
 
