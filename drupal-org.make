@@ -42,7 +42,7 @@ projects[ctools][download][url] = "/opt/tmp/make_local/ctools"
 projects[entity][download][type] = "copy"
 projects[entity][download][url] = "/opt/tmp/make_local/entity"
 
-; https://ftp.drupal.org/files/projects/module_filter-7.x-2.2.tar.gz
+; https://ftp.drupal.org/files/projects/module_filter-7.x-2.3.tar.gz
 projects[module_filter][download][type] = "copy"
 projects[module_filter][download][url] = "/opt/tmp/make_local/module_filter"
 
