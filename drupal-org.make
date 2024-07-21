@@ -38,7 +38,7 @@ projects[betterlogin][download][url] = "/opt/tmp/make_local/betterlogin"
 projects[ctools][download][type] = "copy"
 projects[ctools][download][url] = "/opt/tmp/make_local/ctools"
 
-; https://ftp.drupal.org/files/projects/entity-7.x-1.9.tar.gz
+; https://ftp.drupal.org/files/projects/entity-7.x-1.11.tar.gz
 projects[entity][download][type] = "copy"
 projects[entity][download][url] = "/opt/tmp/make_local/entity"
 
