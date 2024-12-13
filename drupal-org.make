@@ -81,9 +81,10 @@ projects[tfa_basic][download][type] = "copy"
 projects[tfa_basic][download][url] = "/opt/tmp/make_local/tfa_basic"
 ; projects[tfa_basic][patch][] = "https://www.drupal.org/files/issues/use_libraries_module-2807953-8.patch"
 
-libraries[qrcodejs][download][type] = git
-libraries[qrcodejs][download][url] = https://github.com/davidshimjs/qrcodejs.git
-libraries[qrcodejs][download][revision] = 04f46c6a0708418cb7b96fc563eacae0fbf77674
+; https://github.com/davidshimjs/qrcodejs.git
+libraries[qrcodejs][download][type] = "copy"
+libraries[qrcodejs][download][url] = "/opt/tmp/make_local/qrcodejs"
+libraries[qrcodejs][destination] = libraries
 
 ; JQuery TimeAgo plugin
 
@@ -91,13 +92,14 @@ libraries[qrcodejs][download][revision] = 04f46c6a0708418cb7b96fc563eacae0fbf776
 projects[timeago][download][type] = "copy"
 projects[timeago][download][url] = "/opt/tmp/make_local/timeago"
 
-libraries[timeago][download][type] = get
-libraries[timeago][download][url] = https://raw.githubusercontent.com/rmm5t/jquery-timeago/v1.6.7/jquery.timeago.js
+; https://raw.githubusercontent.com/rmm5t/jquery-timeago/v1.6.7/jquery.timeago.js
+libraries[timeago][download][type] = "copy"
+libraries[timeago][download][url] = "/opt/tmp/make_local/timeagojs"
 libraries[timeago][destination] = libraries
 
-; Vue.js
-libraries[vuejs][download][type] = get
-libraries[vuejs][download][url] = https://github.com/vuejs/vue/raw/v2.4.4/dist/vue.min.js
+; https://github.com/vuejs/vue/raw/v2.4.4/dist/vue.min.js
+libraries[vuejs][download][type] = "copy"
+libraries[vuejs][download][url] = "/opt/tmp/make_local/vuejs"
 libraries[vuejs][destination] = libraries
 
 ; BOA Drupal Contrib
