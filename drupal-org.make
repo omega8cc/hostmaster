@@ -128,6 +128,10 @@ projects[strongarm][download][url] = "/opt/tmp/make_local/strongarm"
 projects[userprotect][download][type] = "copy"
 projects[userprotect][download][url] = "/opt/tmp/make_local/userprotect"
 
+; https://gitlab.com/api/v4/projects/53090644/packages/generic/d7security_client/7.x-1.3/d7security_client-7.x-1.3.tar.gz
+projects[d7security_client][download][type] = "copy"
+projects[d7security_client][download][url] = "/opt/tmp/make_local/d7security_client"
+
 ; BOA Custom Contrib
 
 ; hosting_custom_settings
