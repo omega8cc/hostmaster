@@ -129,8 +129,8 @@ projects[userprotect][download][type] = "copy"
 projects[userprotect][download][url] = "/opt/tmp/make_local/userprotect"
 
 ; https://ftp.drupal.org/files/projects/environment_indicator-7.x-2.9.tar.gz
-projects[userprotect][download][type] = "copy"
-projects[userprotect][download][url] = "/opt/tmp/make_local/environment_indicator"
+projects[environment_indicator][download][type] = "copy"
+projects[environment_indicator][download][url] = "/opt/tmp/make_local/environment_indicator"
 
 ; https://gitlab.com/api/v4/projects/53090644/packages/generic/d7security_client/7.x-1.3/d7security_client-7.x-1.3.tar.gz
 projects[d7security_client][download][type] = "copy"
