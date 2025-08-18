@@ -44,6 +44,7 @@ dependencies[] = hosting_platform_git
 dependencies[] = actions_permissions
 dependencies[] = admin_menu
 dependencies[] = ctools
+dependencies[] = environment_indicator
 dependencies[] = fe_block
 dependencies[] = features
 dependencies[] = overlay_paths
