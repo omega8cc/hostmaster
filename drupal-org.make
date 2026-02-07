@@ -38,7 +38,7 @@ projects[betterlogin][download][url] = "/opt/tmp/make_local/betterlogin"
 projects[ctools][download][type] = "copy"
 projects[ctools][download][url] = "/opt/tmp/make_local/ctools"
 
-; https://ftp.drupal.org/files/projects/entity-7.x-1.11.tar.gz
+; https://ftp.drupal.org/files/projects/entity-7.x-1.12.tar.gz
 projects[entity][download][type] = "copy"
 projects[entity][download][url] = "/opt/tmp/make_local/entity"
 
@@ -58,7 +58,7 @@ projects[overlay_paths][download][url] = "/opt/tmp/make_local/overlay_paths"
 projects[r4032login][download][type] = "copy"
 projects[r4032login][download][url] = "/opt/tmp/make_local/r4032login"
 
-; https://ftp.drupal.org/files/projects/views-7.x-3.29.tar.gz
+; https://ftp.drupal.org/files/projects/views-7.x-3.30.tar.gz
 projects[views][download][type] = "copy"
 projects[views][download][url] = "/opt/tmp/make_local/views"
 
@@ -104,7 +104,7 @@ libraries[vuejs][destination] = libraries
 
 ; BOA Drupal Contrib
 
-; https://ftp.drupal.org/files/projects/features_extra-7.x-1.0.tar.gz
+; https://ftp.drupal.org/files/projects/features_extra-7.x-1.2.tar.gz
 projects[features_extra][download][type] = "copy"
 projects[features_extra][download][url] = "/opt/tmp/make_local/features_extra"
 
