@@ -132,9 +132,9 @@ projects[userprotect][download][url] = "/opt/tmp/make_local/userprotect"
 projects[environment_indicator][download][type] = "copy"
 projects[environment_indicator][download][url] = "/opt/tmp/make_local/environment_indicator"
 
-; https://gitlab.com/api/v4/projects/53090644/packages/generic/d7security_client/7.x-1.3/d7security_client-7.x-1.3.tar.gz
-projects[d7security_client][download][type] = "copy"
-projects[d7security_client][download][url] = "/opt/tmp/make_local/d7security_client"
+; https://ftp.drupal.org/files/projects/tag1_d7es-7.x-1.4.tar.gz
+projects[tag1_d7es][download][type] = "copy"
+projects[tag1_d7es][download][url] = "/opt/tmp/make_local/tag1_d7es"
 
 ; BOA Custom Contrib
 
