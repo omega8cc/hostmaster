@@ -66,25 +66,11 @@ projects[views][download][url] = "/opt/tmp/make_local/views"
 projects[views_bulk_operations][download][type] = "copy"
 projects[views_bulk_operations][download][url] = "/opt/tmp/make_local/views_bulk_operations"
 
-; Two factor authentication
+; Libraries API
 
 ; https://ftp.drupal.org/files/projects/libraries-7.x-2.5.tar.gz
 projects[libraries][download][type] = "copy"
 projects[libraries][download][url] = "/opt/tmp/make_local/libraries"
-
-; https://ftp.drupal.org/files/projects/tfa-7.x-2.1.tar.gz
-projects[tfa][download][type] = "copy"
-projects[tfa][download][url] = "/opt/tmp/make_local/tfa"
-
-; https://ftp.drupal.org/files/projects/tfa_basic-7.x-1.1.tar.gz
-projects[tfa_basic][download][type] = "copy"
-projects[tfa_basic][download][url] = "/opt/tmp/make_local/tfa_basic"
-; projects[tfa_basic][patch][] = "https://www.drupal.org/files/issues/use_libraries_module-2807953-8.patch"
-
-; https://github.com/davidshimjs/qrcodejs.git
-libraries[qrcodejs][download][type] = "copy"
-libraries[qrcodejs][download][url] = "/opt/tmp/make_local/qrcodejs"
-libraries[qrcodejs][destination] = libraries
 
 ; JQuery TimeAgo plugin
 
@@ -96,11 +82,6 @@ projects[timeago][download][url] = "/opt/tmp/make_local/timeago"
 libraries[timeago][download][type] = "copy"
 libraries[timeago][download][url] = "/opt/tmp/make_local/timeagojs"
 libraries[timeago][destination] = libraries
-
-; https://github.com/vuejs/vue/raw/v2.4.4/dist/vue.min.js
-libraries[vuejs][download][type] = "copy"
-libraries[vuejs][download][url] = "/opt/tmp/make_local/vuejs"
-libraries[vuejs][destination] = libraries
 
 ; BOA Drupal Contrib
 
@@ -156,3 +137,11 @@ projects[hosting_custom_settings][download][url] = "/opt/tmp/make_local/hosting_
 
 ; projects[protect_critical_users][download][type] = "copy"
 ; REMOVED, D7 core should provide this protection
+
+; projects[tfa][download][type] = "copy"
+; projects[tfa_basic][download][type] = "copy"
+; libraries[qrcodejs][download][type] = "copy"
+; REMOVED, never enabled by BOA; 7.x-2.1 carried SA-CONTRIB-2024-043
+
+; libraries[vuejs][download][type] = "copy"
+; REMOVED, nothing in the panel loads it
